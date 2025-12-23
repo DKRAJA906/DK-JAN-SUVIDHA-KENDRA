@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DK Jan Suvidha Kendra</title>
+    <style>
+        /* Theme Settings similar to your App */
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1E1E1E;
+            --primary-color: #BB86FC; /* Brand Purple */
+            --text-color: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--surface-color);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        h1 { margin: 0; color: var(--primary-color); }
+        p { color: #aaaaaa; }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* App Download Section */
+        .download-box {
+            background: linear-gradient(45deg, #3700b3, #6200ea);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+        }
+
+        .btn {
+            background-color: #ffffff;
+            color: #6200ea;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            font-size: 18px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .btn:hover { background-color: #f0f0f0; }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .card h3 { color: var(--primary-color); margin-bottom: 10px; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--surface-color);
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>DK Jan Suvidha Kendra</h1>
+        <p>Narnaund, Haryana | Aapki Seva Mein Hamesha Tatpar</p>
+    </header>
+
+    <div class="container">
+        <!-- Download App Section -->
+        <div class="download-box">
+            <h2>📱 Hamara Official App Download Karein</h2>
+            <p>Sabhi sarkari suvidhaon ka labh apne phone par uthayein.</p>
+            <!-- Niche Link ko apne GitHub APK link se badal dein -->
+            <a href="https://github.com/DKRAJA906/DK-JAN-SUVIDHA-KENDRA/releases/download/v5.01/app-release.apk" class="btn">Download Android App</a>
+        </div>
+
+        <!-- Services Section -->
+        <h2 style="color: var(--primary-color);">Hamari Suvidhayein</h2>
+        <div class="services-grid">
+            <div class="card">
+                <h3>🆔 Aadhaar Services</h3>
+                <p>New Enrollment, Update, Print & Correction.</p>
+            </div>
+            <div class="card">
+                <h3>💳 PAN Card</h3>
+                <p>Naya PAN Card banwayein ya correction karwayein.</p>
+            </div>
+            <div class="card">
+                <h3>⚡ Bijli Bill</h3>
+                <p>Bill jama karein aur naya connection apply karein.</p>
+            </div>
+            <div class="card">
+                <h3>🚜 PM Kisan</h3>
+                <p>KYC, Registration aur Status check.</p>
+            </div>
+            <div class="card">
+                <h3>🎓 Scholarship & Forms</h3>
+                <p>School/College scholarship aur naukri ke form.</p>
+            </div>
+            <div class="card">
+                <h3>📄 Photocopy & Print</h3>
+                <p>High quality color print aur photo copy.</p>
+            </div>
+        </div>
+
+        <!-- Location / Contact -->
+        <div style="margin-top: 50px;">
+            <h3>📍 Sampark Karein</h3>
+            <p><strong>Address:</strong> DK Jan Suvidha Kendra, Narnaund, Haryana</p>
+            <p><strong>Mobile:</strong> +91 XXXXX-XXXXX</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
+        <p>Developed by DK Raja</p>
+    </footer>
+
+</body>
+</html>
