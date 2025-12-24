@@ -2,14 +2,14 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=8.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DK Jan Suvidha Kendra</title>
     <style>
-        /* Theme Settings similar to your App */
+        /* Theme Settings */
         :root {
             --bg-color: #808A80;
             --surface-color: #1E1E1E;
-            --primary-color: #BB86FC; /* Brand Purple */
+            --primary-color: #BB86FC;
             --text-color: #FFFFFF;
         }
 
@@ -21,32 +21,24 @@
             color: var(--text-color);
         }
 
-        /* Header */
         header {
-            background-color:#CF2D83;
+            background-color: #CF2D83;
             padding: 20px;
             text-align: center;
             border-bottom: 2px solid var(--primary-color);
         }
 
         h1 { margin: 0; color: var(--primary-color); }
-        p { color: #aaaaaa; }
+        p { color: #e0e0e0; }
 
-        /* Main Container */
         .container {
             max-width: 1000px;
             margin: 20px auto;
             padding: 20px;
             text-align: center;
         }
-<!-- News Ticker Start -->
-<div style="background-color: #ff0000; color: #ffffff; padding: 12px; margin: 15px auto; width: 95%; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
-    <marquee style="font-size: 18px; font-weight: bold;">
-        📢 Dhyan Dein: PM Kisan ki eKYC shuru ho gayi hai. Aadhaar correction ke liye aaj hi sampark karein. Mobile: 99999-99999
-    </marquee>
-</div>
-<!-- News Ticker End -->
-        /* App Download Section */
+
+        /* App Download Box */
         .download-box {
             background: linear-gradient(45deg, #3700b3, #6200ea);
             padding: 30px;
@@ -77,13 +69,13 @@
         }
 
         .card {
-            background-color:#CF562D;
+            background-color: #CF562D;
             padding: 20px;
             border-radius: 10px;
             border: 1px solid #333;
             transition: transform 0.3s;
         }
-
+        
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-color);
@@ -91,7 +83,14 @@
 
         .card h3 { color: var(--primary-color); margin-bottom: 10px; }
 
-        /* Footer */
+        /* Color Classes for Buttons */
+        .rang-aadhaar { background: linear-gradient(135deg, #FF512F, #DD2476); }
+        .rang-pan { background: linear-gradient(135deg, #1A2980, #26D0CE); }
+        .rang-bijli { background: linear-gradient(135deg, #f12711, #f5af19); }
+        .rang-kisan { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .rang-scholar { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+        .rang-print { background: linear-gradient(135deg, #CB356B, #BD3F32); }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -109,77 +108,84 @@
         <p>Ranikheda Chauraha, Bachhrawan | Aapki Seva Mein Hamesha Tatpar</p>
     </header>
 
+    <!-- News Ticker YAHAN SAHI JAGAH HAI -->
+    <div style="background-color: #ff0000; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
+        <marquee behavior="scroll" direction="left" scrollamount="10" style="font-size: 18px; font-weight: bold;">
+            📢 Dhyan Dein: PM Kisan ki eKYC shuru ho gayi hai. Aadhaar correction ke liye aaj hi sampark karein. Mobile: 8318736819
+        </marquee>
+    </div>
+
     <div class="container">
         <!-- Download App Section -->
         <div class="download-box">
             <h2>📱 Hamara Official App Download Karein</h2>
             <p>Sabhi sarkari suvidhaon ka labh apne phone par uthayein.</p>
-            <!-- Niche Link ko apne GitHub APK link se badal dein -->
             <a href="https://github.com/DKRAJA906/DK-JAN-SUVIDHA-KENDRA/releases/download/v5.01/DK.JAN.SUVIDHA.apk" class="btn">Download Android App</a>
         </div>
 
-        <!-- Services Section -->
         <h2 style="color: var(--primary-color);">Hamari Suvidhayein</h2>
+        
         <div class="services-grid">
-    
-    <!-- 1. Aadhaar Card -->
-    <a href="https://uidai.gov.in" target="_blank" style="text-decoration: none;">
-        <div class="card rang-aadhaar">
-            <h3>🆔 Aadhaar Services</h3>
-            <p style="color: white;">New Enrollment, Update, Print & Correction.</p>
-        </div>
-    </a>
+            
+            <!-- 1. Aadhaar -->
+            <a href="https://uidai.gov.in" target="_blank" style="text-decoration: none;">
+                <div class="card rang-aadhaar">
+                    <h3>🆔 Aadhaar Services</h3>
+                    <p style="color: white;">New Enrollment, Update, Print & Correction.</p>
+                </div>
+            </a>
 
-    <!-- 2. PAN Card -->
-    <a href="https://www.pan.utiitsl.com/newA.html" target="_blank" style="text-decoration: none;">
-        <div class="card rang-pan">
-            <h3>💳 PAN Card</h3>
-            <p style="color: white;">Naya PAN Card banwayein ya correction karwayein.</p>
-        </div>
-    </a>
+            <!-- 2. PAN Card -->
+            <a href="https://www.pan.utiitsl.com/newA.html" target="_blank" style="text-decoration: none;">
+                <div class="card rang-pan">
+                    <h3>💳 PAN Card</h3>
+                    <p style="color: white;">Naya PAN Card banwayein ya correction karwayein.</p>
+                </div>
+            </a>
 
-    <!-- 3. Bijli Bill (UPPCL) -->
-    <a href="https://www.uppcl.org" target="_blank" style="text-decoration: none;">
-        <div class="card rang-bijli">
-            <h3>⚡ Bijli Bill</h3>
-            <p style="color: white;">Bill jama karein aur naya connection apply karein.</p>
-        </div>
-    </a>
+            <!-- 3. Bijli Bill -->
+            <a href="https://www.uppcl.org" target="_blank" style="text-decoration: none;">
+                <div class="card rang-bijli">
+                    <h3>⚡ Bijli Bill</h3>
+                    <p style="color: white;">Bill jama karein aur naya connection apply karein.</p>
+                </div>
+            </a>
 
-    <!-- 4. PM Kisan -->
-    <a href="https://pmkisan.gov.in" target="_blank" style="text-decoration: none;">
-        <div class="card rang-kisan">
-            <h3>🚜 PM Kisan</h3>
-            <p style="color: white;">KYC, Registration aur Status check karein.</p>
-        </div>
-    </a>
+            <!-- 4. PM Kisan -->
+            <a href="https://pmkisan.gov.in" target="_blank" style="text-decoration: none;">
+                <div class="card rang-kisan">
+                    <h3>🚜 PM Kisan</h3>
+                    <p style="color: white;">KYC, Registration aur Status check karein.</p>
+                </div>
+            </a>
 
-    <!-- 5. Scholarship (UP Scholarship) -->
-    <a href="https://scholarship.up.gov.in" target="_blank" style="text-decoration: none;">
-        <div class="card rang-scholar">
-            <h3>🎓 Scholarship & Forms</h3>
-            <p style="color: white;">School/College scholarship aur naukri ke form.</p>
-        </div>
-    </a>
+            <!-- 5. Scholarship -->
+            <a href="https://scholarship.up.gov.in" target="_blank" style="text-decoration: none;">
+                <div class="card rang-scholar">
+                    <h3>🎓 Scholarship & Forms</h3>
+                    <p style="color: white;">School/College scholarship aur naukri ke form.</p>
+                </div>
+            </a>
 
-    <!-- 6. Print/Photocopy (Iska koi link nahi hota, toh WhatsApp laga sakte hain) -->
-    <a href="https://wa.me/918318736819" target="_blank" style="text-decoration: none;">
-        <div class="card rang-print">
-            <h3>📄 Photocopy & Print</h3>
-            <p style="color: white;">High quality color print aur photo copy service.</p>
-        </div>
-    </a>
-    <!-- 7. Npci (Adhar Seeding Any bank Widthuot Visit bank) -->
-    <a href="https://www.npci.org.in/" target="_blank" style="text-decoration: none;">
-        <div class="card rang-print">
-            <h3>📄 Adhar Seeding</h3>
-            <p style="color: white;">Adhar Seeding Any bank Widthuot Visit bank.</p>
-        </div>
-    </a>
+            <!-- 6. Photocopy -->
+            <a href="https://wa.me/918318736819" target="_blank" style="text-decoration: none;">
+                <div class="card rang-print">
+                    <h3>📄 Photocopy & Print</h3>
+                    <p style="color: white;">High quality color print aur photo copy service.</p>
+                </div>
+            </a>
 
-</div>
+            <!-- 7. NPCI -->
+            <a href="https://www.npci.org.in/" target="_blank" style="text-decoration: none;">
+                <div class="card rang-print">
+                    <h3>📄 Aadhaar Seeding</h3>
+                    <p style="color: white;">Aadhaar Seeding Any bank Without Visit bank.</p>
+                </div>
+            </a>
 
-        <!-- Location / Contact -->
+        </div>
+
+        <!-- Contact Section -->
         <div style="margin-top: 50px;">
             <h3>📍 Sampark Karein</h3>
             <p><strong>Address:</strong> DK Jan Suvidha Kendra, Ranikheda Chauraha, Bachhrawan</p>
@@ -190,7 +196,7 @@
 
     <footer>
         <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
-        <p>Developed by DK </p>
+        <p>Developed by DK</p>
     </footer>
 
 </body>
