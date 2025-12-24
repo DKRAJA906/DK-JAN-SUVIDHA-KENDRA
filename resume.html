@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Resume Builder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        
+        /* फॉर्म की डिजाइन */
+        .form-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; background: #fafafa; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* बटन की डिजाइन */
+        .btn {
+            background-color: #28a745; color: white; padding: 10px 20px; 
+            border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%;
+        }
+        .btn:hover { background-color: #218838; }
+
+        /* रिज्यूमे का प्रिव्यू (जो प्रिंट होगा) */
+        #resume-preview { border-top: 2px solid #333; margin-top: 30px; padding-top: 20px; display: none; }
+        .resume-header { text-align: center; }
+        .resume-section { margin-top: 15px; }
+        .resume-section h3 { background: #eee; padding: 5px; }
+
+        /* प्रिंट करते समय सिर्फ रिज्यूमे दिखे, फॉर्म नहीं */
+        @media print {
+            .form-section, .btn { display: none; }
+            #resume-preview { display: block; border: none; }
+            body { background: white; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Free Resume Builder</h2>
+    
+    <!-- 1. जानकारी भरने वाला फॉर्म -->
+    <div class="form-section">
+        <label>पूरा नाम (Full Name):</label>
+        <input type="text" id="name" placeholder="Ex: Rahul Kumar">
+        
+        <label>मोबाइल नंबर (Phone):</label>
+        <input type="text" id="phone" placeholder="Ex: 9876543210">
+        
+        <label>ईमेल (Email):</label>
+        <input type="text" id="email" placeholder="Ex: rahul@gmail.com">
+        
+        <label>शिक्षा (Education):</label>
+        <textarea id="education" rows="3" placeholder="Ex: 10th form HBSE, 12th from HBSE"></textarea>
+        
+        <label>अनुभव (Experience):</label>
+        <textarea id="experience" rows="3" placeholder="Ex: 1 Year work at CSC Center"></textarea>
+
+        <!-- 2. बटन -->
+        <button class="btn" onclick="generateResume()">Download / Print Resume</button>
+    </div>
+
+    <!-- 3. रिज्यूमे का आउटपुट (यह प्रिंट होगा) -->
+    <div id="resume-preview">
+        <div class="resume-header">
+            <h1 id="outName">Name Here</h1>
+            <p><span id="outPhone">Phone</span> | <span id="outEmail">Email</span></p>
+        </div>
+        <hr>
+        <div class="resume-section">
+            <h3>Education</h3>
+            <p id="outEducation">Education details...</p>
+        </div>
+        <div class="resume-section">
+            <h3>Experience</h3>
+            <p id="outExperience">Experience details...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateResume() {
+        // फॉर्म से डेटा लेना
+        document.getElementById('outName').innerText = document.getElementById('name').value;
+        document.getElementById('outPhone').innerText = document.getElementById('phone').value;
+        document.getElementById('outEmail').innerText = document.getElementById('email').value;
+        document.getElementById('outEducation').innerText = document.getElementById('education').value;
+        document.getElementById('outExperience').innerText = document.getElementById('experience').value;
+
+        // प्रिव्यू दिखाना
+        document.getElementById('resume-preview').style.display = 'block';
+
+        // प्रिंट कमांड देना (PDF सेव करने के लिए)
+        window.print();
+    }
+</script>
+
+</body>
+</html>
