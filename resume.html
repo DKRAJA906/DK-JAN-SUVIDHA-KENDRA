@@ -3,279 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biodata Maker</title>
+    <title>Final Resume Builder</title>
     <style>
-        /* पूरे पेज की सेटिंग */
-        body {
-            font-family: "Times New Roman", Times, serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
+        /* डिजाइन (CSS) */
+        body { font-family: "Times New Roman", Times, serif; background: #e0e0e0; margin: 0; padding: 10px; }
+        
+        /* 1. फॉर्म का डिजाइन (जहाँ आप लिखेंगे) */
+        .form-area {
+            background: #fff; padding: 20px; max-width: 800px; margin: 0 auto 30px auto;
+            border-top: 6px solid #ff5722; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
-        /* फॉर्म (Input) वाला हिस्सा - प्रिंट में नहीं दिखेगा */
-        .input-form {
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .input-form h2 { text-align: center; color: #333; font-family: Arial, sans-serif; }
+        .form-area h2 { margin-top: 0; color: #333; font-family: Arial, sans-serif; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-family: Arial, sans-serif; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 97%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-family: Arial, sans-serif; color: #555; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 15px; box-sizing: border-box;
         }
-        .btn-print {
-            background: #007bff; color: white; border: none; padding: 12px 25px; 
-            font-size: 16px; cursor: pointer; border-radius: 5px; width: 100%;
-            font-weight: bold;
-        }
-        .btn-print:hover { background: #0056b3; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #ff5722; outline: none; }
 
-        /* --- RESUME DESIGN (बिल्कुल फोटो जैसा) --- */
-        .resume-paper {
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            background: white;
-            margin: 0 auto;
-            padding: 15mm; /* मार्जिन */
-            box-sizing: border-box;
-            border: 1px solid gray; /* स्क्रीन पर बॉर्डर */
-            position: relative;
+        /* अपडेट बटन (मैनुअल) */
+        .update-btn {
+            background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px; margin-right: 10px; border-radius: 5px;
+        }
+        .print-btn {
+            background: #28a745; color: white; padding: 12px 25px; border: none; cursor: pointer; font-size: 18px; width: 100%; border-radius: 5px; font-weight: bold; margin-top: 15px;
         }
 
-        /* फोटो जैसा ब्लैक बॉर्डर */
-        .resume-border {
-            border: 2px solid black;
-            height: 100%;
-            padding: 20px;
-            position: relative;
-            min-height: 950px; /* बॉर्डर पेज के अंत तक जाए */
+        /* 2. रिज्यूमे का पेपर (जहाँ रिजल्ट दिखेगा) */
+        .resume-preview {
+            background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 15mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3); position: relative;
+        }
+        .resume-inner-border {
+            border: 2px solid black; height: 100%; padding: 20px; min-height: 950px;
         }
 
-        /* हेडर स्टाइल */
-        h1.cv-title {
-            text-align: center;
-            text-decoration: underline;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
-
-        /* एड्रेस सेक्शन (दाहिनी तरफ) */
-        .header-contact {
-            text-align: right;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            font-size: 16px;
-        }
-
-        /* सेक्शन हेडिंग (BOLD और UNDERLINE) */
-        .section-title {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 25px;
-            margin-bottom: 8px;
-            font-size: 16px;
-            text-transform: uppercase;
-        }
-
-        /* सामान्य टेक्स्ट */
-        p, li { font-size: 16px; margin: 5px 0; line-height: 1.5; }
-        ul { margin: 0; padding-left: 20px; }
-
-        /* पर्सनल डिटेल्स की टेबल (ताकि : एक सीध में आए) */
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .details-table td {
-            padding: 3px 0;
-            vertical-align: top;
-            font-size: 16px;
-        }
-        .label-col { width: 160px; font-weight: bold; } /* लेबल की चौड़ाई */
-        .sep-col { width: 20px; } /* : की चौड़ाई */
-
-        /* नीचे का हिस्सा (Place/Signature) */
-        .footer-section {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-        }
+        /* रिज्यूमे के अंदर की सेटिंग */
+        h1.main-title { text-align: center; text-decoration: underline; font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; }
+        .contact-info { text-align: right; line-height: 1.5; font-size: 16px; margin-bottom: 20px; }
+        .section-head { font-weight: bold; text-decoration: underline; margin-top: 25px; margin-bottom: 8px; font-size: 16px; text-transform: uppercase; }
+        p, li, div { font-size: 16px; margin: 5px 0; line-height: 1.4; text-align: justify; }
+        
+        /* टेबल सेटिंग */
+        .details-table { width: 100%; border-collapse: collapse; }
+        .details-table td { padding: 4px 0; vertical-align: top; font-size: 16px; }
+        .col-label { width: 160px; font-weight: bold; }
+        .col-sep { width: 20px; text-align: center; }
 
         /* प्रिंट सेटिंग */
         @media print {
             body { background: white; padding: 0; }
-            .input-form { display: none; } /* फॉर्म छुपाएं */
-            .resume-paper { 
-                border: none; margin: 0; padding: 0; width: 100%; height: auto; 
-            }
-            .resume-border { 
-                border: 2px solid black; /* प्रिंट में बॉर्डर */
-                min-height: 98vh; /* पूरे पेज पर बॉर्डर */
-                margin: 10px;
-            }
+            .form-area { display: none; } /* फॉर्म प्रिंट में नहीं आएगा */
+            .resume-preview { width: 100%; margin: 0; padding: 0; box-shadow: none; }
+            .resume-inner-border { min-height: 98vh; border: 2px solid black !important; margin: 5px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. भरने वाला फॉर्म -->
-    <div class="input-form">
-        <h2>📝 Resume Details Form</h2>
+<!-- === PART 1: फॉर्म (डेटा भरें) === -->
+<div class="form-area">
+    <h2>✏️ अपनी जानकारी यहाँ भरें</h2>
+    <p style="color:red; font-size:14px;">(टाइप करते ही नीचे रिज्यूमे अपने आप बनेगा)</p>
+
+    <!-- पर्सनल इन्फो -->
+    <div class="form-group"><label>1. पूरा नाम (Full Name):</label><input type="text" id="in_name" placeholder="Ex: Amit Kumar" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>2. पता (Address):</label><input type="text" id="in_address" placeholder="Village, District..." onkeyup="makeResume()"></div>
+    <div class="form-group"><label>3. मोबाइल (Mobile):</label><input type="text" id="in_mobile" placeholder="98XXXXXXXX" onkeyup="makeResume()"></div>
+    
+    <!-- करियर और शिक्षा -->
+    <div class="form-group">
+        <label>4. Career Objective:</label>
+        <textarea id="in_obj" rows="3" onkeyup="makeResume()">I am Self Motivated And Confident Hard Working Individual With Strong Flair To Take Up Challenging Position.</textarea>
+    </div>
+    <div class="form-group">
+        <label>5. Education (शिक्षा):</label>
+        <textarea id="in_edu" rows="4" placeholder="• 10th Passed from HBSE&#10;• 12th Passed from HBSE" onkeyup="makeResume()"></textarea>
+    </div>
+    <div class="form-group"><label>6. Experience (अनुभव):</label><input type="text" id="in_exp" value="• Fresher" onkeyup="makeResume()"></div>
+
+    <!-- पर्सनल डिटेल्स -->
+    <h3>Personal Details</h3>
+    <div class="form-group"><label>Date of Birth:</label><input type="text" id="in_dob" placeholder="DD/MM/YYYY" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Father's Name:</label><input type="text" id="in_father" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Mother's Name:</label><input type="text" id="in_mother" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Gender:</label><input type="text" id="in_gender" value="Male" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Marital Status:</label><input type="text" id="in_marital" value="Unmarried" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Nationality:</label><input type="text" id="in_nation" value="Indian" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Language:</label><input type="text" id="in_lang" value="Hindi & English" onkeyup="makeResume()"></div>
+    <div class="form-group"><label>Place:</label><input type="text" id="in_place" placeholder="City Name" onkeyup="makeResume()"></div>
+
+    <br>
+    <button class="update-btn" onclick="makeResume()">🔄 Update Resume Manually</button>
+    <button class="print-btn" onclick="window.print()">🖨️ Download PDF / Print</button>
+</div>
+
+<!-- === PART 2: रिज्यूमे प्रिव्यू (RESULT) === -->
+<div class="resume-preview">
+    <div class="resume-inner-border">
         
-        <div class="form-group">
-            <label>Name (नाम):</label>
-            <input type="text" id="name" placeholder="Ex: Rakesh Kumar" oninput="updateResume()">
-        </div>
-        <div class="form-group">
-            <label>Address (पता):</label>
-            <textarea id="address" rows="2" placeholder="Ex: VPO Narnaund, Hisar, Haryana" oninput="updateResume()"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Mobile (मोबाइल):</label>
-            <input type="text" id="mobile" placeholder="Ex: 9812345678" oninput="updateResume()">
+        <h1 class="main-title">CURRICULUM-VITAE</h1>
+
+        <div class="contact-info">
+            <b>Address:</b> <br>
+            <span id="out_address">Address here...</span><br>
+            <b>Mobile:</b> <span id="out_mobile">Mobile here...</span>
         </div>
 
-        <div class="form-group">
-            <label>Career Objective (उद्देश्य):</label>
-            <textarea id="objective" rows="3" oninput="updateResume()">I am Self Motivated And Confident Hard Working Individual With Strong Flair To Take Up Challenging Position And Environment Where I Can Make Significant Contribution To The Institution.</textarea>
+        <div class="section-head">CAREER OBJECTIVE :</div>
+        <p id="out_obj">...</p>
+
+        <div class="section-head">ACADEMIC QUALIFICATION :</div>
+        <div id="out_edu"></div>
+
+        <div class="section-head">WORK EXPERIENCE :</div>
+        <p id="out_exp">...</p>
+
+        <div class="section-head">PERSONAL DETAILS :</div>
+        <table class="details-table">
+            <tr><td class="col-label">Name</td><td class="col-sep">:</td><td id="out_name" style="font-weight:bold;"></td></tr>
+            <tr><td class="col-label">Date of Birth</td><td class="col-sep">:</td><td id="out_dob"></td></tr>
+            <tr><td class="col-label">Father's Name</td><td class="col-sep">:</td><td id="out_father"></td></tr>
+            <tr><td class="col-label">Mother's Name</td><td class="col-sep">:</td><td id="out_mother"></td></tr>
+            <tr><td class="col-label">Gender</td><td class="col-sep">:</td><td id="out_gender"></td></tr>
+            <tr><td class="col-label">Marital Status</td><td class="col-sep">:</td><td id="out_marital"></td></tr>
+            <tr><td class="col-label">Nationality</td><td class="col-sep">:</td><td id="out_nation"></td></tr>
+            <tr><td class="col-label">Language Known</td><td class="col-sep">:</td><td id="out_lang"></td></tr>
+        </table>
+
+        <div class="section-head">DECLARATION :</div>
+        <p>I hereby declare that the information given above is true to the best of my knowledge.</p>
+
+        <div style="margin-top: 60px; display: flex; justify-content: space-between; font-weight: bold;">
+            <div>
+                Place: <span id="out_place"></span><br><br>
+                Date: <span id="out_date"></span>
+            </div>
+            <div style="text-align: right; margin-right: 40px;">
+                <br><br>
+                ( <span id="out_sign">Signature</span> )
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Academic Qualification (शिक्षा):</label>
-            <textarea id="education" rows="4" placeholder="Ex: • 10th Passed from HBSE&#10;• 12th Passed from HBSE" oninput="updateResume()"></textarea>
-            <small>* नई लाइन के लिए Enter दबाएं</small>
-        </div>
-
-        <div class="form-group">
-            <label>Work Experience (अनुभव):</label>
-            <input type="text" id="experience" value="• Fresher" oninput="updateResume()">
-        </div>
-
-        <h3>Personal Details</h3>
-        <div class="form-group"><label>Date of Birth:</label><input type="text" id="dob" oninput="updateResume()"></div>
-        <div class="form-group"><label>Father's Name:</label><input type="text" id="father" oninput="updateResume()"></div>
-        <div class="form-group"><label>Mother's Name:</label><input type="text" id="mother" oninput="updateResume()"></div>
-        <div class="form-group"><label>Gender:</label><input type="text" id="gender" value="Male" oninput="updateResume()"></div>
-        <div class="form-group"><label>Marital Status:</label><input type="text" id="marital" value="Unmarried" oninput="updateResume()"></div>
-        <div class="form-group"><label>Nationality:</label><input type="text" id="nation" value="Indian" oninput="updateResume()"></div>
-        <div class="form-group"><label>Language Known:</label><input type="text" id="lang" value="Hindi & English" oninput="updateResume()"></div>
-
-        <div class="form-group">
-            <label>Place:</label>
-            <input type="text" id="place" placeholder="Ex: Hisar" oninput="updateResume()">
-        </div>
-
-        <button class="btn-print" onclick="window.print()">🖨️ Download / Print Resume</button>
     </div>
+</div>
 
-    <!-- 2. रिज्यूमे का प्रिव्यू (फोटो जैसा) -->
-    <div class="resume-paper">
-        <div class="resume-border">
-            
-            <h1 class="cv-title">CURRICULUM-VITAE</h1>
+<!-- === PART 3: जावास्क्रिप्ट (इंजन) === -->
+<!-- यह हिस्सा सबसे जरुरी है, इसे छोड़ना मत -->
+<script>
+    // 1. चेक करें कि इंजन स्टार्ट हुआ या नहीं
+    window.onload = function() {
+        alert("System Ready! अब आप फॉर्म भर सकते हैं।");
+        makeResume(); // एक बार खाली डेटा भी लोड कर दें
+    };
 
-            <!-- संपर्क -->
-            <div class="header-contact">
-                <b>Address:</b> <br>
-                <span id="view-address">Your Address Here...</span><br>
-                <b>Mobile:</b> <span id="view-mobile">98XXXXXXXX</span>
-            </div>
+    // 2. आज की तारीख
+    const d = new Date();
+    document.getElementById('out_date').innerText = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
 
-            <!-- ऑब्जेक्टिव -->
-            <div class="section-title">CAREER OBJECTIVE :</div>
-            <p id="view-objective" style="text-align: justify;">
-                I am Self Motivated And Confident Hard Working Individual With Strong Flair To Take Up Challenging Position And Environment Where I Can Make Significant Contribution To The Institution.
-            </p>
+    // 3. डेटा अपडेट करने वाला फंक्शन
+    function makeResume() {
+        // IDs से वैल्यू लेना
+        document.getElementById('out_name').innerText = document.getElementById('in_name').value;
+        document.getElementById('out_sign').innerText = document.getElementById('in_name').value || "Signature";
+        
+        document.getElementById('out_address').innerText = document.getElementById('in_address').value;
+        document.getElementById('out_mobile').innerText = document.getElementById('in_mobile').value;
+        document.getElementById('out_obj').innerText = document.getElementById('in_obj').value;
+        document.getElementById('out_exp').innerText = document.getElementById('in_exp').value;
 
-            <!-- शिक्षा -->
-            <div class="section-title">ACADEMIC QUALIFICATION :</div>
-            <div id="view-education">
-                <!-- यहाँ लिस्ट आएगी -->
-            </div>
+        // पर्सनल डिटेल्स
+        document.getElementById('out_dob').innerText = document.getElementById('in_dob').value;
+        document.getElementById('out_father').innerText = document.getElementById('in_father').value;
+        document.getElementById('out_mother').innerText = document.getElementById('in_mother').value;
+        document.getElementById('out_gender').innerText = document.getElementById('in_gender').value;
+        document.getElementById('out_marital').innerText = document.getElementById('in_marital').value;
+        document.getElementById('out_nation').innerText = document.getElementById('in_nation').value;
+        document.getElementById('out_lang').innerText = document.getElementById('in_lang').value;
+        document.getElementById('out_place').innerText = document.getElementById('in_place').value;
 
-            <!-- अनुभव -->
-            <div class="section-title">WORK EXPERIENCE :</div>
-            <p id="view-experience">• Fresher</p>
-
-            <!-- पर्सनल डिटेल्स -->
-            <div class="section-title">PERSONAL DETAILS :</div>
-            <table class="details-table">
-                <tr><td class="label-col">Date of Birth</td><td class="sep-col">:</td><td id="view-dob"></td></tr>
-                <tr><td class="label-col">Father's Name</td><td class="sep-col">:</td><td id="view-father"></td></tr>
-                <tr><td class="label-col">Mother's Name</td><td class="sep-col">:</td><td id="view-mother"></td></tr>
-                <tr><td class="label-col">Gender</td><td class="sep-col">:</td><td id="view-gender">Male</td></tr>
-                <tr><td class="label-col">Marital Status</td><td class="sep-col">:</td><td id="view-marital">Unmarried</td></tr>
-                <tr><td class="label-col">Nationality</td><td class="sep-col">:</td><td id="view-nation">Indian</td></tr>
-                <tr><td class="label-col">Language</td><td class="sep-col">:</td><td id="view-lang">Hindi & English</td></tr>
-            </table>
-
-            <!-- घोषणा -->
-            <div class="section-title">DECLARATION :</div>
-            <p>I hereby declare that the information given above is true to the best of my knowledge.</p>
-
-            <!-- नीचे का हिस्सा -->
-            <div class="footer-section">
-                <div>
-                    Place: <span id="view-place"></span><br><br>
-                    Date: <span id="view-date"></span>
-                </div>
-                <div style="text-align: right; margin-right: 50px;">
-                    <br><br>
-                    ( <span id="view-sign-name">Signature</span> )
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        // आज की तारीख अपने आप सेट करें
-        const d = new Date();
-        document.getElementById('view-date').innerText = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
-
-        function updateResume() {
-            // टेक्स्ट फील्ड्स को अपडेट करना
-            document.getElementById('view-address').innerText = document.getElementById('address').value;
-            document.getElementById('view-mobile').innerText = document.getElementById('mobile').value;
-            document.getElementById('view-objective').innerText = document.getElementById('objective').value;
-            document.getElementById('view-experience').innerText = document.getElementById('experience').value;
-            
-            // पर्सनल डिटेल्स
-            document.getElementById('view-dob').innerText = document.getElementById('dob').value;
-            document.getElementById('view-father').innerText = document.getElementById('father').value;
-            document.getElementById('view-mother').innerText = document.getElementById('mother').value;
-            document.getElementById('view-gender').innerText = document.getElementById('gender').value;
-            document.getElementById('view-marital').innerText = document.getElementById('marital').value;
-            document.getElementById('view-nation').innerText = document.getElementById('nation').value;
-            document.getElementById('view-lang').innerText = document.getElementById('lang').value;
-            document.getElementById('view-place').innerText = document.getElementById('place').value;
-            document.getElementById('view-sign-name').innerText = document.getElementById('name').value || "Signature";
-
-            // एजुकेशन (नई लाइन को <br> में बदलना)
-            let eduText = document.getElementById('education').value;
-            // लाइन्स को अलग करके लिस्ट जैसा दिखाना
-            if(eduText) {
-                let lines = eduText.split('
+        // शिक्षा को सही से दिखाना
+        let eduText = document.getElementById('in_edu').value;
+        let eduLines = eduText.split('
 ');
-                let html = '';
-                lines.forEach(line => {
-                    if(line.trim() !== '') html += `<div>${line}</div>`;
-                });
-                document.getElementById('view-education').innerHTML = html;
-            } else {
-                document.getElementById('view-education').innerHTML = "";
+        let finalHtml = "";
+        eduLines.forEach(line => {
+            if(line.trim() !== "") {
+                finalHtml += "<div>" + line + "</div>";
             }
-        }
-    </script>
+        });
+        document.getElementById('out_edu').innerHTML = finalHtml;
+    }
+</script>
 
 </body>
 </html>
