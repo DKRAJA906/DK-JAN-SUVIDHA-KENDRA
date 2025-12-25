@@ -424,6 +424,18 @@
     <footer>
         <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
         <p>Developed by DK</p>
+        <!-- Visitor Counter Code -->
+<div style="text-align: center; margin-top: 20px; padding: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; color: #03DAC6; font-weight: bold; font-family: monospace;">
+    👥 वेबसाइट विजिटर (Total Views): <span id="visits" style="color: white;">0</span>
+</div>
+
+<script>
+    function updateCounter(response) {
+        document.getElementById('visits').innerText = response.value;
+    }
+</script>
+<!-- Note: 'dkjansuvidha' ko unique key ki tarah use kar rahe hain -->
+<script src="https://api.countapi.xyz/hit/dkjansuvidha/visits?callback=updateCounter" async></script>
     </footer>
 
     <script>
