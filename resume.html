@@ -140,44 +140,68 @@
 
 <!-- 3. जावासक्रिप्ट (Logic) -->
 <script>
-    // आज की तारीख सेट करें
-    const d = new Date();
-    document.getElementById('date').innerText = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+    // 1. आज की तारीख सेट करें
+    try {
+        const d = new Date();
+        const dateEl = document.getElementById('date');
+        if(dateEl) dateEl.innerText = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+    } catch(e) {}
 
-    // सिंक फंक्शन - जो इनपुट को आउटपुट में भेजेगा
-    function sync() {
-        // सामान्य फील्ड्स
-        document.getElementById('out_name').innerText = document.getElementById('inp_name').value;
-        document.getElementById('sign').innerText = document.getElementById('inp_name').value || "Signature";
-        document.getElementById('out_addr').innerText = document.getElementById('inp_addr').value;
-        document.getElementById('out_mob').innerText = document.getElementById('inp_mob').value;
-        document.getElementById('out_obj').innerText = document.getElementById('inp_obj').value;
-        document.getElementById('out_exp').innerText = document.getElementById('inp_exp').value;
-        
-        // पर्सनल डिटेल्स
-        document.getElementById('out_dob').innerText = document.getElementById('inp_dob').value;
-        document.getElementById('out_father').innerText = document.getElementById('inp_father').value;
-        document.getElementById('out_mother').innerText = document.getElementById('inp_mother').value;
-        document.getElementById('out_gen').innerText = document.getElementById('inp_gen').value;
-        document.getElementById('out_mar').innerText = document.getElementById('inp_mar').value;
-        document.getElementById('out_nat').innerText = document.getElementById('inp_nat').value;
-        document.getElementById('out_lang').innerText = document.getElementById('inp_lang').value;
-        document.getElementById('out_place').innerText = document.getElementById('inp_place').value;
-
-        // शिक्षा (Education) को अलग-अलग लाइन में दिखाना
-        let lines = document.getElementById('inp_edu').value.split('
-');
-        let html = "";
-        for(let i=0; i<lines.length; i++) {
-            if(lines[i].trim() !== "") {
-                html += "<div style='margin-bottom:4px;'>" + lines[i] + "</div>";
+    // 2. सुरक्षित तरीके से डेटा भरने का फंक्शन
+    function safeSet(id, value) {
+        try {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerText = value;
             }
+        } catch(e) {
+            console.log("Error in ID: " + id);
         }
-        document.getElementById('out_edu').innerHTML = html;
     }
 
-    // शुरू में ही एक बार सिंक करें ताकि खाली न दिखे
-    sync();
+    // 3. सिंक फंक्शन (जो फॉर्म को प्रीव्यू से जोड़ता है)
+    function sync() {
+        // नाम और साइन
+        let name = document.getElementById('inp_name').value;
+        safeSet('out_name', name);
+        safeSet('sign', name || "Signature");
+
+        // बाकी जानकारी
+        safeSet('out_addr', document.getElementById('inp_addr').value);
+        safeSet('out_mob', document.getElementById('inp_mob').value);
+        safeSet('out_obj', document.getElementById('inp_obj').value);
+        safeSet('out_exp', document.getElementById('inp_exp').value);
+        
+        // पर्सनल डिटेल्स
+        safeSet('out_dob', document.getElementById('inp_dob').value);
+        safeSet('out_father', document.getElementById('inp_father').value);
+        safeSet('out_mother', document.getElementById('inp_mother').value);
+        safeSet('out_gen', document.getElementById('inp_gen').value);
+        safeSet('out_mar', document.getElementById('inp_mar').value);
+        safeSet('out_nat', document.getElementById('inp_nat').value);
+        safeSet('out_lang', document.getElementById('inp_lang').value);
+        safeSet('out_place', document.getElementById('inp_place').value);
+
+        // शिक्षा (Education) - इसमें अलग लॉजिक लगता है
+        try {
+            let eduVal = document.getElementById('inp_edu').value;
+            let eduBox = document.getElementById('out_edu');
+            if (eduBox) {
+                let lines = eduVal.split('
+');
+                let html = "";
+                for(let i=0; i<lines.length; i++) {
+                    if(lines[i].trim() !== "") {
+                        html += "<div style='margin-bottom:4px;'>" + lines[i] + "</div>";
+                    }
+                }
+                eduBox.innerHTML = html;
+            }
+        } catch(e) {}
+    }
+
+    // पेज लोड होते ही एक बार चलाएं
+    window.onload = sync;
 </script>
 
 </body>
