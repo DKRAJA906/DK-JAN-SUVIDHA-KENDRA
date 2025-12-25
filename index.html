@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DK Jan Suvidha Kendra</title>
     <!-- Stylish Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         /* Theme Settings */
         :root {
@@ -24,36 +24,35 @@
         }
 
         header {
-             background: linear-gradient(135deg, #f12711, #f5af19); 
-    
-    /* टेक्स्ट कलर और पैडिंग */
-    color: white;
-    padding: 30px;
-    text-align: center;
-    font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f12711, #f5af19);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-family: Arial, sans-serif;
         }
 
-     h1 { 
-    margin: 0; 
-    color: #ffffff;  /* Text White rakhein taaki Dark background pe dikhe */
-    font-family: 'Poppins', sans-serif; /* Stylish Font */
-    font-size: 42px; /* Text Size Bada kiya */
-    font-weight: 800; /* Text Mota (Bold) kiya */
-    text-transform: uppercase; /* Sab Capital Letters mein */
-    letter-spacing: 2px; /* Aksharon ke beech gap */
-    text-shadow: 3px 3px 0px #000000; /* Text ke peeche kaala shadow */
-}
-        /* Header ke andar wale <p> tag ke liye */
-header p {
-    color: #f0f0f0;
-    font-size: 16px;
-    margin-top: 10px;
-    font-weight: 500;
-    background-color: rgba(0,0,0,0.2); /* Thoda sa background */
-    display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-}
+        h1 { 
+            margin: 0; 
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px #000000;
+        }
+
+        header p {
+            color: #f0f0f0;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: 500;
+            background-color: rgba(0,0,0,0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
         p { color: #e0e0e0; }
 
         .container {
@@ -62,17 +61,18 @@ header p {
             padding: 20px;
             text-align: center;
         }
+
         #datetime-display {
-    position: fixed;        /* इसे स्क्रीन पर एक जगह फिक्स करता है */
-    top: 10px;             /* ऊपर से थोड़ी जगह */
-    right: 15px;           /* दाईं ओर से थोड़ी जगह */
-    background-color: rgba(0, 0, 0, 0.7); /* हल्का काला बैकग्राउंड */
-    color: white;          /* सफ़ेद टेक्स्ट */
-    padding: 8px 12px;     /* टेक्स्ट के आसपास थोड़ी जगह */
-    border-radius: 5px;    /* कोनों को गोल करने के लिए */
-    font-family: Arial, sans-serif;
-    font-size: 10px;
-    z-index: 1000;         /* ताकि यह बाकी चीज़ों के ऊपर दिखे */
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            z-index: 1000;
         }
 
         /* App Download Box */
@@ -97,86 +97,78 @@ header p {
         }
         .btn:hover { background-color: #f0f0f0; }
 
-        /* Services Grid */
+        /* Services Grid - Yahan change kiya hai taaki buttons sahi dikhein */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            /* 160px size set kiya hai taaki button chhote hon */
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
 
-        /* Naya Stylish 3D Card Code */
-.card {
-    /* Background Colors neeche wali classes se aayenge */
-    padding: 15px;           /* पहले 25px था, अब जगह कम कर दी है */
-    border-radius: 10px;     /* पहले 15px था, अब कोने थोड़े कम गोल होंगे */
-    border: none;
-    
-    /* शैडो थोड़ी कम की है ताकि छोटे बटन पर ज्यादा भारी न लगे */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
-    
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
-    
-    /* यह लाइन बटन की ऊंचाई (Height) को जरूरत से ज्यादा बढ़ने से रोकेगी */
-    min-height: 50px; 
-}
+        /* Card CSS */
+        .card {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            min-height: 100px; /* Height kam ki hai */
+            display: flex;     /* Content center karne ke liye */
+            flex-direction: column;
+            justify-content: center;
+        }
 
-.card:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 20px 30px rgba(0,0,0,0.4);
-    filter: brightness(1.1);
-    z-index: 10;
-}
+        .card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+            filter: brightness(1.1);
+            z-index: 10;
+        }
 
-/* Shine Effect (Chamak) */
-.card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: 0.5s;
-}
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
 
-.card:hover::after {
-    left: 100%;
-}
+        .card:hover::after { left: 100%; }
 
-.card h3 { 
-    color: #fff; 
-    font-size: 22px; 
-    font-weight: bold; 
-    margin-bottom: 8px; 
-    text-transform: uppercase;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
+        .card h3 { 
+            color: #fff; 
+            font-size: 16px; /* Font size kam kiya */
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-.card p {
-    color: #fff;
-    font-size: 14px;
-    opacity: 0.95;
-    line-height: 1.4;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-        /* Color Classes for Buttons */
+        .card p {
+            color: #fff;
+            font-size: 11px; /* Font size kam kiya */
+            opacity: 0.95;
+            line-height: 1.3;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin: 0;
+        }
+
+        /* Color Classes */
         .rang-aadhaar { background: linear-gradient(135deg, #FF512F, #DD2476); }
-        .rang-Rusume { background: linear-gradient(135deg, #1A2980, #26D0CE); }
-        .rang-PAN { background: linear-gradient(135deg, #f12711, #f5af19); }
-        .rang-Bijli { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        .rang-PM { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
-        .rang-Scholarship { background: linear-gradient(135deg, #CB356B, #BD3F32); }
-        .rang-NPCI { background: linear-gradient(135deg, #CB356B, #f12711); }
-        .rang-BG { background: linear-gradient(135deg, #CB356B, #f12711); }
-        .rang-pan { background: linear-gradient(135deg, #1A2980, #26D0CE); }
-        .rang-bijli { background: linear-gradient(135deg, #f12711, #f5af19); }
-        .rang-bijli { background: linear-gradient(135deg, #f12711, #f5af19); }
+        .rang-resume { background: linear-gradient(135deg, #1A2980, #26D0CE); }
+        .rang-pan { background: linear-gradient(135deg, #f12711, #f5af19); }
+        .rang-bijli { background: linear-gradient(135deg, #f12711, #f5af19) !important; }
         .rang-kisan { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .rang-scholar { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
         .rang-print { background: linear-gradient(135deg, #CB356B, #BD3F32); }
+        .rang-bg { background: linear-gradient(135deg, #4b6cb7, #182848); } /* New Blue Color */
+
         footer {
             text-align: center;
             padding: 20px;
@@ -195,16 +187,15 @@ header p {
         <p>Ranikheda Chauraha, Bachhrawan | Aapki Seva Mein Hamesha Tatpar</p>
     </header>
 
-    <!-- News Ticker YAHAN SAHI JAGAH HAI -->
     <div style="background-color: #ff0000; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
         <marquee behavior="scroll" direction="left" scrollamount="10" style="font-size: 18px; font-weight: bold;">
-            📢 डीके जन सुविधा केंद्र आपका हार्दिक स्वागत करता है हमारे पोर्टल पर . Mobile: 8318736819
+            📢 डीके जन सुविधा केंद्र आपका हार्दिक स्वागत करता है हमारे पोर्टल पर. Mobile: 8318736819
         </marquee>
     </div>
-    <!-- News Ticker YAHAN SAHI JAGAH HAI -->
+
     <div style="background-color: #0000ff; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
         <marquee behavior="scroll" direction="left" scrollamount="10" style="font-size: 18px; font-weight: bold;">
-            📢  💐💐💐आप अभी क्षेत्रवासियों को नव वर्ष 2026 की हार्दिक शुभकामनाएं एवं बधाई 💐💐💐. 
+            📢 💐💐💐 आप सभी क्षेत्रवासियों को नव वर्ष 2026 की हार्दिक शुभकामनाएं एवं बधाई 💐💐💐.
         </marquee>
     </div>
 
@@ -218,20 +209,22 @@ header p {
 
         <h2 style="color: var(--primary-color);">Hamari Suvidhayein</h2>
         
+        <!-- Yahan se Services Grid Shuru -->
         <div class="services-grid">
             
             <!-- 1. Aadhaar -->
             <a href="https://uidai.gov.in" target="_blank" style="text-decoration: none;">
                 <div class="card rang-aadhaar">
                     <h3>🆔 Aadhaar Services</h3>
-                    <p style="color: white;">New Enrollment, Update, Print & Correction.</p>
+                    <p>New Enrollment, Update, Print & Correction.</p>
                 </div>
             </a>
-            <!-- 2. Rusume Builer -->
-            <a href="resume.html" target="_blank" style=text-decoration: none;">
+            
+            <!-- 2. Resume Builder -->
+            <a href="resume.html" target="_blank" style="text-decoration: none;">
                 <div class="card rang-resume">
                     <h3>🧾 Resume Build</h3>
-                    <p style="color: white;">Profeshnol Resume.</p>
+                    <p>Professional Resume.</p>
                 </div>
             </a>
             
@@ -239,7 +232,7 @@ header p {
             <a href="https://www.pan.utiitsl.com/newA.html" target="_blank" style="text-decoration: none;">
                 <div class="card rang-pan">
                     <h3>💳 PAN Card</h3>
-                    <p style="color: white;">Naya PAN Card banwayein ya correction karwayein.</p>
+                    <p>Naya PAN Card banwayein ya correction karwayein.</p>
                 </div>
             </a>
 
@@ -247,7 +240,7 @@ header p {
             <a href="https://www.uppcl.org" target="_blank" style="text-decoration: none;">
                 <div class="card rang-bijli">
                     <h3>⚡ Bijli Bill</h3>
-                    <p style="color: white;">Bill jama karein aur naya connection apply karein.</p>
+                    <p>Bill jama karein aur naya connection apply karein.</p>
                 </div>
             </a>
 
@@ -255,82 +248,43 @@ header p {
             <a href="https://pmkisan.gov.in" target="_blank" style="text-decoration: none;">
                 <div class="card rang-kisan">
                     <h3>🚜 PM Kisan</h3>
-                    <p style="color: white;">KYC, Registration aur Status check karein.</p>
+                    <p>KYC, Registration aur Status check karein.</p>
                 </div>
             </a>
 
             <!-- 6. Scholarship -->
             <a href="https://scholarship.up.gov.in" target="_blank" style="text-decoration: none;">
                 <div class="card rang-scholar">
-                    <h3>🎓 Scholarship & Forms</h3>
-                    <p style="color: white;">School/College scholarship aur naukri ke form.</p>
+                    <h3>🎓 Scholarship</h3>
+                    <p>School/College scholarship aur naukri ke form.</p>
                 </div>
             </a>
 
-            <!-- 7. NPCI -->
+            <!-- 7. Aadhaar Seeding -->
             <a href="https://www.npci.org.in/" target="_blank" style="text-decoration: none;">
                 <div class="card rang-print">
                     <h3>🏦 Aadhaar Seeding</h3>
-                    <p style="color: white;">Aadhaar Seeding Any bank Without Visit bank.</p>
+                    <p>Link Aadhaar with any bank account.</p>
                 </div>
             </a>
-            <!-- 8. BG REMOVE -->
+            
+            <!-- 8. BG Remove -->
             <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
+                <div class="card rang-bg">
                     <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
+                    <p>Kisi bhi photo ka background remove karein.</p>
                 </div>
             </a>
-           <!-- 9. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
+            
+             <!-- 9. Photocopy -->
+            <a href="#" style="text-decoration: none;">
+                <div class="card rang-resume">
+                    <h3>🖨️ Photocopy</h3>
+                    <p>High Quality Color & B/W Print.</p>
                 </div>
             </a>
-        </div>
-        <!-- 10. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
-        <!-- 11. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
-        <!-- 12. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
-        <!-- 14. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
-        <!-- 13. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
-        <!-- 14. BG REMOVE -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p style="color: white;">kisi bhi photo ka background remove kare.</p>
-                </div>
-            </a>
+
+        </div> <!-- Services Grid Khatam -->
 
         <!-- Contact Section -->
         <div style="margin-top: 50px;">
@@ -345,32 +299,19 @@ header p {
         <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
         <p>Developed by DK</p>
     </footer>
-<script>
-    function updateDateTime() {
-        const now = new Date();
-        
-        // तारीख और समय को हिंदी फॉर्मेट में दिखाने के लिए
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
-        };
-        
-        // इसे हिंदी (hi-IN) में बदलें
-        const dateString = now.toLocaleDateString('hi-IN', options);
-        
-        document.getElementById('datetime-display').innerText = dateString;
-    }
 
-    // हर 1 सेकंड (1000 मिलीसेकंड) में अपडेट करें
-    setInterval(updateDateTime, 1000);
-    
-    // पेज खुलते ही तुरंत दिखाएं
-    updateDateTime();
-</script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            };
+            const dateString = now.toLocaleDateString('hi-IN', options);
+            document.getElementById('datetime-display').innerText = dateString;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
 </body>
 </html>
