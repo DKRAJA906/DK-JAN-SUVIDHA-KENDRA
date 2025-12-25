@@ -3,125 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Builder - Final Test</title>
+    <title>Resume Builder - Full Version</title>
     <style>
-        /* बेसिक स्टाइल */
-        body { font-family: sans-serif; background: #ddd; padding: 20px; }
+        /* बेसिक सेटिंग */
+        body { font-family: sans-serif; background: #eef; padding: 20px; margin: 0; }
         
-        /* स्टेटस बार */
+        /* स्टेटस बार (सिर्फ चेक करने के लिए) */
         #status-bar { 
-            background: red; color: white; padding: 10px; text-align: center; 
-            font-weight: bold; margin-bottom: 20px; border-radius: 5px;
+            background: #28a745; color: white; padding: 10px; text-align: center; 
+            font-weight: bold; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* फॉर्म */
-        .input-box { background: white; padding: 20px; margin-bottom: 20px; border: 2px solid blue; }
-        input, textarea { width: 95%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; }
+        /* 1. फॉर्म भरने वाला डिब्बा */
+        .form-container {
+            background: white; padding: 25px; max-width: 800px; margin: 0 auto 30px auto;
+            border-top: 5px solid #007bff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .form-row { margin-bottom: 12px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; color: #333; }
+        input, textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; 
+            font-size: 14px; box-sizing: border-box; 
+        }
         
         /* बटन */
-        .btn { background: green; color: white; padding: 10px 20px; cursor: pointer; border: none; font-size: 16px; }
+        .btn-print {
+            background: #007bff; color: white; width: 100%; padding: 12px; border: none; 
+            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; border-radius: 5px;
+        }
+        .btn-print:hover { background: #0056b3; }
 
-        /* रिज्यूमे पेपर */
-        .resume-paper { 
-            background: white; width: 210mm; min-height: 297mm; padding: 20px; margin: auto; 
-            border: 1px solid black; font-family: "Times New Roman", serif;
+        /* 2. रिज्यूमे पेपर (A4 साइज) */
+        .resume-paper {
+            background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 15mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); box-sizing: border-box; position: relative;
+        }
+        .resume-border { 
+            border: 2px solid black; padding: 20px; min-height: 950px; 
+            display: flex; flex-direction: column;
         }
 
-        /* प्रिंट के लिए */
+        /* रिज्यूमे के अंदर की स्टाइल */
+        h1 { text-align: center; text-decoration: underline; font-size: 24px; text-transform: uppercase; margin-bottom: 30px; }
+        .head { 
+            font-weight: bold; text-decoration: underline; margin-top: 20px; 
+            text-transform: uppercase; font-size: 16px; margin-bottom: 8px;
+        }
+        p, div { font-size: 16px; line-height: 1.5; margin: 5px 0; text-align: justify; font-family: "Times New Roman", serif; }
+        
+        /* टेबल (Personal Details के लिए) */
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-family: "Times New Roman", serif; }
+        td { padding: 4px 0; vertical-align: top; font-size: 16px; }
+        .c1 { width: 160px; font-weight: bold; }
+        .c2 { width: 20px; text-align: center; }
+
+        /* प्रिंट करते समय */
         @media print {
             body { background: white; padding: 0; }
-            #status-bar, .input-box { display: none; }
-            .resume-paper { width: 100%; border: none; margin: 0; }
+            #status-bar, .form-container { display: none; }
+            .resume-paper { width: 100%; margin: 0; padding: 0; box-shadow: none; }
+            .resume-border { border: 2px solid black !important; margin: 5mm; min-height: 98vh; }
         }
     </style>
 </head>
 <body>
 
 <!-- स्टेटस इंडिकेटर -->
-<div id="status-bar">⚠️ जावास्क्रिप्ट लोड नहीं हुआ (Wait...)</div>
+<div id="status-bar">✅ सिस्टम चालू है (System Ready)</div>
 
-<!-- 1. फॉर्म सेक्शन -->
-<div class="input-box">
-    <h3>यहाँ जानकारी भरें:</h3>
+<!-- 1. फॉर्म सेक्शन (डेटा भरने के लिए) -->
+<div class="form-container">
+    <h2 style="text-align:center; margin-top:0;">📝 अपनी जानकारी भरें</h2>
+    <p style="text-align:center; font-size:13px; color:#666; margin-bottom:20px;">नीचे भरें, रिज्यूमे अपने आप अपडेट होगा।</p>
     
-    <label>आपका नाम:</label>
-    <input type="text" id="in_name" placeholder="अपना नाम लिखें..." oninput="runUpdate()">
-
-    <label>पता (Address):</label>
-    <input type="text" id="in_addr" placeholder="अपना पता लिखें..." oninput="runUpdate()">
+    <div class="form-row"><label>नाम (Name):</label><input type="text" id="i_name" placeholder="Ex: Rahul Kumar" oninput="runUpdate()"></div>
+    <div class="form-row"><label>पता (Address):</label><input type="text" id="i_addr" placeholder="Ex: Village & Post..." oninput="runUpdate()"></div>
+    <div class="form-row"><label>मोबाइल (Mobile):</label><input type="text" id="i_mob" placeholder="Ex: 9876543210" oninput="runUpdate()"></div>
     
-    <label>मोबाइल:</label>
-    <input type="text" id="in_mob" placeholder="9876..." oninput="runUpdate()">
-
-    <label>शिक्षा (Education):</label>
-    <textarea id="in_edu" rows="4" placeholder="10th Pass..." oninput="runUpdate()"></textarea>
-
-    <br><br>
-    <button class="btn" onclick="window.print()">🖨️ PDF डाउनलोड करें</button>
-</div>
-
-<!-- 2. रिज्यूमे (प्रिव्यू) -->
-<div class="resume-paper">
-    <center><h1>RESUME</h1></center>
-    <hr>
-    
-    <!-- हेडर -->
-    <div style="text-align: right;">
-        <b>Address:</b> <span id="out_addr">-------</span><br>
-        <b>Mobile:</b> <span id="out_mob">-------</span>
+    <div class="form-row"><label>Career Objective:</label>
+        <textarea id="i_obj" rows="2" oninput="runUpdate()">To work in a challenging environment that provides generous opportunities for professional growth.</textarea>
     </div>
 
-    <!-- नाम -->
-    <h3>NAME: <span id="out_name" style="text-transform: uppercase;">YOUR NAME</span></h3>
+    <div class="form-row"><label>शिक्षा (Education - Enter दबाकर नई लाइन लिखें):</label>
+        <textarea id="i_edu" rows="4" placeholder="• High School from UP Board in 2018&#10;• Intermediate from UP Board in 2020" oninput="runUpdate()"></textarea>
+    </div>
+    
+    <div class="form-row"><label>Work Experience (अनुभव):</label><input type="text" id="i_exp" value="• Fresher (कोई अनुभव नहीं)" oninput="runUpdate()"></div>
 
-    <!-- शिक्षा -->
-    <h3>EDUCATION:</h3>
-    <div id="out_edu">Loading...</div>
+    <h3 style="border-bottom:1px solid #ccc; padding-bottom:5px;">Personal Details</h3>
+    <div class="form-row"><label>जन्म तिथि (DOB):</label><input type="text" id="i_dob" placeholder="Ex: 01/01/2000" oninput="runUpdate()"></div>
+    <div class="form-row"><label>पिता का नाम (Father's Name):</label><input type="text" id="i_father" oninput="runUpdate()"></div>
+    <div class="form-row"><label>माता का नाम (Mother's Name):</label><input type="text" id="i_mother" oninput="runUpdate()"></div>
+    <div class="form-row"><label>लिंग (Gender):</label><input type="text" id="i_gen" value="Male" oninput="runUpdate()"></div>
+    <div class="form-row"><label>वैवाहिक स्थिति (Marital Status):</label><input type="text" id="i_mar" value="Unmarried" oninput="runUpdate()"></div>
+    <div class="form-row"><label>राष्ट्रीयता (Nationality):</label><input type="text" id="i_nat" value="Indian" oninput="runUpdate()"></div>
+    <div class="form-row"><label>भाषा (Language):</label><input type="text" id="i_lang" value="Hindi & English" oninput="runUpdate()"></div>
 
-    <!-- डिक्लेरेशन -->
-    <br><br>
-    <h3>DECLARATION:</h3>
-    <p>I hereby declare that all information is correct.</p>
+    <button class="btn-print" onclick="window.print()">📥 PDF डाउनलोड करें / प्रिंट निकालें</button>
+</div>
 
-    <div style="margin-top: 50px;">
-        <b>Date:</b> <span id="out_date"></span>
-        <span style="float: right;"><b>Signature</b></span>
+<!-- 2. रिज्यूमे प्रिव्यू (जो प्रिंट होगा) -->
+<div class="resume-paper">
+    <div class="resume-border">
+        <h1>CURRICULUM-VITAE</h1>
+        
+        <div style="text-align: right; margin-bottom: 20px;">
+            <b>Address:</b> <br><span id="o_addr">-------</span><br>
+            <b>Mobile:</b> <span id="o_mob">-------</span>
+        </div>
+
+        <div class="head">CAREER OBJECTIVE :</div>
+        <p id="o_obj"></p>
+
+        <div class="head">ACADEMIC QUALIFICATION :</div>
+        <div id="o_edu" style="margin-left: 15px;"></div>
+
+        <div class="head">WORK EXPERIENCE :</div>
+        <p id="o_exp"></p>
+
+        <div class="head">PERSONAL DETAILS :</div>
+        <table>
+            <tr><td class="c1">Name</td><td class="c2">:</td><td id="o_name"></td></tr>
+            <tr><td class="c1">Date of Birth</td><td class="c2">:</td><td id="o_dob"></td></tr>
+            <tr><td class="c1">Father's Name</td><td class="c2">:</td><td id="o_father"></td></tr>
+            <tr><td class="c1">Mother's Name</td><td class="c2">:</td><td id="o_mother"></td></tr>
+            <tr><td class="c1">Gender</td><td class="c2">:</td><td id="o_gen"></td></tr>
+            <tr><td class="c1">Marital Status</td><td class="c2">:</td><td id="o_mar"></td></tr>
+            <tr><td class="c1">Nationality</td><td class="c2">:</td><td id="o_nat"></td></tr>
+            <tr><td class="c1">Language Known</td><td class="c2">:</td><td id="o_lang"></td></tr>
+        </table>
+
+        <div class="head">DECLARATION :</div>
+        <p>I hereby declare that the information given above is true to the best of my knowledge.</p>
+
+        <!-- नीचे का हिस्सा (Date & Sign) -->
+        <div style="margin-top:auto; padding-top: 60px; display: flex; justify-content: space-between; font-weight: bold;">
+            <div>
+                Place: <span id="o_place">Raebareli</span><br><br>
+                Date: <span id="o_date"></span>
+            </div>
+            <div style="text-align: right; margin-right: 30px;">
+                <br><br>( <span id="o_sign">Signature</span> )
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- 3. जावासक्रिप्ट (Logic) -->
 <script>
-    // 1. अगर यह लाइन चली, तो ऊपर हरी पट्टी आ जाएगी
-    document.getElementById('status-bar').style.background = "green";
-    document.getElementById('status-bar').innerText = "✅ सिस्टम चालू है! (System Ready)";
+    // 1. आज की तारीख अपने आप आ जाएगी
+    const today = new Date();
+    document.getElementById('o_date').innerText = today.toLocaleDateString('en-GB'); // Format: DD/MM/YYYY
 
-    // 2. डेट सेट करें
-    document.getElementById('out_date').innerText = new Date().toLocaleDateString();
-
-    // 3. अपडेट फंक्शन
+    // 2. अपडेट फंक्शन
     function runUpdate() {
-        try {
-            // नाम
-            var n = document.getElementById('in_name').value;
-            document.getElementById('out_name').innerText = n ? n : "YOUR NAME";
+        // नाम और साइन
+        let name = document.getElementById('i_name').value;
+        document.getElementById('o_name').innerText = name;
+        document.getElementById('o_sign').innerText = name || "Signature";
+        
+        // बाकी सामान्य जानकारी
+        document.getElementById('o_addr').innerText = document.getElementById('i_addr').value;
+        document.getElementById('o_mob').innerText = document.getElementById('i_mob').value;
+        document.getElementById('o_obj').innerText = document.getElementById('i_obj').value;
+        document.getElementById('o_exp').innerText = document.getElementById('i_exp').value;
 
-            // पता
-            var a = document.getElementById('in_addr').value;
-            document.getElementById('out_addr').innerText = a;
+        // पर्सनल डिटेल्स (DOB, Father, Mother...)
+        document.getElementById('o_dob').innerText = document.getElementById('i_dob').value;
+        document.getElementById('o_father').innerText = document.getElementById('i_father').value;
+        document.getElementById('o_mother').innerText = document.getElementById('i_mother').value;
+        document.getElementById('o_gen').innerText = document.getElementById('i_gen').value;
+        document.getElementById('o_mar').innerText = document.getElementById('i_mar').value;
+        document.getElementById('o_nat').innerText = document.getElementById('i_nat').value;
+        document.getElementById('o_lang').innerText = document.getElementById('i_lang').value;
 
-            // मोबाइल
-            var m = document.getElementById('in_mob').value;
-            document.getElementById('out_mob').innerText = m;
-
-            // शिक्षा
-            var e = document.getElementById('in_edu').value;
-            // शिक्षा की लाइनों को अलग करना (Enter दबाने पर नई लाइन)
-            document.getElementById('out_edu').innerText = e; 
-            document.getElementById('out_edu').style.whiteSpace = "pre-line"; // यह लाइन ब्रेक दिखाएगा
-
-        } catch (err) {
-            alert("Error: " + err.message);
-        }
+        // शिक्षा (Education) - नई लाइन का लॉजिक
+        let eduText = document.getElementById('i_edu').value;
+        // Enter वाली लाइनों को HTML के <br> टैग में बदलें ताकि नीचे सही दिखे
+        document.getElementById('o_edu').innerHTML = eduText.replace(/
+/g, "<br>");
     }
 </script>
 
