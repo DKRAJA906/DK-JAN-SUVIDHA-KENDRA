@@ -344,80 +344,74 @@
             </a>
         </div> <!-- Services Grid Khatam -->
 
-        <!-- Contact Section -->
-        <div style="margin-top: 50px;">
-            <h3>📍 Sampark Karein</h3>
-            <p><strong>Address:</strong> DK Jan Suvidha Kendra, Ranikheda Chauraha, Bachhrawan</p>
-            <p><strong>Mobile☎️:</strong> +91 8318736819</p>
-            <p><strong>Email:📧</strong> dkjansuvidha@gmail.com</p>
-        </div>
-        <!-- Disclaimer Section -->
-<div class="disclaimer-box" style="margin-top: 40px; padding: 20px; background-color: rgba(255,255,255,0.05); border-left: 4px solid #f1c40f; border-radius: 5px; text-align: left;">
-    <h4 style="color: #f1c40f; margin-top: 0; margin-bottom: 10px;">⚠️ अस्वीकरण (Disclaimer):</h4>
-    <p style="font-size: 13px; color: #ccc; line-height: 1.6; margin: 0;">
-        DK Jan Suvidha Kendra is a private service provider. We assist with filling out government scheme forms and providing online services.
-        We do not represent any government department. All information provided on this website is for informational and assistance purposes only.
-        While we strive to provide accurate information, we will not be held responsible for any errors.
-        Please verify the information on the official government website before submitting any application.
-    </p>
-</div>
-    </div>
-   <!-- Buttons Container -->
-<div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px;">
+        <!-- Buttons Container (4 Buttons) -->
+<div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
     
-    <!-- About Us Button -->
+    <!-- 1. About Us -->
     <a href="#aboutUs" onclick="document.getElementById('aboutUs').style.display='flex'; return false;" 
-       style="color: #03DAC6; text-decoration: underline; cursor: pointer; font-weight: bold;">
-       ℹ️About Us
+       style="color: #03DAC6; text-decoration: none; font-weight: bold; border: 1px solid #03DAC6; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
+       ℹ️ About
     </a>
 
-    <!-- Privacy Policy Button -->
+    <!-- 2. Contact Us (New) -->
+    <a href="#contactUs" onclick="document.getElementById('contactUs').style.display='flex'; return false;" 
+       style="color: #4CAF50; text-decoration: none; font-weight: bold; border: 1px solid #4CAF50; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
+       📞 Contact
+    </a>
+
+    <!-- 3. Privacy Policy -->
     <a href="#privacyPolicy" onclick="document.getElementById('privacyPolicy').style.display='flex'; return false;" 
-       style="color: #BB86FC; text-decoration: underline; cursor: pointer; font-weight: bold;">
-       🔒 Privacy Policy
+       style="color: #BB86FC; text-decoration: none; font-weight: bold; border: 1px solid #BB86FC; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
+       🔒 Privacy
+    </a>
+
+    <!-- 4. Disclaimer -->
+    <a href="#disclaimerBox" onclick="document.getElementById('disclaimerBox').style.display='flex'; return false;" 
+       style="color: #ff9800; text-decoration: none; font-weight: bold; border: 1px solid #ff9800; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
+       ⚠️ Disclaimer
     </a>
 
 </div>
 
-<!-- 1. About Us Modal Box -->
-<div id="aboutUs" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 500px; border-radius: 10px; border: 2px solid #03DAC6; color: #fff; text-align: center;">
-        
-        <h3 style="color: #03DAC6; border-bottom: 1px solid #444; padding-bottom: 10px;">🏪 हमारे बारे में (About Us)</h3>
-        
-        <p style="font-size: 15px; line-height: 1.6; margin-top: 15px;">
-            नमस्कार! <strong>DK जन सुविधा केंद्र</strong> में आपका स्वागत है।<br><br>
-            हम पिछले कई वर्षों से <strong>रानीखेड़ा चौराहा, बछरावां</strong> में अपनी सेवाएं दे रहे हैं। हमारा उद्देश्य गांव और शहर के लोगों तक सरकारी योजनाओं का लाभ सही समय पर और सही तरीके से पहुंचाना है।
-        </p>
+<!-- === POPUP BOXES === -->
 
-        <ul style="text-align: left; margin: 15px 0; font-size: 14px; color: #ddd;">
-            <li>✅ आधार कार्ड और पैन कार्ड सेवा</li>
-            <li>✅ आय, जाति, निवास प्रमाण पत्र</li>
-            <li>✅ फोटोकॉपी और कलर प्रिंटिंग</li>
-            <li>✅ सभी प्रकार के ऑनलाइन फॉर्म</li>
-        </ul>
-
-        <p style="font-size: 14px; color: #aaa;">"सटीक काम और विश्वास ही हमारी पहचान है।"</p>
-
-        <button onclick="document.getElementById('aboutUs').style.display='none'" 
-                style="background: #03DAC6; color: black; border: none; padding: 8px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px;">
-            ठीक है (Close)
-        </button>
+<!-- 1. About Us Box -->
+<div id="aboutUs" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #03DAC6; color: #fff;">
+        <h3 style="color: #03DAC6; border-bottom: 1px solid #444; padding-bottom: 10px;">ℹ️ About Us</h3>
+        <p style="margin-top: 15px;">DK जन सुविधा केंद्र, बछरावां में आपका स्वागत है। हम सभी प्रकार की सरकारी और ऑनलाइन सेवाएं प्रदान करते हैं।</p>
+        <button onclick="document.getElementById('aboutUs').style.display='none'" style="background: #03DAC6; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
     </div>
 </div>
 
-<!-- 2. Privacy Policy Modal Box (पुराना वाला ही है) -->
-<div id="privacyPolicy" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 500px; border-radius: 10px; border: 2px solid #BB86FC; color: #fff; max-height: 80vh; overflow-y: auto;">
-        
-        <h3 style="color: #BB86FC; text-align: center; border-bottom: 1px solid #444; padding-bottom: 10px;">🔒 Privacy Policy</h3>
-        
-        <p style="font-size: 14px; line-height: 1.6;"><strong>1. परिचय:</strong> DK Jan Suvidha Kendra आपकी गोपनीयता का सम्मान करते हैं।</p>
-        <p style="font-size: 14px; line-height: 1.6;"><strong>2. डेटा:</strong> हम आपका डेटा किसी को नहीं बेचते।</p>
-        
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="document.getElementById('privacyPolicy').style.display='none'" style="background: #cf6679; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer;">बंद करें</button>
-        </div>
+<!-- 2. Contact Us Box (New) -->
+<div id="contactUs" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #4CAF50; color: #fff;">
+        <h3 style="color: #4CAF50; border-bottom: 1px solid #444; padding-bottom: 10px;">📞 संपर्क करें (Contact Us)</h3>
+        <p style="margin-top: 15px; line-height: 1.8;">
+            <strong>📍 पता:</strong> रानीखेड़ा चौराहा, बछरावां<br>
+            <strong>📱 मोबाइल:</strong> +91 9310736819<br>
+            <strong>📧 ईमेल:</strong> dkjansuvidha@gmail.com
+        </p>
+        <button onclick="document.getElementById('contactUs').style.display='none'" style="background: #4CAF50; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
+    </div>
+</div>
+
+<!-- 3. Privacy Policy Box -->
+<div id="privacyPolicy" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #BB86FC; color: #fff;">
+        <h3 style="color: #BB86FC; border-bottom: 1px solid #444; padding-bottom: 10px;">🔒 Privacy Policy</h3>
+        <p style="margin-top: 15px;">हम आपकी गोपनीयता का सम्मान करते हैं। आपका डेटा हमारे पास सुरक्षित है और हम इसे किसी के साथ साझा नहीं करते।</p>
+        <button onclick="document.getElementById('privacyPolicy').style.display='none'" style="background: #BB86FC; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
+    </div>
+</div>
+
+<!-- 4. Disclaimer Box -->
+<div id="disclaimerBox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #ff9800; color: #fff;">
+        <h3 style="color: #ff9800; border-bottom: 1px solid #444; padding-bottom: 10px;">⚠️ Disclaimer</h3>
+        <p style="margin-top: 15px;">यह एक निजी जन सुविधा केंद्र की वेबसाइट है, सरकारी नहीं। हम सही जानकारी देने की कोशिश करते हैं पर त्रुटियों के लिए जिम्मेदार नहीं हैं।</p>
+        <button onclick="document.getElementById('disclaimerBox').style.display='none'" style="background: #ff9800; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">I Understand</button>
     </div>
 </div>
 
