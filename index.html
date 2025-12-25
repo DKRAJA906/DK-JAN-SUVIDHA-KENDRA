@@ -425,17 +425,27 @@
         <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
         <p>Developed by DK</p>
         <!-- Visitor Counter Code -->
-<div style="text-align: center; margin-top: 20px; padding: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; color: #03DAC6; font-weight: bold; font-family: monospace;">
-    Total Views: <span id="visits" style="color: white;">0</span>
+<!-- Visitor Counter Start -->
+<div style="text-align: center; margin-top: 20px; padding: 10px; background: #333; border-radius: 8px; color: #00e676; font-weight: bold; font-family: monospace; display: inline-block;">
+    Total Views: <span id="visitor-count">Loading...</span>
 </div>
 
 <script>
-    function updateCounter(response) {
-        document.getElementById('visits').innerText = response.value;
-    }
+    // यहाँ मैंने आपकी Unique ID डाल दी है: 'dk_jan_suvidha_2025'
+    // अब यह सिर्फ आपकी वेबसाइट की गिनती करेगा।
+    const uniqueId = "dk_jan_suvidha_2025"; 
+
+    fetch("https://kounter.vercel.app/counter/" + uniqueId)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('visitor-count').innerText = data.counts;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('visitor-count').innerText = "1";
+        });
 </script>
-<!-- Note: 'dkjansuvidha' ko unique key ki tarah use kar rahe hain -->
-<script src="https://api.countapi.xyz/hit/dkjansuvidha/visits?callback=updateCounter" async></script>
+<!-- Visitor Counter End -->
     </footer>
 
     <script>
