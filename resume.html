@@ -3,81 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working Resume Builder</title>
+    <title>Resume Builder - DK Jan Suvidha Kendra</title>
     <style>
-        body { font-family: "Times New Roman", sans-serif; background: #eee; margin: 0; padding: 10px; }
+        body { font-family: "Times New Roman", sans-serif; background: #eee; margin: 0; padding: 20px; }
         
-        /* FORM AREA */
+        /* फॉर्म भरने वाला हिस्सा (Input Section) */
         .input-section {
-            background: white; padding: 15px; max-width: 800px; margin: 0 auto 20px auto;
-            border-top: 5px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: white; padding: 20px; max-width: 800px; margin: 0 auto 30px auto;
+            border-top: 5px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 5px;
         }
-        .input-section h2 { margin-top: 0; font-family: Arial, sans-serif; font-size: 20px; }
-        .form-row { margin-bottom: 10px; }
-        .form-row label { display: block; font-weight: bold; font-family: Arial, sans-serif; font-size: 14px; }
+        .input-section h2 { margin-top: 0; font-family: Arial, sans-serif; color: #333; }
+        .form-row { margin-bottom: 15px; }
+        .form-row label { display: block; font-weight: bold; font-family: Arial, sans-serif; font-size: 14px; margin-bottom: 5px; }
         .form-row input, .form-row textarea {
-            width: 100%; padding: 8px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box;
+            width: 100%; padding: 10px; border: 1px solid #ccc; font-size: 14px; border-radius: 4px; box-sizing: border-box;
         }
+        
+        /* बटन (Buttons) */
+        .btn-container { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-print { 
+            background: #28a745; color: white; border: none; padding: 12px; width: 100%; 
+            cursor: pointer; font-weight: bold; font-size: 16px; border-radius: 4px; 
+        }
+        .btn-print:hover { background: #218838; }
 
-        /* BUTTONS */
-        .btn-update { background: #007bff; color: white; border: none; padding: 10px; width: 100%; margin-bottom: 5px; cursor: pointer; }
-        .btn-print { background: #28a745; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; }
-
-        /* RESUME PREVIEW */
+        /* रिज्यूमे दिखने वाला हिस्सा (Preview Section) */
         .resume-sheet {
-            background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 10mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 15mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); box-sizing: border-box;
         }
-        .resume-border { border: 2px solid black; padding: 20px; min-height: 950px; }
+        .resume-border { 
+            border: 2px solid black; padding: 20px; min-height: 950px; 
+            display: flex; flex-direction: column; 
+        }
 
-        /* CONTENT */
-        h1 { text-align: center; text-decoration: underline; font-size: 24px; margin-bottom: 30px; }
-        .right-info { text-align: right; margin-bottom: 20px; line-height: 1.5; }
-        .head { font-weight: bold; text-decoration: underline; margin-top: 20px; text-transform: uppercase; font-size: 16px; }
-        p, li { font-size: 16px; line-height: 1.4; text-align: justify; margin: 5px 0; }
+        /* कंटेंट स्टाइल */
+        h1 { text-align: center; text-decoration: underline; font-size: 24px; margin-bottom: 30px; text-transform: uppercase; }
+        .right-info { text-align: right; margin-bottom: 20px; line-height: 1.6; }
+        .head { 
+            font-weight: bold; text-decoration: underline; margin-top: 20px; 
+            text-transform: uppercase; font-size: 16px; margin-bottom: 10px;
+        }
+        p, li { font-size: 16px; line-height: 1.5; text-align: justify; margin: 5px 0; }
 
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 3px 0; vertical-align: top; font-size: 16px; }
-        .c1 { width: 160px; font-weight: bold; }
-        .c2 { width: 20px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        td { padding: 4px 0; vertical-align: top; font-size: 16px; }
+        .c1 { width: 180px; font-weight: bold; }
+        .c2 { width: 30px; text-align: center; }
 
+        /* प्रिंट करते समय सिर्फ रिज्यूमे दिखेगा */
         @media print {
-            body { padding: 0; background: white; }
+            body { padding: 0; background: white; margin: 0; }
             .input-section { display: none; }
-            .resume-sheet { width: 100%; margin: 0; box-shadow: none; }
-            .resume-border { min-height: 98vh; border: 2px solid black !important; }
+            .resume-sheet { width: 100%; margin: 0; box-shadow: none; padding: 0; }
+            .resume-border { border: 2px solid black !important; margin: 5mm; min-height: 95vh; }
+            @page { margin: 0; }
         }
     </style>
 </head>
 <body>
 
-<!-- FORM -->
+<!-- 1. फॉर्म सेक्शन (यहाँ जानकारी भरें) -->
 <div class="input-section">
-    <h2>Enter Details Here (जानकारी भरें)</h2>
+    <h2>📝 यहाँ अपनी जानकारी भरें (Fill Details)</h2>
+    <p style="font-size: 13px; color: #666;">नीचे भरते जाएं, बायोडाटा अपने आप बनता जाएगा।</p>
     
-    <div class="form-row"><label>Name:</label><input type="text" id="inp_name" oninput="sync()"></div>
-    <div class="form-row"><label>Address:</label><input type="text" id="inp_addr" oninput="sync()"></div>
-    <div class="form-row"><label>Mobile:</label><input type="text" id="inp_mob" oninput="sync()"></div>
+    <div class="form-row"><label>पूरा नाम (Name):</label><input type="text" id="inp_name" placeholder="Ex: Rahul Kumar" oninput="sync()"></div>
+    <div class="form-row"><label>पता (Address):</label><input type="text" id="inp_addr" placeholder="Ex: Vill- Bachhrawan, Raebareli, UP" oninput="sync()"></div>
+    <div class="form-row"><label>मोबाइल (Mobile):</label><input type="text" id="inp_mob" placeholder="Ex: +91 9876543210" oninput="sync()"></div>
     
-    <div class="form-row"><label>Objective:</label><textarea id="inp_obj" rows="3" oninput="sync()">I am Self Motivated...</textarea></div>
-    <div class="form-row"><label>Education:</label><textarea id="inp_edu" rows="4" oninput="sync()"></textarea></div>
-    <div class="form-row"><label>Experience:</label><input type="text" id="inp_exp" value="• Fresher" oninput="sync()"></div>
+    <div class="form-row"><label>करियर उद्देश्य (Objective):</label>
+        <textarea id="inp_obj" rows="3" oninput="sync()">I want to succeed in a stimulating and challenging environment that will provide me with advancement opportunities.</textarea>
+    </div>
 
-    <h3>Personal Details</h3>
-    <div class="form-row"><label>DOB:</label><input type="text" id="inp_dob" oninput="sync()"></div>
-    <div class="form-row"><label>Father:</label><input type="text" id="inp_father" oninput="sync()"></div>
-    <div class="form-row"><label>Mother:</label><input type="text" id="inp_mother" oninput="sync()"></div>
-    <div class="form-row"><label>Gender:</label><input type="text" id="inp_gen" value="Male" oninput="sync()"></div>
-    <div class="form-row"><label>Marital:</label><input type="text" id="inp_mar" value="Unmarried" oninput="sync()"></div>
-    <div class="form-row"><label>Nation:</label><input type="text" id="inp_nat" value="Indian" oninput="sync()"></div>
-    <div class="form-row"><label>Lang:</label><input type="text" id="inp_lang" value="Hindi & English" oninput="sync()"></div>
-    <div class="form-row"><label>Place:</label><input type="text" id="inp_place" oninput="sync()"></div>
+    <div class="form-row"><label>शिक्षा (Education - एक लाइन में एक डिग्री लिखें):</label>
+        <textarea id="inp_edu" rows="5" placeholder="• High School from UP Board in 2018&#10;• Intermediate from UP Board in 2020" oninput="sync()"></textarea>
+    </div>
+    
+    <div class="form-row"><label>कार्य अनुभव (Work Experience):</label><input type="text" id="inp_exp" value="• Fresher (कोई अनुभव नहीं)" oninput="sync()"></div>
 
-    <button class="btn-update" onclick="sync()">Force Update</button>
-    <button class="btn-print" onclick="window.print()">Download PDF</button>
+    <h3>व्यक्तिगत विवरण (Personal Details)</h3>
+    <div class="form-row"><label>जन्म तिथि (DOB):</label><input type="text" id="inp_dob" placeholder="Ex: 01/01/2000" oninput="sync()"></div>
+    <div class="form-row"><label>पिता का नाम (Father's Name):</label><input type="text" id="inp_father" oninput="sync()"></div>
+    <div class="form-row"><label>माता का नाम (Mother's Name):</label><input type="text" id="inp_mother" oninput="sync()"></div>
+    <div class="form-row"><label>लिंग (Gender):</label><input type="text" id="inp_gen" value="Male" oninput="sync()"></div>
+    <div class="form-row"><label>वैवाहिक स्थिति (Marital Status):</label><input type="text" id="inp_mar" value="Unmarried" oninput="sync()"></div>
+    <div class="form-row"><label>राष्ट्रीयता (Nationality):</label><input type="text" id="inp_nat" value="Indian" oninput="sync()"></div>
+    <div class="form-row"><label>भाषा (Language):</label><input type="text" id="inp_lang" value="Hindi & English" oninput="sync()"></div>
+    <div class="form-row"><label>स्थान (Place):</label><input type="text" id="inp_place" placeholder="Ex: Raebareli" oninput="sync()"></div>
+
+    <div class="btn-container">
+        <button class="btn-print" onclick="window.print()">📥 Download PDF / Print</button>
+    </div>
 </div>
 
-<!-- PREVIEW -->
+<!-- 2. रिज्यूमे प्रीव्यू (यह प्रिंट होगा) -->
 <div class="resume-sheet">
     <div class="resume-border">
         <h1>CURRICULUM-VITAE</h1>
@@ -91,7 +111,7 @@
         <p id="out_obj"></p>
 
         <div class="head">ACADEMIC QUALIFICATION :</div>
-        <div id="out_edu"></div>
+        <div id="out_edu" style="margin-left: 15px;"></div>
 
         <div class="head">WORK EXPERIENCE :</div>
         <p id="out_exp"></p>
@@ -111,60 +131,53 @@
         <div class="head">DECLARATION :</div>
         <p>I hereby declare that the information given above is true to the best of my knowledge.</p>
 
-        <div style="margin-top:50px; display:flex; justify-content:space-between; font-weight:bold;">
+        <div style="margin-top:auto; padding-top: 50px; display:flex; justify-content:space-between; font-weight:bold;">
             <div>Place: <span id="out_place"></span><br><br>Date: <span id="date"></span></div>
             <div style="text-align:right; margin-right:30px;"><br><br>( <span id="sign">Signature</span> )</div>
         </div>
     </div>
 </div>
 
-<!-- SCRIPT (इस हिस्से को बहुत ध्यान से कॉपी करें) -->
+<!-- 3. जावासक्रिप्ट (Logic) -->
 <script>
-    // 1. डेट सेट करें
+    // आज की तारीख सेट करें
     const d = new Date();
     document.getElementById('date').innerText = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
 
-    // 2. सिंक फंक्शन
+    // सिंक फंक्शन - जो इनपुट को आउटपुट में भेजेगा
     function sync() {
-        try {
-            // डायरेक्ट वैल्यू लेकर डालना (ताकि कोई गलती न हो)
-            document.getElementById('out_name').innerText = document.getElementById('inp_name').value;
-            document.getElementById('sign').innerText = document.getElementById('inp_name').value || "Signature";
-            
-            document.getElementById('out_addr').innerText = document.getElementById('inp_addr').value;
-            document.getElementById('out_mob').innerText = document.getElementById('inp_mob').value;
-            document.getElementById('out_obj').innerText = document.getElementById('inp_obj').value;
-            document.getElementById('out_exp').innerText = document.getElementById('inp_exp').value;
-            
-            document.getElementById('out_dob').innerText = document.getElementById('inp_dob').value;
-            document.getElementById('out_father').innerText = document.getElementById('inp_father').value;
-            document.getElementById('out_mother').innerText = document.getElementById('inp_mother').value;
-            document.getElementById('out_gen').innerText = document.getElementById('inp_gen').value;
-            document.getElementById('out_mar').innerText = document.getElementById('inp_mar').value;
-            document.getElementById('out_nat').innerText = document.getElementById('inp_nat').value;
-            document.getElementById('out_lang').innerText = document.getElementById('inp_lang').value;
-            document.getElementById('out_place').innerText = document.getElementById('inp_place').value;
+        // सामान्य फील्ड्स
+        document.getElementById('out_name').innerText = document.getElementById('inp_name').value;
+        document.getElementById('sign').innerText = document.getElementById('inp_name').value || "Signature";
+        document.getElementById('out_addr').innerText = document.getElementById('inp_addr').value;
+        document.getElementById('out_mob').innerText = document.getElementById('inp_mob').value;
+        document.getElementById('out_obj').innerText = document.getElementById('inp_obj').value;
+        document.getElementById('out_exp').innerText = document.getElementById('inp_exp').value;
+        
+        // पर्सनल डिटेल्स
+        document.getElementById('out_dob').innerText = document.getElementById('inp_dob').value;
+        document.getElementById('out_father').innerText = document.getElementById('inp_father').value;
+        document.getElementById('out_mother').innerText = document.getElementById('inp_mother').value;
+        document.getElementById('out_gen').innerText = document.getElementById('inp_gen').value;
+        document.getElementById('out_mar').innerText = document.getElementById('inp_mar').value;
+        document.getElementById('out_nat').innerText = document.getElementById('inp_nat').value;
+        document.getElementById('out_lang').innerText = document.getElementById('inp_lang').value;
+        document.getElementById('out_place').innerText = document.getElementById('inp_place').value;
 
-            // शिक्षा वाली लाइनें
-            let lines = document.getElementById('inp_edu').value.split('
+        // शिक्षा (Education) को अलग-अलग लाइन में दिखाना
+        let lines = document.getElementById('inp_edu').value.split('
 ');
-            let html = "";
-            for(let i=0; i<lines.length; i++) {
-                if(lines[i].trim() !== "") html += "<div>" + lines[i] + "</div>";
+        let html = "";
+        for(let i=0; i<lines.length; i++) {
+            if(lines[i].trim() !== "") {
+                html += "<div style='margin-bottom:4px;'>" + lines[i] + "</div>";
             }
-            document.getElementById('out_edu').innerHTML = html;
-
-        } catch(err) {
-            console.log("Error:", err);
         }
+        document.getElementById('out_edu').innerHTML = html;
     }
 
-    // पेज लोड पर एक बार चलाएं
-    window.onload = function() {
-        sync();
-        // अगर फिर भी न चले तो 1 सेकंड बाद चलाएं
-        setTimeout(sync, 1000);
-    };
+    // शुरू में ही एक बार सिंक करें ताकि खाली न दिखे
+    sync();
 </script>
 
 </body>
