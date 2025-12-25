@@ -422,31 +422,29 @@
 </div>
 
     <footer>
-        <p>© 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
-        <p>Developed by DK</p>
-        <!-- Visitor Counter Code -->
-<!-- Visitor Counter Start -->
-<div style="text-align: center; margin-top: 20px; padding: 10px; background: #333; border-radius: 8px; color: #00e676; font-weight: bold; font-family: monospace; display: inline-block;">
-    Total Views: <span id="visitor-count">Loading...</span>
-</div>
+    <p>&copy; 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
+    <p>Developed by DK</p>
 
+    <!-- Visitor Counter Display -->
+    <div style="text-align: center; margin-top: 15px; padding: 10px; background: #222; border-radius: 5px; color: #00e676; font-family: monospace; display: inline-block;">
+        👁️ Views: <span id="visitor-count">Loading...</span>
+    </div>
+</footer>
+
+<!-- Visitor Counter Script (इसे footer के बाहर रखें) -->
 <script>
-    // यहाँ मैंने आपकी Unique ID डाल दी है: 'dk_jan_suvidha_2025'
-    // अब यह सिर्फ आपकी वेबसाइट की गिनती करेगा।
     const uniqueId = "dk_jan_suvidha_2025"; 
-
+    
     fetch("https://kounter.vercel.app/counter/" + uniqueId)
         .then(response => response.json())
         .then(data => {
             document.getElementById('visitor-count').innerText = data.counts;
         })
         .catch(err => {
-            console.error(err);
+            console.error("Counter Error:", err);
             document.getElementById('visitor-count').innerText = "1";
         });
 </script>
-<!-- Visitor Counter End -->
-    </footer>
 
     <script>
         function updateDateTime() {
