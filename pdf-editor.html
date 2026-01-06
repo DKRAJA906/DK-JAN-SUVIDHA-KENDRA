@@ -3,113 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced PDF Data Editor</title>
+    <title>Zendocs Style Editor - DK Jan Suvidha</title>
+    
+    <!-- Libraries Load -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
+
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
-        .editor-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-        .control-group { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input { width: 100%; padding: 8px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
-        button { background: #d9534f; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
-        button.download { background: #28a745; margin-top: 10px; }
-        .row { display: flex; gap: 10px; }
-        .col { flex: 1; }
-        iframe { width: 100%; height: 500px; border: 1px solid #ccc; margin-top: 20px; }
+        body { margin: 0; padding: 0; background: #333; font-family: sans-serif; overflow: hidden; }
+        
+        /* Toolbar Design */
+        #toolbar {
+            height: 60px; background: #fff; display: flex; align-items: center; padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 100; position: relative;
+        }
+        .btn {
+            background: #007bff; color: white; border: none; padding: 10px 20px; 
+            margin-right: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+        .btn-green { background: #28a745; }
+        .btn-tool { background: #f8f9fa; color: #333; border: 1px solid #ccc; }
+        
+        /* Main Workspace */
+        #workspace {
+            display: flex; justify-content: center; height: calc(100vh - 60px); overflow: auto; padding: 20px;
+            position: relative;
+        }
+        
+        /* PDF Page Container */
+        #pdf-container {
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            /* Important for absolute positioning of elements */
+        }
+        
+        /* Draggable Text Box */
+        .draggable-box {
+            position: absolute; width: 150px; height: 40px;
+            background: rgba(255, 255, 255, 0.9); /* Thoda transparent taaki peeche ka dikhe */
+            border: 2px dashed #007bff; cursor: move;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        .draggable-box input {
+            width: 90%; border: none; background: transparent; 
+            font-size: 16px; font-family: Helvetica; outline: none; text-align: center;
+        }
+        /* Safed patti mode ke liye class */
+        .white-out-mode {
+            background: white !important; border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
 
-<div class="editor-container">
-    <h2>🛠️ PDF Data Modifier (White-out Mode)</h2>
-    <p>पुराने डेटा को छुपाने के लिए उस पर सफ़ेद पट्टी (White Box) लगाएं और नया लिखें।</p>
+<!-- Toolbar -->
+<div id="toolbar">
+    <h3 style="margin-right: 20px;">DK PDF Editor</h3>
+    <input type="file" id="upload-pdf" accept="application/pdf" style="display:none">
+    <button class="btn" onclick="document.getElementById('upload-pdf').click()">📂 Upload PDF</button>
     
-    <!-- Step 1: Upload -->
-    <div class="control-group">
-        <label>1. PDF फाइल चुनें:</label>
-        <input type="file" id="pdfUpload" accept="application/pdf">
-    </div>
-
-    <!-- Step 2: Eraser Settings -->
-    <div class="control-group">
-        <label>2. पुराना डेटा मिटाएं (सफ़ेद बॉक्स की सेटिंग):</label>
-        <div class="row">
-            <div class="col"><input type="number" id="xPos" placeholder="X Position (Left से दूरी)" value="100"></div>
-            <div class="col"><input type="number" id="yPos" placeholder="Y Position (Bottom से दूरी)" value="600"></div>
-        </div>
-        <div class="row">
-            <div class="col"><input type="number" id="width" placeholder="Box की चौड़ाई (Width)" value="100"></div>
-            <div class="col"><input type="number" id="height" placeholder="Box की ऊंचाई (Height)" value="20"></div>
-        </div>
-        <small>नंबर बदलकर बॉक्स को सही जगह सेट करें।</small>
-    </div>
-
-    <!-- Step 3: New Data -->
-    <div class="control-group">
-        <label>3. नया डेटा लिखें:</label>
-        <input type="text" id="newText" placeholder="जैसे: नया नाम या नंबर">
-        <input type="number" id="fontSize" value="12" placeholder="Font Size">
-    </div>
-
-    <button onclick="modifyPdf()">Preview & Update PDF</button>
-    <button class="download" onclick="downloadPdf()">Download Final PDF</button>
+    <div style="border-left: 2px solid #ddd; height: 30px; margin: 0 15px;"></div>
+    
+    <button class="btn btn-tool" onclick="addTextBox()">➕ Add Text Box</button>
+    <button class="btn btn-tool" onclick="addWhiteout()">⬜ Whiteout (Erase)</button>
+    
+    <div style="flex-grow: 1;"></div>
+    <button class="btn btn-green" onclick="savePDF()">💾 Download PDF</button>
 </div>
 
-<iframe id="pdfPreview"></iframe>
+<!-- Workspace -->
+<div id="workspace">
+    <div id="pdf-container"></div>
+</div>
 
 <script>
-    const { PDFDocument, rgb } = PDFLib;
-    let modifiedPdfBytes = null;
+    // Variables
+    let pdfDoc = null;
+    let pdfBytes = null;
+    let scale = 1.5; // Zoom Level
+    let elements = []; // Saare boxes yahan save honge
 
-    async function modifyPdf() {
-        const fileInput = document.getElementById('pdfUpload');
-        if (!fileInput.files[0]) { alert("कृपया पहले PDF फाइल चुनें!"); return; }
+    // 1. PDFJS Setup
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        const fileBytes = await fileInput.files[0].arrayBuffer();
-        const pdfDoc = await PDFDocument.load(fileBytes);
-        const pages = pdfDoc.getPages();
-        const firstPage = pages[0]; // सिर्फ पहले पेज पर काम करेगा
+    // 2. Upload Handler
+    document.getElementById('upload-pdf').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            pdfBytes = arrayBuffer;
+            
+            // Render first page
+            const loadingTask = pdfjsLib.getDocument(arrayBuffer);
+            pdfDoc = await loadingTask.promise;
+            const page = await pdfDoc.getPage(1);
+            
+            const viewport = page.getViewport({ scale: scale });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-        // 1. Data Get Karen
-        const x = Number(document.getElementById('xPos').value);
-        const y = Number(document.getElementById('yPos').value);
-        const w = Number(document.getElementById('width').value);
-        const h = Number(document.getElementById('height').value);
-        const text = document.getElementById('newText').value;
-        const fSize = Number(document.getElementById('fontSize').value);
+            const renderContext = { canvasContext: context, viewport: viewport };
+            await page.render(renderContext).promise;
 
-        // 2. Draw White Rectangle (Eraser) - Ye purane text ko chupayega
-        firstPage.drawRectangle({
-            x: x,
-            y: y,
-            width: w,
-            height: h,
-            color: rgb(1, 1, 1), // White Color
-        });
+            // Container setup
+            const container = document.getElementById('pdf-container');
+            container.innerHTML = '';
+            container.style.width = `${viewport.width}px`;
+            container.style.height = `${viewport.height}px`;
+            container.appendChild(canvas);
+        }
+    });
 
-        // 3. Draw New Text - Usi ke upar naya text likhega
-        if(text) {
-            firstPage.drawText(text, {
-                x: x + 2, // Thoda margin
-                y: y + 2, // Thoda margin
-                size: fSize,
-                color: rgb(0, 0, 0), // Black Text
-            });
+    // 3. Add Draggable Box Logic
+    function createBox(isWhiteout) {
+        const box = document.createElement('div');
+        box.className = 'draggable-box';
+        if (isWhiteout) box.classList.add('white-out-mode');
+        
+        // Initial Position (Center of screen approx)
+        box.style.left = '50px';
+        box.style.top = '50px';
+        
+        // Agar Text box hai to input field, nahi to sirf safed dabba
+        if (!isWhiteout) {
+            const input = document.createElement('input');
+            input.placeholder = "Type here...";
+            box.appendChild(input);
         }
 
-        // 4. Save and Show Preview
-        modifiedPdfBytes = await pdfDoc.save();
-        const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        document.getElementById('pdfPreview').src = url;
+        // Delete button (chhota sa 'x')
+        const closeBtn = document.createElement('span');
+        closeBtn.innerHTML = '×';
+        closeBtn.style.cssText = "position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; width:20px; height:20px; text-align:center; cursor:pointer; font-size:14px; line-height:18px;";
+        closeBtn.onclick = function() { box.remove(); };
+        box.appendChild(closeBtn);
+
+        document.getElementById('pdf-container').appendChild(box);
+        
+        // Make it draggable using Interact.js
+        makeInteractable(box);
     }
 
-    function downloadPdf() {
-        if (!modifiedPdfBytes) { alert("पहले Preview अपडेट करें!"); return; }
-        const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+    function addTextBox() { createBox(false); }
+    function addWhiteout() { createBox(true); }
+
+    function makeInteractable(element) {
+        interact(element)
+        .draggable({
+            listeners: {
+                move (event) {
+                    var target = event.target;
+                    var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                    var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+                    target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                    target.setAttribute('data-x', x);
+                    target.setAttribute('data-y', y);
+                }
+            }
+        })
+        .resizable({
+            edges: { left: true, right: true, bottom: true, top: true },
+            listeners: {
+                move: function (event) {
+                    let { x, y } = event.target.dataset;
+                    x = (parseFloat(x) || 0) + event.deltaRect.left;
+                    y = (parseFloat(y) || 0) + event.deltaRect.top;
+
+                    Object.assign(event.target.style, {
+                        width: `${event.rect.width}px`,
+                        height: `${event.rect.height}px`,
+                        transform: `translate(${x}px, ${y}px)`
+                    });
+
+                    Object.assign(event.target.dataset, { x, y });
+                }
+            }
+        });
+    }
+
+    // 4. SAVE FINAL PDF (Main Logic)
+    async function savePDF() {
+        if(!pdfBytes) { alert("Please upload PDF first!"); return; }
+
+        const { PDFDocument, rgb } = PDFLib;
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const page = pdfDoc.getPages()[0];
+        const { height } = page.getSize(); // PDF Height is needed because Y-axis is inverted
+
+        // Saare boxes ko collect karo
+        const boxes = document.querySelectorAll('.draggable-box');
+        
+        boxes.forEach(box => {
+            // Screen coordinates nikalo
+            const rect = box.getBoundingClientRect();
+            const containerRect = document.getElementById('pdf-container').getBoundingClientRect();
+            
+            // Relative position calculate karo (Zoom/Scale factor ke hisab se adjust)
+            const x = (rect.left - containerRect.left) / scale;
+            // PDFLib mein Y bottom se start hota hai, browser mein top se
+            const y = (height - ((rect.top - containerRect.top) / scale)) - (rect.height / scale); 
+            
+            const w = rect.width / scale;
+            const h = rect.height / scale;
+
+            // Agar Whiteout hai
+            if (box.classList.contains('white-out-mode')) {
+                page.drawRectangle({
+                    x: x, y: y, width: w, height: h,
+                    color: rgb(1, 1, 1) // White color
+                });
+            } 
+            // Agar Text hai
+            else {
+                const input = box.querySelector('input');
+                if(input && input.value) {
+                    page.drawText(input.value, {
+                        x: x + 5, // Thoda padding
+                        y: y + (h/2) - 4, // Vertically center (approx)
+                        size: 14, // Default size
+                        color: rgb(0, 0, 0)
+                    });
+                }
+            }
+        });
+
+        // Save and Download
+        const pdfBytesFinal = await pdfDoc.save();
+        const blob = new Blob([pdfBytesFinal], { type: 'application/pdf' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'edited_document.pdf';
+        link.download = 'edited_by_DK_Jan_Suvidha.pdf';
         link.click();
     }
 </script>
