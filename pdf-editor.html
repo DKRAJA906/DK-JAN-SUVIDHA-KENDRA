@@ -3,221 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advance PDF Text Editor - DK Jan Suvidha</title>
-    <!-- CSS for Text Layer -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.css">
-    
-    <!-- Libraries -->
+    <title>HD & Transparent Editor - DK Jan Suvidha</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
     <style>
-        body { background: #525659; margin: 0; font-family: sans-serif; }
+        body { background: #404040; font-family: sans-serif; margin: 0; }
+        .toolbar { background: #fff; padding: 10px; display: flex; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn { padding: 8px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        .btn-save { background: #28a745; }
         
-        #toolbar {
-            background: #fff; padding: 10px 20px; display: flex; align-items: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 999;
-        }
+        #container { position: relative; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); background: white; }
         
-        #pdf-wrapper {
-            position: relative; margin: 20px auto; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            background: white;
-        }
+        /* High Quality Canvas */
+        canvas { display: block; width: 100%; height: 100%; }
 
-        /* Text Layer (Jahan text dikhega) */
-        .textLayer {
-            position: absolute; left: 0; top: 0; right: 0; bottom: 0;
-            overflow: hidden; opacity: 1; line-height: 1.0;
-        }
-
-        /* Text Spans (Jo text asli PDF mein hai) */
-        .textLayer span {
-            color: transparent; /* Asli text ko chupao */
-            position: absolute; white-space: pre; cursor: text;
-            transform-origin: 0% 0%;
-        }
-
-        /* Selection Box (Jab click karein) */
-        .editable-box {
-            position: absolute; background: white; border: 1px solid #007bff; 
-            z-index: 100; padding: 0; margin: 0; outline: none;
-            color: black; font-family: sans-serif;
+        /* Transparent Text Box */
+        .edit-box {
+            position: absolute; 
+            background: rgba(255, 255, 255, 0.5); /* Thoda sa white taaki pata chale, focus pe clear hoga */
+            border: 1px dotted blue;
+            color: black;
+            font-family: Helvetica, sans-serif;
+            padding: 0; margin: 0; outline: none;
+            font-size: 16px; /* Default */
+            z-index: 100;
         }
         
-        .btn { padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; margin-right: 10px; }
+        /* Jab type karein tab bilkul clean dikhe */
+        .edit-box:focus {
+            background: white; /* Sirf type karte waqt white */
+            border: 1px solid #007bff;
+        }
+        
+        /* Save hone ke baad wali state (Preview Mode) */
+        .edit-box.saved {
+            background: transparent; /* Transparent */
+            border: none;
+        }
     </style>
 </head>
 <body>
 
-<div id="toolbar">
-    <input type="file" id="fileInput" accept="application/pdf" style="display:none">
-    <button class="btn" onclick="document.getElementById('fileInput').click()">1. Upload PDF</button>
-    <button class="btn" style="background:#28a745" onclick="downloadPDF()">2. Download Edited PDF</button>
-    <span style="margin-left:auto; font-size:14px; color:#333;">💡 टेक्स्ट पर क्लिक करें और टाइप करें</span>
+<div class="toolbar">
+    <button class="btn" onclick="document.getElementById('up').click()">📂 Upload PDF</button>
+    <input type="file" id="up" accept="application/pdf" hidden>
+    <button class="btn btn-save" onclick="downloadPDF()">💾 Download HD PDF</button>
+    <span style="color:black; margin-left:auto; align-self:center;">टेक्स्ट पर क्लिक करें</span>
 </div>
 
-<div id="pdf-wrapper">
-    <canvas id="the-canvas"></canvas>
-    <div id="text-layer" class="textLayer"></div>
-</div>
+<div id="container"></div>
 
 <script>
-    // Variables
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    
     let pdfDoc = null;
     let pdfBytes = null;
-    let scale = 1.5;
-    let textItems = []; // Saara text yahan store hoga
-    
-    // Worker Set karein
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    let scale = 2.0; // High Quality ke liye scale badhaya (HD)
+    let container = document.getElementById('container');
 
-    // 1. Upload & Render Logic
-    document.getElementById('fileInput').addEventListener('change', async function(e) {
-        let file = e.target.files[0];
+    document.getElementById('up').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
         if (file) {
             pdfBytes = await file.arrayBuffer();
-            loadPDF(pdfBytes);
+            const loadingTask = pdfjsLib.getDocument(pdfBytes);
+            pdfDoc = await loadingTask.promise;
+            const page = await pdfDoc.getPage(1);
+            
+            // HD Rendering Logic
+            const viewport = page.getViewport({ scale: scale });
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            // Screen par fit karne ke liye CSS width half rakhein
+            canvas.style.width = (viewport.width / scale * 1.5) + 'px'; 
+            canvas.style.height = (viewport.height / scale * 1.5) + 'px';
+
+            container.style.width = canvas.style.width;
+            container.style.height = canvas.style.height;
+            
+            container.innerHTML = '';
+            container.appendChild(canvas);
+
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            
+            // Text Layer Logic
+            const textContent = await page.getTextContent();
+            renderTextLayer(textContent, viewport);
         }
     });
 
-    async function loadPDF(data) {
-        const loadingTask = pdfjsLib.getDocument(data);
-        pdfDoc = await loadingTask.promise;
-        const page = await pdfDoc.getPage(1); // Sirf pehla page abhi ke liye
+    function renderTextLayer(textContent, viewport) {
+        // Text layer div
+        const textLayerDiv = document.createElement('div');
+        textLayerDiv.style.position = 'absolute';
+        textLayerDiv.style.left = '0'; textLayerDiv.style.top = '0';
+        textLayerDiv.style.right = '0'; textLayerDiv.style.bottom = '0';
+        container.appendChild(textLayerDiv);
 
-        // A. Render Canvas (Image Layer)
-        const viewport = page.getViewport({ scale: scale });
-        const canvas = document.getElementById('the-canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        const wrapper = document.getElementById('pdf-wrapper');
-        wrapper.style.width = `${viewport.width}px`;
-        wrapper.style.height = `${viewport.height}px`;
-
-        await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-        // B. Render Text Layer (Magic Layer)
-        const textContent = await page.getTextContent();
-        const textLayerDiv = document.getElementById('text-layer');
-        textLayerDiv.innerHTML = ''; // Clear purana text
-        
-        // CSS Variables set karein taaki text sahi jagah baithe
-        textLayerDiv.style.height = viewport.height + 'px';
-        textLayerDiv.style.width = viewport.width + 'px';
-
-        // PDF.js ka TextLayer render karein
+        // PDF.js Text Layer
         pdfjsLib.renderTextLayer({
             textContent: textContent,
             container: textLayerDiv,
             viewport: viewport,
             textDivs: []
-        });
-
-        // C. Har text ko "Editable" banayein
-        // Thoda wait karein taaki DOM ban jaye
-        setTimeout(() => {
+        }).promise.then(() => {
+            // Text spans ko interactive banayein
             const spans = textLayerDiv.querySelectorAll('span');
             spans.forEach(span => {
-                // Asli text dikhayein (Transparent hata kar) lekin uske peeche white background laga dein
-                // Taaki asli canvas ka text chup jaye
-                span.style.color = 'transparent'; // Pehle transparent rakhein
+                span.style.color = 'transparent'; // Asli text chhupayein
+                span.style.cursor = 'text';
                 
-                // Click Event - Jab user click kare
-                span.onclick = function(e) {
+                // Scale factor adjust karein (Kyunki humne canvas scale kiya hai)
+                // CSS transform se scale adjust karein taaki position sahi rahe
+                span.style.transform = `scale(${1.5/scale})`; 
+                span.style.transformOrigin = '0 0';
+
+                span.onclick = (e) => {
                     e.stopPropagation();
-                    makeEditable(this, viewport);
+                    createEditableBox(span);
                 };
             });
-        }, 500);
+        });
     }
 
-    function makeEditable(spanElement, viewport) {
-        // Purana input agar koi khula ho to band karein
-        const oldInput = document.querySelector('.editable-box');
-        if(oldInput) oldInput.remove();
+    function createEditableBox(span) {
+        // Purana box hatao
+        document.querySelectorAll('.edit-box').forEach(b => {
+             // Save old value back to span if needed or just remove
+             b.classList.add('saved');
+        });
 
-        // Naya Input banayein
         const input = document.createElement('input');
         input.type = 'text';
-        input.value = spanElement.textContent; // Asli text input mein daalein
-        input.className = 'editable-box';
+        input.value = span.textContent;
+        input.className = 'edit-box';
         
-        // Position set karein (Span ke bilkul upar)
-        input.style.left = spanElement.offsetLeft + 'px';
-        input.style.top = spanElement.offsetTop + 'px';
-        input.style.width = (spanElement.offsetWidth + 20) + 'px'; // Thoda bada
-        input.style.height = spanElement.offsetHeight + 'px';
-        input.style.fontSize = spanElement.style.fontSize;
-        input.style.fontFamily = spanElement.style.fontFamily;
+        // Position same as span
+        input.style.left = span.style.left;
+        input.style.top = span.style.top;
         
-        // Isse "Edited" mark karein taaki baad mein save kar sakein
-        input.dataset.originalX = spanElement.offsetLeft; 
-        input.dataset.originalY = spanElement.offsetTop; 
+        // Font matching (Approx)
+        input.style.fontSize = span.style.fontSize;
+        input.style.width = (span.offsetWidth + 50) + 'px'; // Thoda extra jagah
+        input.style.height = span.offsetHeight + 'px';
         
-        // Add to DOM
-        document.getElementById('text-layer').appendChild(input);
-        input.focus();
+        // Scale adjustment for input
+        input.style.transform = span.style.transform;
+        input.style.transformOrigin = '0 0';
 
-        // Save on Blur (Bahar click karne par save maanein)
-        input.onblur = function() {
-            // Box ko wahin rehne dein lekin border hata dein taaki saaf dikhe
-            input.style.border = 'none';
-            input.style.background = 'white'; // Whiteout effect
-            // Span ko update na karein, bas input ko final maan lein
+        container.appendChild(input);
+        input.focus();
+        
+        // Blur event: Jab bahar click karein
+        input.onblur = () => {
+            input.classList.add('saved'); // Transparent ho jayega
         };
     }
 
-    // 2. Save Logic (Browser -> PDF)
     async function downloadPDF() {
-        if (!pdfBytes) { alert("PDF load nahi hai!"); return; }
-
+        if (!pdfBytes) { alert("PDF nahi hai"); return; }
         const { PDFDocument, rgb, StandardFonts } = PDFLib;
         const pdfDocLib = await PDFDocument.load(pdfBytes);
         const page = pdfDocLib.getPages()[0];
         const { height } = page.getSize();
-        
         const font = await pdfDocLib.embedFont(StandardFonts.Helvetica);
 
-        // Saare Inputs dhundhein jo user ne banaye hain
-        const editedInputs = document.querySelectorAll('.editable-box');
-        
-        editedInputs.forEach(input => {
-            const text = input.value;
-            // Coordinates convert karein (HTML -> PDF)
-            // Left same rehta hai (Scale divide karein)
-            const x = parseFloat(input.style.left) / scale;
-            
-            // Top ko convert karna padta hai kyunki PDF mein Y neeche se shuru hota hai
-            // Formula: PageHeight - (TopPosition / Scale) - FontHeightCorrection
-            const y = height - (parseFloat(input.style.top) / scale) - (parseFloat(input.style.fontSize)/scale);
+        // Screen Scale Factor calculate karein
+        // Humne screen par 1.5x zoom dikhaya hai lekin internal scale kuch aur hai
+        const screenScale = 1.5; 
 
-            // 1. White Rectangle (Eraser) - Purana mitane ke liye
-            page.drawRectangle({
-                x: x, 
-                y: y - 2, 
-                width: (parseFloat(input.style.width) / scale), 
-                height: (parseFloat(input.style.height) / scale) + 5,
-                color: rgb(1, 1, 1) // White
-            });
+        document.querySelectorAll('.edit-box').forEach(input => {
+            if(input.value) {
+                // Position Conversion logic
+                // CSS Left / ScreenScale = PDF Point
+                let x = parseFloat(input.style.left) / (scale) * (scale/1.5); // Thoda adjustment chahiye hota hai
+                
+                // Simple approach: PDF.js coordinates already PDF points mein hote hain mostly
+                // Bas viewport scale ka dhyan rakhna hai
+                
+                // Direct parsing from style (PDF.js puts styles in px matching PDF pts usually)
+                let pdfX = parseFloat(input.style.left);
+                let pdfY = parseFloat(input.style.top);
 
-            // 2. Naya Text
-            page.drawText(text, {
-                x: x,
-                y: y,
-                size: parseInt(input.style.fontSize) / scale, // Font size match karein
-                font: font,
-                color: rgb(0, 0, 0)
-            });
+                // PDF Y-axis invert hota hai
+                // Page Height - Top Position - Font Height
+                let finalY = height - pdfY - parseFloat(input.style.fontSize);
+
+                // 1. Small White Box (Text ke peeche) - Sirf text jitna bada
+                const textWidth = font.widthOfTextAtSize(input.value, parseFloat(input.style.fontSize));
+                page.drawRectangle({
+                    x: pdfX,
+                    y: finalY,
+                    width: textWidth, // Sirf text ki chourai jitna
+                    height: parseFloat(input.style.fontSize),
+                    color: rgb(1, 1, 1) // White
+                });
+
+                // 2. New Text
+                page.drawText(input.value, {
+                    x: pdfX,
+                    y: finalY,
+                    size: parseFloat(input.style.fontSize),
+                    font: font,
+                    color: rgb(0, 0, 0)
+                });
+            }
         });
 
-        const pdfData = await pdfDocLib.save();
-        const blob = new Blob([pdfData], { type: 'application/pdf' });
+        const modifiedBytes = await pdfDocLib.save();
+        const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'edited_document.pdf';
+        link.download = 'Clear_Edited.pdf';
         link.click();
     }
 </script>
