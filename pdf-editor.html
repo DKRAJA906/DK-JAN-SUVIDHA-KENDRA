@@ -1,226 +1,145 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HD & Transparent Editor - DK Jan Suvidha</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
+    <title>Desi WPS Editor - By DK Jan Suvidha</title>
+    <!-- इन तीन लाइब्रेरीज़ से ही जादू होगा -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
-        body { background: #404040; font-family: sans-serif; margin: 0; }
-        .toolbar { background: #fff; padding: 10px; display: flex; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .btn { padding: 8px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
-        .btn-save { background: #28a745; }
-        
-        #container { position: relative; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); background: white; }
-        
-        /* High Quality Canvas */
-        canvas { display: block; width: 100%; height: 100%; }
-
-        /* Transparent Text Box */
-        .edit-box {
-            position: absolute; 
-            background: rgba(255, 255, 255, 0.5); /* Thoda sa white taaki pata chale, focus pe clear hoga */
-            border: 1px dotted blue;
-            color: black;
-            font-family: Helvetica, sans-serif;
-            padding: 0; margin: 0; outline: none;
-            font-size: 16px; /* Default */
-            z-index: 100;
+        body { font-family: sans-serif; background: #f0f0f0; margin: 0; padding: 10px; }
+        .toolbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: #2c3e50; padding: 10px; display: flex; gap: 10px;
+            z-index: 1000; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
-        /* Jab type karein tab bilkul clean dikhe */
-        .edit-box:focus {
-            background: white; /* Sirf type karte waqt white */
-            border: 1px solid #007bff;
+        button {
+            padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;
+            font-weight: bold; white-space: nowrap;
         }
+        .btn-upload { background: #3498db; color: white; }
+        .btn-eraser { background: #e74c3c; color: white; } /* सफ़ेद पट्टी */
+        .btn-text { background: #f1c40f; color: black; }
+        .btn-save { background: #27ae60; color: white; margin-left: auto; }
         
-        /* Save hone ke baad wali state (Preview Mode) */
-        .edit-box.saved {
-            background: transparent; /* Transparent */
-            border: none;
+        #canvas-container {
+            margin-top: 60px; 
+            display: flex; 
+            justify-content: center;
+            overflow: auto;
+            padding-bottom: 50px;
         }
+        .canvas-box { box-shadow: 0 0 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-<div class="toolbar">
-    <button class="btn" onclick="document.getElementById('up').click()">📂 Upload PDF</button>
-    <input type="file" id="up" accept="application/pdf" hidden>
-    <button class="btn btn-save" onclick="downloadPDF()">💾 Download HD PDF</button>
-    <span style="color:black; margin-left:auto; align-self:center;">टेक्स्ट पर क्लिक करें</span>
-</div>
+    <div class="toolbar">
+        <input type="file" id="fileInput" accept="application/pdf" style="display:none">
+        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📂 Open PDF</button>
+        
+        <button class="btn-eraser" onclick="addEraser()">⬜ Eraser (Whiteout)</button>
+        <button class="btn-text" onclick="addText()">Tb Add Text</button>
+        <button onclick="deleteSelected()">🗑️ Delete Item</button>
+        
+        <button class="btn-save" onclick="downloadPDF()">💾 Save PDF</button>
+    </div>
 
-<div id="container"></div>
+    <div id="canvas-container">
+        <canvas id="c" class="canvas-box"></canvas>
+    </div>
 
-<script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    
-    let pdfDoc = null;
-    let pdfBytes = null;
-    let scale = 2.0; // High Quality ke liye scale badhaya (HD)
-    let container = document.getElementById('container');
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    document.getElementById('up').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            pdfBytes = await file.arrayBuffer();
-            const loadingTask = pdfjsLib.getDocument(pdfBytes);
-            pdfDoc = await loadingTask.promise;
-            const page = await pdfDoc.getPage(1);
+        // 1. Fabric Canvas तैयार करें (यही है असली एडिटर)
+        const canvas = new fabric.Canvas('c');
+        let pdfDoc = null;
+
+        // PDF अपलोड होने पर क्या होगा
+        document.getElementById('fileInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const arrayBuffer = await file.arrayBuffer();
+            pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
             
-            // HD Rendering Logic
-            const viewport = page.getViewport({ scale: scale });
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            // अभी हम सिर्फ पहले पेज पर काम करेंगे (शुरुआत के लिए)
+            renderPage(1);
+        });
+
+        async function renderPage(num) {
+            const page = await pdfDoc.getPage(num);
+            const viewport = page.getViewport({ scale: 1.5 }); // 1.5 scale HD क्वालिटी के लिए
+
+            // PDF को एक छिपे हुए कैनवास पर ड्रा करें
+            const hiddenCanvas = document.createElement('canvas');
+            const context = hiddenCanvas.getContext('2d');
+            hiddenCanvas.height = viewport.height;
+            hiddenCanvas.width = viewport.width;
+
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+            // छिपे हुए कैनवास को Fabric Canvas के बैकग्राउंड में सेट करें
+            const bgImage = hiddenCanvas.toDataURL("image/png");
             
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            // Screen par fit karne ke liye CSS width half rakhein
-            canvas.style.width = (viewport.width / scale * 1.5) + 'px'; 
-            canvas.style.height = (viewport.height / scale * 1.5) + 'px';
-
-            container.style.width = canvas.style.width;
-            container.style.height = canvas.style.height;
-            
-            container.innerHTML = '';
-            container.appendChild(canvas);
-
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-            
-            // Text Layer Logic
-            const textContent = await page.getTextContent();
-            renderTextLayer(textContent, viewport);
-        }
-    });
-
-    function renderTextLayer(textContent, viewport) {
-        // Text layer div
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.style.position = 'absolute';
-        textLayerDiv.style.left = '0'; textLayerDiv.style.top = '0';
-        textLayerDiv.style.right = '0'; textLayerDiv.style.bottom = '0';
-        container.appendChild(textLayerDiv);
-
-        // PDF.js Text Layer
-        pdfjsLib.renderTextLayer({
-            textContent: textContent,
-            container: textLayerDiv,
-            viewport: viewport,
-            textDivs: []
-        }).promise.then(() => {
-            // Text spans ko interactive banayein
-            const spans = textLayerDiv.querySelectorAll('span');
-            spans.forEach(span => {
-                span.style.color = 'transparent'; // Asli text chhupayein
-                span.style.cursor = 'text';
-                
-                // Scale factor adjust karein (Kyunki humne canvas scale kiya hai)
-                // CSS transform se scale adjust karein taaki position sahi rahe
-                span.style.transform = `scale(${1.5/scale})`; 
-                span.style.transformOrigin = '0 0';
-
-                span.onclick = (e) => {
-                    e.stopPropagation();
-                    createEditableBox(span);
-                };
+            fabric.Image.fromURL(bgImage, function(img) {
+                canvas.setWidth(viewport.width);
+                canvas.setHeight(viewport.height);
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
             });
-        });
-    }
+        }
 
-    function createEditableBox(span) {
-        // Purana box hatao
-        document.querySelectorAll('.edit-box').forEach(b => {
-             // Save old value back to span if needed or just remove
-             b.classList.add('saved');
-        });
+        // --- टूल्स (Tools) ---
 
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = span.textContent;
-        input.className = 'edit-box';
-        
-        // Position same as span
-        input.style.left = span.style.left;
-        input.style.top = span.style.top;
-        
-        // Font matching (Approx)
-        input.style.fontSize = span.style.fontSize;
-        input.style.width = (span.offsetWidth + 50) + 'px'; // Thoda extra jagah
-        input.style.height = span.offsetHeight + 'px';
-        
-        // Scale adjustment for input
-        input.style.transform = span.style.transform;
-        input.style.transformOrigin = '0 0';
+        // 2. Eraser (पुराना टेक्स्ट मिटाने के लिए सफ़ेद पट्टी)
+        function addEraser() {
+            const rect = new fabric.Rect({
+                left: 100, top: 100, fill: 'white', 
+                width: 100, height: 30,
+                borderColor: 'red', cornerColor: 'red' // सेलेक्ट करने पर लाल दिखेगा
+            });
+            canvas.add(rect);
+            canvas.setActiveObject(rect);
+        }
 
-        container.appendChild(input);
-        input.focus();
-        
-        // Blur event: Jab bahar click karein
-        input.onblur = () => {
-            input.classList.add('saved'); // Transparent ho jayega
-        };
-    }
+        // 3. नया टेक्स्ट जोड़ने के लिए
+        function addText() {
+            const text = new fabric.IText('Type Here', {
+                left: 150, top: 150,
+                fontFamily: 'Arial', fontSize: 20, fill: 'black'
+            });
+            canvas.add(text);
+            canvas.setActiveObject(text);
+        }
 
-    async function downloadPDF() {
-        if (!pdfBytes) { alert("PDF nahi hai"); return; }
-        const { PDFDocument, rgb, StandardFonts } = PDFLib;
-        const pdfDocLib = await PDFDocument.load(pdfBytes);
-        const page = pdfDocLib.getPages()[0];
-        const { height } = page.getSize();
-        const font = await pdfDocLib.embedFont(StandardFonts.Helvetica);
-
-        // Screen Scale Factor calculate karein
-        // Humne screen par 1.5x zoom dikhaya hai lekin internal scale kuch aur hai
-        const screenScale = 1.5; 
-
-        document.querySelectorAll('.edit-box').forEach(input => {
-            if(input.value) {
-                // Position Conversion logic
-                // CSS Left / ScreenScale = PDF Point
-                let x = parseFloat(input.style.left) / (scale) * (scale/1.5); // Thoda adjustment chahiye hota hai
-                
-                // Simple approach: PDF.js coordinates already PDF points mein hote hain mostly
-                // Bas viewport scale ka dhyan rakhna hai
-                
-                // Direct parsing from style (PDF.js puts styles in px matching PDF pts usually)
-                let pdfX = parseFloat(input.style.left);
-                let pdfY = parseFloat(input.style.top);
-
-                // PDF Y-axis invert hota hai
-                // Page Height - Top Position - Font Height
-                let finalY = height - pdfY - parseFloat(input.style.fontSize);
-
-                // 1. Small White Box (Text ke peeche) - Sirf text jitna bada
-                const textWidth = font.widthOfTextAtSize(input.value, parseFloat(input.style.fontSize));
-                page.drawRectangle({
-                    x: pdfX,
-                    y: finalY,
-                    width: textWidth, // Sirf text ki chourai jitna
-                    height: parseFloat(input.style.fontSize),
-                    color: rgb(1, 1, 1) // White
-                });
-
-                // 2. New Text
-                page.drawText(input.value, {
-                    x: pdfX,
-                    y: finalY,
-                    size: parseFloat(input.style.fontSize),
-                    font: font,
-                    color: rgb(0, 0, 0)
-                });
+        // 4. सेलेक्ट की गई चीज़ हटाने के लिए
+        function deleteSelected() {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj) {
+                canvas.remove(activeObj);
             }
-        });
+        }
 
-        const modifiedBytes = await pdfDocLib.save();
-        const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'Clear_Edited.pdf';
-        link.click();
-    }
-</script>
+        // --- PDF सेव करना ---
+        function downloadPDF() {
+            // कैनवास को इमेज में बदलें
+            const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+            const { jsPDF } = window.jspdf;
+            
+            // इमेज के साइज़ के हिसाब से PDF बनाएं
+            const pdf = new jsPDF({
+                orientation: canvas.width > canvas.height ? 'l' : 'p',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
 
+            pdf.addImage(dataURL, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save("edited-document.pdf");
+        }
+    </script>
 </body>
 </html>
