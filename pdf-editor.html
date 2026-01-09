@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desi WPS Editor - By DK Jan Suvidha</title>
+    <title>Desi WPS Editor - DK Jan Suvidha</title>
 
     <!-- लाइब्रेरीज़ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
@@ -58,163 +58,151 @@
 </head>
 <body>
 
-    <div class="toolbar">
-        <input type="file" id="fileInput" accept="application/pdf" style="display:none">
-        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📂 Open PDF</button>
+<div class="toolbar">
+    <input type="file" id="fileInput" accept="application/pdf" style="display:none">
+    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📂 Open PDF</button>
 
-        <button class="btn-eraser" onclick="addEraser()">⬜ Eraser (Whiteout)</button>
-        <button class="btn-text" onclick="addText()">Tb Add Text</button>
-        <button onclick="deleteSelected()">🗑️ Delete Item</button>
+    <button class="btn-eraser" onclick="addEraser()">⬜ Eraser (Whiteout)</button>
+    <button class="btn-text" onclick="addText()">Tb Add Text</button>
+    <button onclick="deleteSelected()">🗑️ Delete Item</button>
 
-        <button class="btn-save" onclick="downloadPDF()">💾 Save PDF</button>
-    </div>
+    <button class="btn-save" onclick="downloadPDF()">💾 Save PDF</button>
+</div>
 
-    <div id="canvas-container">
-        <canvas id="c" class="canvas-box"></canvas>
-    </div>
+<div id="canvas-container">
+    <canvas id="c" class="canvas-box"></canvas>
+</div>
 
-    <script>
-        // PDF.js worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+<script>
+    // PDF.js worker सेट करना बहुत ज़रूरी है, वरना सफेद आ सकता है[web:56][web:66]
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // Fabric canvas
-        const canvas = new fabric.Canvas('c');
-        let pdfDoc = null;
+    const canvas = new fabric.Canvas('c');
+    let pdfDoc = null;
 
-        // PDF upload
-        document.getElementById('fileInput').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+    // PDF upload
+    document.getElementById('fileInput').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-            const arrayBuffer = await file.arrayBuffer();
-            pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+        const arrayBuffer = await file.arrayBuffer();
+        // getDocument को सीधे ArrayBuffer देना allowed है[web:61]
+        pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-            // फिलहाल पहला पेज
-            renderPage(1);
+        // अभी सिर्फ पहला पेज
+        renderPage(1);
+    });
+
+    async function renderPage(pageNumber) {
+        const page = await pdfDoc.getPage(pageNumber);
+
+        // base zoom + HiDPI
+        const baseScale = 1.5;
+        const outputScale = window.devicePixelRatio || 1;
+
+        const viewport = page.getViewport({ scale: baseScale });
+
+        const hiddenCanvas = document.createElement('canvas');
+        const context = hiddenCanvas.getContext('2d');
+
+        // असली bitmap size
+        hiddenCanvas.width  = Math.floor(viewport.width  * outputScale);
+        hiddenCanvas.height = Math.floor(viewport.height * outputScale);
+
+        // CSS size (visible size)
+        hiddenCanvas.style.width  = Math.floor(viewport.width)  + 'px';
+        hiddenCanvas.style.height = Math.floor(viewport.height) + 'px';
+
+        const transform = outputScale !== 1
+            ? [outputScale, 0, 0, outputScale, 0, 0]
+            : null;
+
+        // renderContext हमेशा सही viewport + canvasContext के साथ होना चाहिए[web:34][web:38]
+        await page.render({
+            canvasContext: context,
+            viewport: viewport,
+            transform: transform
+        }).promise;
+
+        const bgImage = hiddenCanvas.toDataURL('image/png');
+
+        fabric.Image.fromURL(bgImage, function(img) {
+            const cssWidth  = viewport.width;
+            const cssHeight = viewport.height;
+
+            canvas.setWidth(cssWidth);
+            canvas.setHeight(cssHeight);
+
+            img.set({
+                selectable: false,
+                evented: false
+            });
+            img.scaleToWidth(cssWidth);
+            img.scaleToHeight(cssHeight);
+
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        }, { crossOrigin: 'anonymous' }); // कुछ PDFs/images के लिए ज़रूरी हो सकता है[web:62]
+    }
+
+    // Eraser
+    function addEraser() {
+        const rect = new fabric.Rect({
+            left: 100,
+            top: 100,
+            fill: 'white',
+            width: 120,
+            height: 35,
+            borderColor: 'red',
+            cornerColor: 'red',
+            strokeWidth: 1,
+            stroke: 'red'
+        });
+        canvas.add(rect);
+        canvas.setActiveObject(rect);
+    }
+
+    // Text
+    function addText() {
+        const text = new fabric.IText('Type Here', {
+            left: 150,
+            top: 150,
+            fontFamily: 'Arial',
+            fontSize: 20,
+            fill: 'black'
+        });
+        canvas.add(text);
+        canvas.setActiveObject(text);
+    }
+
+    // Delete
+    function deleteSelected() {
+        const activeObj = canvas.getActiveObject();
+        if (activeObj) {
+            canvas.remove(activeObj);
+        }
+    }
+
+    // Download high‑res PDF
+    function downloadPDF() {
+        const dataURL = canvas.toDataURL({
+            format: 'png',
+            quality: 1,
+            multiplier: 2
         });
 
-        // High‑Resolution page render (no blur)
-        async function renderPage(num) {
-            const page = await pdfDoc.getPage(num);
+        const { jsPDF } = window.jspdf;
 
-            const baseScale = 1.5; // zoom level
-            const outputScale = window.devicePixelRatio || 1; // HiDPI support[web:34][web:50]
+        const pdf = new jsPDF({
+            orientation: canvas.width > canvas.height ? 'l' : 'p',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
 
-            // viewport original size पर (baseScale के साथ)
-            const viewport = page.getViewport({ scale: baseScale });
+        pdf.addImage(dataURL, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('edited-document.pdf');
+    }
+</script>
 
-            // Hidden canvas (as bitmap)
-            const hiddenCanvas = document.createElement('canvas');
-            const context = hiddenCanvas.getContext('2d');
-
-            // bitmap size = viewport * outputScale
-            hiddenCanvas.width  = Math.floor(viewport.width  * outputScale);
-            hiddenCanvas.height = Math.floor(viewport.height * outputScale);
-
-            // CSS size normal (जो आंख को दिखेगा)
-            hiddenCanvas.style.width  = Math.floor(viewport.width)  + 'px';
-            hiddenCanvas.style.height = Math.floor(viewport.height) + 'px';
-
-            // PDF.js render context with transform (HiDPI)[web:36][web:50]
-            const transform = outputScale !== 1
-                ? [outputScale, 0, 0, outputScale, 0, 0]
-                : null;
-
-            await page.render({
-                canvasContext: context,
-                viewport: viewport,
-                transform: transform
-            }).promise;
-
-            const bgImage = hiddenCanvas.toDataURL("image/png");
-
-            fabric.Image.fromURL(bgImage, function(img) {
-                // Fabric canvas size = CSS size
-                const cssWidth  = viewport.width;
-                const cssHeight = viewport.height;
-
-                canvas.setWidth(cssWidth);
-                canvas.setHeight(cssHeight);
-
-                // background image को canvas के बराबर फिट करें
-                img.set({
-                    selectable: false,
-                    evented: false
-                });
-                img.scaleToWidth(cssWidth);
-                img.scaleToHeight(cssHeight);
-
-                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-            });
-        }
-
-        // Eraser (white rectangle)
-        function addEraser() {
-            const rect = new fabric.Rect({
-                left: 100,
-                top: 100,
-                fill: 'white',
-                width: 120,
-                height: 35,
-                borderColor: 'red',
-                cornerColor: 'red',
-                strokeWidth: 1,
-                stroke: 'red'
-            });
-            canvas.add(rect);
-            canvas.setActiveObject(rect);
-        }
-
-        // Add text
-        function addText() {
-            const text = new fabric.IText('Type Here', {
-                left: 150,
-                top: 150,
-                fontFamily: 'Arial',
-                fontSize: 20,
-                fill: 'black'
-            });
-            canvas.add(text);
-            canvas.setActiveObject(text);
-        }
-
-        // Delete selected object
-        function deleteSelected() {
-            const activeObj = canvas.getActiveObject();
-            if (activeObj) {
-                canvas.remove(activeObj);
-            }
-        }
-
-        // High‑res PDF download
-        function downloadPDF() {
-            // High resolution image from Fabric canvas[web:52][web:53]
-            const dataURL = canvas.toDataURL({
-                format: 'png',
-                quality: 1,
-                multiplier: 2 // 2x resolution
-            });
-
-            const { jsPDF } = window.jspdf;
-
-            const pdf = new jsPDF({
-                orientation: canvas.width > canvas.height ? 'l' : 'p',
-                unit: 'px',
-                format: [canvas.width, canvas.height]
-            });
-
-            pdf.addImage(
-                dataURL,
-                'PNG',
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-            pdf.save("edited-document.pdf");
-        }
-    </script>
 </body>
 </html>
