@@ -1,38 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desi WPS Editor - By DK Jan Suvidha</title>
-    <!-- इन तीन लाइब्रेरीज़ से ही जादू होगा -->
+
+    <!-- लाइब्रेरीज़ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
+
     <style>
-        body { font-family: sans-serif; background: #f0f0f0; margin: 0; padding: 10px; }
+        body {
+            font-family: sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 10px;
+        }
         .toolbar {
-            position: fixed; top: 0; left: 0; right: 0;
-            background: #2c3e50; padding: 10px; display: flex; gap: 10px;
-            z-index: 1000; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #2c3e50;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            overflow-x: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         button {
-            padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;
-            font-weight: bold; white-space: nowrap;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
         }
         .btn-upload { background: #3498db; color: white; }
-        .btn-eraser { background: #e74c3c; color: white; } /* सफ़ेद पट्टी */
-        .btn-text { background: #f1c40f; color: black; }
-        .btn-save { background: #27ae60; color: white; margin-left: auto; }
-        
+        .btn-eraser { background: #e74c3c; color: white; }
+        .btn-text   { background: #f1c40f; color: black; }
+        .btn-save   { background: #27ae60; color: white; margin-left: auto; }
+
         #canvas-container {
-            margin-top: 60px; 
-            display: flex; 
+            margin-top: 60px;
+            display: flex;
             justify-content: center;
             overflow: auto;
             padding-bottom: 50px;
         }
-        .canvas-box { box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .canvas-box {
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background: white;
+        }
     </style>
 </head>
 <body>
@@ -40,11 +61,11 @@
     <div class="toolbar">
         <input type="file" id="fileInput" accept="application/pdf" style="display:none">
         <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📂 Open PDF</button>
-        
+
         <button class="btn-eraser" onclick="addEraser()">⬜ Eraser (Whiteout)</button>
         <button class="btn-text" onclick="addText()">Tb Add Text</button>
         <button onclick="deleteSelected()">🗑️ Delete Item</button>
-        
+
         <button class="btn-save" onclick="downloadPDF()">💾 Save PDF</button>
     </div>
 
@@ -53,70 +74,112 @@
     </div>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        // PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // 1. Fabric Canvas तैयार करें (यही है असली एडिटर)
+        // Fabric canvas
         const canvas = new fabric.Canvas('c');
         let pdfDoc = null;
 
-        // PDF अपलोड होने पर क्या होगा
+        // PDF upload
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const arrayBuffer = await file.arrayBuffer();
             pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
-            
-            // अभी हम सिर्फ पहले पेज पर काम करेंगे (शुरुआत के लिए)
+
+            // फिलहाल पहला पेज
             renderPage(1);
         });
 
+        // High‑Resolution page render (no blur)
         async function renderPage(num) {
             const page = await pdfDoc.getPage(num);
-            const viewport = page.getViewport({ scale: 1.5 }); // 1.5 scale HD क्वालिटी के लिए
 
-            // PDF को एक छिपे हुए कैनवास पर ड्रा करें
+            const baseScale = 1.5; // zoom level
+            const outputScale = window.devicePixelRatio || 1; // HiDPI support[web:34][web:50]
+
+            // viewport original size पर (baseScale के साथ)
+            const viewport = page.getViewport({ scale: baseScale });
+
+            // Hidden canvas (as bitmap)
             const hiddenCanvas = document.createElement('canvas');
             const context = hiddenCanvas.getContext('2d');
-            hiddenCanvas.height = viewport.height;
-            hiddenCanvas.width = viewport.width;
 
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            // bitmap size = viewport * outputScale
+            hiddenCanvas.width  = Math.floor(viewport.width  * outputScale);
+            hiddenCanvas.height = Math.floor(viewport.height * outputScale);
 
-            // छिपे हुए कैनवास को Fabric Canvas के बैकग्राउंड में सेट करें
+            // CSS size normal (जो आंख को दिखेगा)
+            hiddenCanvas.style.width  = Math.floor(viewport.width)  + 'px';
+            hiddenCanvas.style.height = Math.floor(viewport.height) + 'px';
+
+            // PDF.js render context with transform (HiDPI)[web:36][web:50]
+            const transform = outputScale !== 1
+                ? [outputScale, 0, 0, outputScale, 0, 0]
+                : null;
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport,
+                transform: transform
+            }).promise;
+
             const bgImage = hiddenCanvas.toDataURL("image/png");
-            
+
             fabric.Image.fromURL(bgImage, function(img) {
-                canvas.setWidth(viewport.width);
-                canvas.setHeight(viewport.height);
+                // Fabric canvas size = CSS size
+                const cssWidth  = viewport.width;
+                const cssHeight = viewport.height;
+
+                canvas.setWidth(cssWidth);
+                canvas.setHeight(cssHeight);
+
+                // background image को canvas के बराबर फिट करें
+                img.set({
+                    selectable: false,
+                    evented: false
+                });
+                img.scaleToWidth(cssWidth);
+                img.scaleToHeight(cssHeight);
+
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
             });
         }
 
-        // --- टूल्स (Tools) ---
-
-        // 2. Eraser (पुराना टेक्स्ट मिटाने के लिए सफ़ेद पट्टी)
+        // Eraser (white rectangle)
         function addEraser() {
             const rect = new fabric.Rect({
-                left: 100, top: 100, fill: 'white', 
-                width: 100, height: 30,
-                borderColor: 'red', cornerColor: 'red' // सेलेक्ट करने पर लाल दिखेगा
+                left: 100,
+                top: 100,
+                fill: 'white',
+                width: 120,
+                height: 35,
+                borderColor: 'red',
+                cornerColor: 'red',
+                strokeWidth: 1,
+                stroke: 'red'
             });
             canvas.add(rect);
             canvas.setActiveObject(rect);
         }
 
-        // 3. नया टेक्स्ट जोड़ने के लिए
+        // Add text
         function addText() {
             const text = new fabric.IText('Type Here', {
-                left: 150, top: 150,
-                fontFamily: 'Arial', fontSize: 20, fill: 'black'
+                left: 150,
+                top: 150,
+                fontFamily: 'Arial',
+                fontSize: 20,
+                fill: 'black'
             });
             canvas.add(text);
             canvas.setActiveObject(text);
         }
 
-        // 4. सेलेक्ट की गई चीज़ हटाने के लिए
+        // Delete selected object
         function deleteSelected() {
             const activeObj = canvas.getActiveObject();
             if (activeObj) {
@@ -124,20 +187,32 @@
             }
         }
 
-        // --- PDF सेव करना ---
+        // High‑res PDF download
         function downloadPDF() {
-            // कैनवास को इमेज में बदलें
-            const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+            // High resolution image from Fabric canvas[web:52][web:53]
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1,
+                multiplier: 2 // 2x resolution
+            });
+
             const { jsPDF } = window.jspdf;
-            
-            // इमेज के साइज़ के हिसाब से PDF बनाएं
+
             const pdf = new jsPDF({
                 orientation: canvas.width > canvas.height ? 'l' : 'p',
                 unit: 'px',
                 format: [canvas.width, canvas.height]
             });
 
-            pdf.addImage(dataURL, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.addImage(
+                dataURL,
+                'PNG',
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
             pdf.save("edited-document.pdf");
         }
     </script>
