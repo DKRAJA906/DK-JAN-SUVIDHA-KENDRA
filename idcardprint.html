@@ -589,16 +589,6 @@
                     "bg": "bg-blue-100"
                 }
             };
-
-            // Domain Lock
-            (function() {
-                const allowed = ['akprinthub.com', 'www.akprinthub.com', 'localhost', '127.0.0.1'];
-                if (!allowed.includes(window.location.hostname)) {
-                    document.body.innerHTML = '<h1>Unauthorized Copy</h1>';
-                    throw new Error("Security Alert: Unauthorized domain.");
-                }
-            }
-            )();
         </script>
         <!-- OpenCV Engine -->
         <script>
