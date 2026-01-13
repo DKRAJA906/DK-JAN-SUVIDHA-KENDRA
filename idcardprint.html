@@ -3,158 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DK JAN SUVIDHA - ID Card Printer</title>
+    <title>DK JAN SUVIDHA - Advanced Scanner</title>
     
+    <!-- 1. Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { brand: '#2563eb', bg: '#f1f5f9' },
-                    fontFamily: { sans: ['Segoe UI', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
+    
+    <!-- OpenCV.js (Perspective Crop Logic के लिए जरूरी) -->
+    <script src="https://docs.opencv.org/4.8.0/opencv.js" async onload="onOpenCvReady()"></script>
 
     <style>
-        body { background-color: #f1f5f9; user-select: none; }
-        #canvasWrapper { 
-            width: 210mm; 
-            height: 297mm; 
-            background: white; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            position: relative;
-            margin: 20px auto;
-        }
-        .card-slot {
-            width: 85.6mm;
-            height: 54mm;
-            border: 1px dashed #ccc;
-            position: absolute;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #f8fafc;
-        }
-        .card-slot img { width: 100%; height: 100%; object-fit: contain; }
+        body { background: #f8fafc; font-family: sans-serif; user-select: none; }
         
-        /* Print Styles */
-        @media print {
-            body * { visibility: hidden; }
-            #canvasWrapper, #canvasWrapper * { visibility: visible; }
-            #canvasWrapper { position: absolute; left: 0; top: 0; margin: 0; box-shadow: none; }
+        /* Canvas Container */
+        #editor-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            border: 2px solid #e2e8f0;
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* The Image */
+        canvas { display: block; width: 100%; }
+
+        /* Corner Points (Dots) */
+        .corner-point {
+            width: 20px;
+            height: 20px;
+            background: rgba(37, 99, 235, 0.8);
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: move;
+            z-index: 20;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* SVG Lines connecting dots */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        polyline {
+            fill: rgba(37, 99, 235, 0.2);
+            stroke: #2563eb;
+            stroke-width: 2;
+            stroke-dasharray: 5;
         }
     </style>
 </head>
-<body class="h-screen flex flex-col lg:flex-row overflow-hidden">
+<body class="h-screen flex flex-col">
 
-    <!-- SIDEBAR -->
-    <div class="w-full lg:w-80 bg-white border-r shadow-lg z-20 flex flex-col h-full">
-        <div class="p-5 border-b">
-            <h1 class="text-2xl font-bold text-brand"><i class="fas fa-print mr-2"></i>DK JAN SUVIDHA</h1>
-            <p class="text-xs text-gray-500">Auto ID Card Printing Suite</p>
+    <!-- Header -->
+    <div class="bg-white p-4 shadow z-30 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-600"><i class="fas fa-crop-alt mr-2"></i>Smart Scan</h1>
+        <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700">
+            <i class="fas fa-upload mr-2"></i> Upload Photo
+        </button>
+        <input type="file" id="fileInput" hidden accept="image/*">
+    </div>
+
+    <!-- Main Editor Area -->
+    <div class="flex-1 overflow-auto p-4 flex flex-col items-center">
+        
+        <!-- Editor Box -->
+        <div id="editor-container" class="hidden rounded-lg shadow-xl mb-4">
+            <canvas id="srcCanvas"></canvas> <!-- Original Image -->
+            
+            <!-- 4 Drag Points -->
+            <div id="p0" class="corner-point"></div> <!-- Top Left -->
+            <div id="p1" class="corner-point"></div> <!-- Top Right -->
+            <div id="p2" class="corner-point"></div> <!-- Bottom Right -->
+            <div id="p3" class="corner-point"></div> <!-- Bottom Left -->
+
+            <!-- Connecting Lines -->
+            <svg><polyline id="cropBox" points=""></polyline></svg>
         </div>
 
-        <div class="p-4 flex-1 overflow-y-auto">
-            <!-- 1. Upload Images -->
-            <div class="mb-6">
-                <label class="text-xs font-bold text-gray-400 uppercase mb-2 block">1. UPLOAD CARDS</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <!-- Front Upload -->
-                    <div onclick="document.getElementById('fileFront').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
-                        <i class="fas fa-id-card text-2xl text-brand mb-2"></i>
-                        <span class="text-xs font-bold text-gray-600">Front Side</span>
-                        <input type="file" id="fileFront" hidden accept="image/*" onchange="previewImage(this, 'slotFront')">
-                    </div>
+        <!-- Result Canvas (Hidden until cropped) -->
+        <canvas id="dstCanvas" class="hidden border shadow-lg max-w-full"></canvas>
 
-                    <!-- Back Upload -->
-                    <div onclick="document.getElementById('fileBack').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
-                        <i class="fas fa-id-card-clip text-2xl text-brand mb-2"></i>
-                        <span class="text-xs font-bold text-gray-600">Back Side</span>
-                        <input type="file" id="fileBack" hidden accept="image/*" onchange="previewImage(this, 'slotBack')">
-                    </div>
+    </div>
+
+    <!-- Bottom Controls Panel -->
+    <div id="controls" class="bg-white p-5 border-t shadow-lg z-30 hidden">
+        
+        <!-- Sliders -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 max-w-2xl mx-auto">
+            
+            <!-- Brightness -->
+            <div>
+                <div class="flex justify-between mb-1">
+                    <label class="text-xs font-bold text-gray-500">BRIGHTNESS</label>
+                    <span id="briVal" class="text-xs font-bold text-blue-600">0</span>
                 </div>
+                <input type="range" id="brightness" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
             </div>
 
-            <!-- 2. Save Buttons -->
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <button onclick="saveAsJPG()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-3 rounded-lg text-sm transition">
-                    <i class="fas fa-image mr-1"></i> Save JPG
-                </button>
-                <button onclick="saveAsPDF()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-3 rounded-lg text-sm transition">
-                    <i class="fas fa-file-pdf mr-1"></i> Save PDF
-                </button>
+            <!-- Contrast -->
+            <div>
+                <div class="flex justify-between mb-1">
+                    <label class="text-xs font-bold text-gray-500">CONTRAST</label>
+                    <span id="conVal" class="text-xs font-bold text-blue-600">0</span>
+                </div>
+                <input type="range" id="contrast" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
             </div>
         </div>
 
-        <!-- Print Button -->
-        <div class="p-4 border-t bg-gray-50">
-            <button onclick="window.print()" class="w-full bg-brand hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <i class="fas fa-print"></i> PRINT SHEET
+        <!-- Action Buttons -->
+        <div class="flex gap-3 justify-center">
+            <button onclick="applyCrop()" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-xl font-bold shadow-lg transition transform active:scale-95">
+                <i class="fas fa-check mr-2"></i> CROP & FIX
+            </button>
+            <button onclick="downloadImage()" class="bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-bold shadow-lg transition">
+                <i class="fas fa-download mr-2"></i> SAVE
             </button>
         </div>
     </div>
 
-    <!-- PREVIEW AREA -->
-    <div class="flex-1 bg-gray-100 overflow-auto flex justify-center p-8" id="mainArea">
-        <div id="canvasWrapper">
-            <!-- Card Slots (Positioned for A4) -->
-            <!-- Slot 1: Front -->
-            <div id="slotFront" class="card-slot" style="top: 10mm; left: 15mm;">
-                <span class="text-gray-300 text-xs">Front Preview</span>
-            </div>
-            <!-- Slot 2: Back -->
-            <div id="slotBack" class="card-slot" style="top: 10mm; left: 110mm;">
-                <span class="text-gray-300 text-xs">Back Preview</span>
-            </div>
-            
-            <p class="absolute bottom-5 left-0 w-full text-center text-gray-300 text-sm">DK JAN SUVIDHA - A4 SHEET</p>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JavaScript Logic -->
     <script>
-        // 1. Image Preview Function
-        function previewImage(input, slotId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const slot = document.getElementById(slotId);
-                    slot.innerHTML = `<img src="${e.target.result}" draggable="false">`;
-                    slot.style.border = "1px solid #000"; // Remove dashed border
+        let imgElement = new Image();
+        let srcMat, dstMat;
+        let points = [{x:0, y:0}, {x:0, y:0}, {x:0, y:0}, {x:0, y:0}];
+        let container = document.getElementById('editor-container');
+        let canvas = document.getElementById('srcCanvas');
+        let ctx = canvas.getContext('2d');
+        let activePoint = null;
+
+        // 1. OpenCV Ready Check
+        function onOpenCvReady() {
+            console.log('OpenCV.js is ready');
+        }
+
+        // 2. Upload Image
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            let file = e.target.files[0];
+            if(!file) return;
+            let reader = new FileReader();
+            reader.onload = (ev) => {
+                imgElement.src = ev.target.result;
+                imgElement.onload = () => {
+                    initEditor();
                 }
-                reader.readAsDataURL(input.files[0]);
-            }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // 3. Initialize Editor
+        function initEditor() {
+            document.getElementById('editor-container').classList.remove('hidden');
+            document.getElementById('controls').classList.remove('hidden');
+            document.getElementById('dstCanvas').classList.add('hidden');
+            canvas.classList.remove('hidden');
+
+            // Resize Canvas to fit screen but keep aspect ratio
+            let maxWidth = Math.min(600, window.innerWidth - 40);
+            let scale = maxWidth / imgElement.width;
+            canvas.width = maxWidth;
+            canvas.height = imgElement.height * scale;
+            
+            ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+
+            // Set Initial Points (Corners with 20px padding)
+            let w = canvas.width;
+            let h = canvas.height;
+            points = [
+                {x: 20, y: 20},       // Top Left
+                {x: w-20, y: 20},     // Top Right
+                {x: w-20, y: h-20},   // Bottom Right
+                {x: 20, y: h-20}      // Bottom Left
+            ];
+
+            updatePointsUI();
         }
 
-        // 2. Save as JPG
-        function saveAsJPG() {
-            const canvasArea = document.getElementById('canvasWrapper');
-            html2canvas(canvasArea, { scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'ID-Card-Sheet.jpg';
-                link.href = canvas.toDataURL('image/jpeg', 0.9);
-                link.click();
+        // 4. Update UI (Dots & Lines)
+        function updatePointsUI() {
+            let polyString = "";
+            points.forEach((p, i) => {
+                let el = document.getElementById('p' + i);
+                el.style.left = p.x + 'px';
+                el.style.top = p.y + 'px';
+                polyString += `${p.x},${p.y} `;
+                
+                // Drag Events
+                el.onmousedown = el.ontouchstart = (e) => {
+                    activePoint = i;
+                    e.preventDefault();
+                };
             });
+            // Close the loop
+            polyString += `${points[0].x},${points[0].y}`;
+            document.getElementById('cropBox').setAttribute('points', polyString);
         }
 
-        // 3. Save as PDF
-        function saveAsPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const canvasArea = document.getElementById('canvasWrapper');
+        // 5. Drag Logic
+        window.onmousemove = window.ontouchmove = (e) => {
+            if (activePoint === null) return;
+            
+            let rect = container.getBoundingClientRect();
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            html2canvas(canvasArea, { scale: 2 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/jpeg', 0.9);
-                doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-                doc.save('ID-Card-Sheet.pdf');
-            });
+            let x = clientX - rect.left;
+            let y = clientY - rect.top;
+
+            // Bounds Check
+            x = Math.max(0, Math.min(x, canvas.width));
+            y = Math.max(0, Math.min(y, canvas.height));
+
+            points[activePoint] = {x, y};
+            updatePointsUI();
+        };
+
+        window.onmouseup = window.ontouchend = () => { activePoint = null; };
+
+        // 6. Apply Crop (Perspective Transform)
+        function applyCrop() {
+            if(typeof cv === 'undefined') { alert("System Loading... Please wait."); return; }
+
+            // Load Image into OpenCV
+            srcMat = cv.imread(canvas);
+            
+            // Source Points (User Selected)
+            let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [
+                points[0].x, points[0].y, 
+                points[1].x, points[1].y, 
+                points[2].x, points[2].y, 
+                points[3].x, points[3].y
+            ]);
+
+            // Destination Points (Flat Rectangle)
+            // Calculate width/height based on selection
+            let widthTop = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+            let widthBottom = Math.hypot(points[2].x - points[3].x, points[2].y - points[3].y);
+            let heightLeft = Math.hypot(points[0].x - points[3].x, points[0].y - points[3].y);
+            let heightRight = Math.hypot(points[1].x - points[2].x, points[1].y - points[2].y);
+
+            let finalW = Math.max(widthTop, widthBottom);
+            let finalH = Math.max(heightLeft, heightRight);
+
+            let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [
+                0, 0, 
+                finalW, 0, 
+                finalW, finalH, 
+                0, finalH
+            ]);
+
+            // Warp Perspective
+            let M = cv.getPerspectiveTransform(srcTri, dstTri);
+            dstMat = new cv.Mat();
+            let dsize = new cv.Size(finalW, finalH);
+            cv.warpPerspective(srcMat, dstMat, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+            // Show Result
+            let dstCanvas = document.getElementById('dstCanvas');
+            dstCanvas.classList.remove('hidden');
+            document.getElementById('editor-container').classList.add('hidden'); // Hide editor
+            cv.imshow('dstCanvas', dstMat);
+
+            // Clean up
+            srcMat.delete(); dstMat.delete(); M.delete(); srcTri.delete(); dstTri.delete();
+
+            // Apply Brightness/Contrast after crop
+            applyFilters();
+        }
+
+        // 7. Brightness/Contrast Filters
+        const briSlider = document.getElementById('brightness');
+        const conSlider = document.getElementById('contrast');
+
+        [briSlider, conSlider].forEach(s => {
+            s.addEventListener('input', applyFilters);
+        });
+
+        function applyFilters() {
+            let canvas = document.getElementById('dstCanvas');
+            if(canvas.classList.contains('hidden')) return;
+
+            let brightness = parseInt(briSlider.value);
+            let contrast = parseInt(conSlider.value);
+
+            document.getElementById('briVal').innerText = brightness;
+            document.getElementById('conVal').innerText = contrast;
+
+            // CSS Filters (Fastest way)
+            // Contrast: 100% is default. 0% is gray. 200% is high.
+            // Brightness: 100% is default.
+            
+            let bVal = 100 + brightness; 
+            let cVal = 100 + contrast;
+
+            canvas.style.filter = `brightness(${bVal}%) contrast(${cVal}%)`;
+        }
+
+        // 8. Download
+        function downloadImage() {
+            let canvas = document.getElementById('dstCanvas');
+            
+            // Create a temp canvas to burn the filter into the image
+            let tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            let tCtx = tempCanvas.getContext('2d');
+            
+            tCtx.filter = canvas.style.filter;
+            tCtx.drawImage(canvas, 0, 0);
+
+            let link = document.createElement('a');
+            link.download = 'Smart-Scan.jpg';
+            link.href = tempCanvas.toDataURL();
+            link.click();
         }
     </script>
 </body>
