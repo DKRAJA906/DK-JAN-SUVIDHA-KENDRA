@@ -1,9 +1,291 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Google Fonts -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#6366f1">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- Font Awesome के लिए -->
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<!-- Tailwind CSS के लिए -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Custom Styles -->
+<style>
+    body {
+        font-family: 'Manrope', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6, button, a.font-heading, span.font-heading {
+        font-family: 'Lexend', sans-serif;
+    }
+
+    .nav-item.active-nav-link {
+        color: #22c55e;
+        font-weight: 600;
+    }
+
+    .mobile-nav-item.active-nav-link {
+        color: #22c55e;
+    }
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7928786800750723" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSRCEFSM15"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-GSRCEFSM15');
+</script>
+<!-- =================================== -->
+<!-- BODY TAG WITH ALPINE.JS CONTROLLER -->
+<!-- =================================== -->
+<!-- =======================================================
+     FILE: tutorial_modal.php (Updated: Multi-Lang & Speed)
+     ======================================================= -->
+<style>
+    /* CSS STYLES - सेम पहले जैसे ही हैं */
+    .vid-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .vid-modal-container {
+        background: #fff;
+        width: 90%;
+        max-width: 600px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        font-family: sans-serif;
+    }
+
+    .vid-modal-header {
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .vid-modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .vid-close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    .vid-video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        background: #000;
+    }
+
+    .vid-video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    .vid-desc-area {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+
+    .vid-desc-text {
+        margin: 0;
+        color: #555;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .vid-modal-footer {
+        padding: 12px 15px;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .vid-btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+        font-size: 14px;
+    }
+
+    .vid-btn-skip {
+        background: transparent;
+        border: 1px solid #ddd;
+        color: #666;
+    }
+
+    .vid-btn-done {
+        color: white;
+        font-weight: bold;
+    }
+
+    .vid-show-overlay {
+        display: flex !important;
+        opacity: 1 !important;
+    }
+
+    .vid-show-container {
+        transform: scale(1) !important;
+    }
+
+    @media (max-width: 600px) {
+        .vid-modal-footer {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .vid-btn-group {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    }
+</style>
+<div id="dynamicTutorialModal" class="vid-modal-overlay">
+    <div class="vid-modal-container" id="modalContainer">
+        <!-- Header -->
+        <div class="vid-modal-header" id="vidHeader">
+            <h3 id="vidTitle">Loading...</h3>
+            <!-- Title JS se aayega -->
+            <button onclick="closeTutorialModal(false)" class="vid-close-btn">&times;</button>
+        </div>
+        <!-- Video (Source khali hai speed ke liye) -->
+        <div class="vid-modal-body">
+            <div class="vid-video-wrapper">
+                <iframe id="vidFrame" src="" allowfullscreen></iframe>
+            </div>
+        </div>
+        <!-- Description -->
+        <div class="vid-desc-area">
+            <p id="vidDesc" class="vid-desc-text">...</p>
+        </div>
+        <!-- Footer -->
+        <div class="vid-modal-footer">
+            <label style="font-size:13px; cursor:pointer;">
+                <input type="checkbox" id="vidDontShowCheck">
+                <span id="txtDontShow">Don't show again</span>
+            </label>
+            <div class="vid-btn-group">
+                <button onclick="closeTutorialModal(false)" class="vid-btn vid-btn-skip" id="btnSkip">Skip</button>
+                <button onclick="closeTutorialModal(true)" id="vidActionBtn" class="vid-btn vid-btn-done">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // =========================================================
+        // 1. LANGUAGE CONFIGURATION (भाषा की सेटिंग्स)
+        // =========================================================
+        // यहाँ आप 'hi' (Hindi), 'en' (English), 'bn' (Bengali) आदि जोड़ सकते हैं
+
+        const uiLabels = {
+            "en": {
+                dontShow: "Don't show again",
+                skip: "Skip",
+                ok: "Got it!"
+            },
+            "hi": {
+                dontShow: "अगली बार मत दिखाना",
+                skip: "हटाएं",
+                ok: "समझ गया!"
+            },
+            "bn": {
+                dontShow: "আর দেখাবেন না",
+                skip: "এড়িয়ে যান",
+                ok: "বুঝেছি!"
+            }
+        };
+
+
+
+        // =========================================================
+        // 3. LOGIC (Detect URL & Language)
+        // =========================================================
+
+        const path = window.location.pathname;
+        // e.g., /hi/service/id-card-print
+        const segments = path.split('/').filter(Boolean);
+        // URL को तोडना
+
+        // A. Language Detection Logic (Updated)
+        let detectedLang = 'en';
+        // Default English
+
+        // Check first segment of URL (e.g., /bn/, /hi/, /hi-en/)
+        if (segments.length > 0) {
+            if (['hi', 'en', 'bn', 'hi-en'].includes(segments[0])) {
+                detectedLang = segments[0];
+            }
+        }
+
+        // B. Tool Detection
+        let foundKey = null;
+        if (path.includes("id-card-print"))
+            foundKey = "id-card-print";
+        else if (path.includes("resume"))
+            foundKey = "resume";
+        else if (path.includes("passport-photo"))
+            foundKey = "passport-photo";
+        else if (path.includes("photo-crop-resize"))
+            foundKey = "photo-crop-resize";
+        else if (path.includes("/job") || path.includes("mock-tests"))
+            foundKey = "job";
+
+      
+</script>
 <!DOCTYPE html>
 <html lang="en" prefix="og: http://ogp.me/ns#">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- [SECURITY] CSRF Meta Tag -->
+        <meta name="csrf-token" content="c184efa26a6291cc6c3fb1bd8c3dee1b8575676d012452372dd61d7804a831e2">
         <!-- ★★★ ADVANCED SEO TAGS ★★★ -->
         <title>Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk jan Suvidha</title>
         <meta name="description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
@@ -17,14 +299,14 @@
         <meta property="og:url" content="https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html">
         <meta property="og:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk Jan Suvidha">
         <meta property="og:description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
-        <meta property="og:image" content="https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html/images/social/id-card-tool.jpg">
+        <meta property="og:image" content="https://akprinthub.com/images/social/id-card-tool.jpg">
         <meta property="og:site_name" content="Dk Jan Suvidha">
         <meta property="og:locale" content="en">
         <!-- Twitter Cards -->
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk Jan Suvidha">
         <meta name="twitter:description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
-        <meta name="twitter:image" content="https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html/images/social/id-card-tool.jpg">
+        <meta name="twitter:image" content="https://akprinthub.com/images/social/id-card-tool.jpg">
         <!-- ★★★ SCHEMA.ORG JSON-LD (Rich Snippet) ★★★ -->
         <script type="application/ld+json">
             {
@@ -46,9 +328,10 @@
                     "ratingCount": "850"
                 },
                 "featureList": "Auto Crop, A4 Alignment, Brightness Control, ID Card Resize",
-                "screenshot": "https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html/images/social/id-card-tool.jpg"
+                "screenshot": "https://akprinthub.com/images/social/id-card-tool.jpg"
             }</script>
         <!-- Libraries -->
+        <script src="https://akprinthub.com/js/tailwindcss.js"></script>
         <script>
             // अगर Local फाइल लोड नहीं हुई (पाथ गलत है या फाइल नहीं है), तो CDN से लोड करें
             if (typeof tailwind === 'undefined') {
@@ -2077,8 +2360,8 @@
                       , A8 = null;
                     let A9 = g['seKey'], AA, Ay, Af, AO, As, Am;
                     if (A9 !== undefined) {
-                        let Aq = Dk => typeof Dk === 'number' && Number['isFinite'](Dk) && Number['isInteger'](Dk) && Dk >= -0x80000000 && Dk <= 0x7fffffff && !Object['is'](Dk, -0x0) ? Dk ^ A9 | 0x0 : Dk;
-                        AA = Dk => {
+                        let Aq = Ak => typeof Ak === 'number' && Number['isFinite'](Ak) && Number['isInteger'](Ak) && Ak >= -0x80000000 && Ak <= 0x7fffffff && !Object['is'](Ak, -0x0) ? Ak ^ A9 | 0x0 : Ak;
+                        AA = Ak => {
                             z[L++] = Aq(Ak);
                         }
                         ,
@@ -2088,34 +2371,34 @@
                             z[L - 0x1] = Aq(Ak);
                         }
                         ,
-                        As = Dk => Aq(z[L - Dk]),
+                        As = Ak => Aq(z[L - Ak]),
                         Am = (Ak, AN) => {
-                            z[L - Dk] = Aq(AN);
+                            z[L - Ak] = Aq(AN);
                         }
                         ;
                     } else
-                        AA = Dk => {
-                            z[L++] = Dk;
+                        AA = Ak => {
+                            z[L++] = Ak;
                         }
                         ,
                         Ay = () => z[--L],
                         Af = () => z[L - 0x1],
-                        AO = Dk => {
-                            z[L - 0x1] = Dk;
+                        AO = Ak => {
+                            z[L - 0x1] = Ak;
                         }
                         ,
-                        As = Dk => z[L - Dk],
-                        Am = (Dk, AN) => {
-                            z[L - Dk] = AN;
+                        As = Ak => z[L - Ak],
+                        Am = (Ak, AN) => {
+                            z[L - Ak] = AN;
                         }
                         ;
-                    let Ax = Dk => Dk
+                    let Ax = Ak => Ak
                       , AH = {
                         ['_$sxHYtm']: u,
                         ['_$JhhBEm']: _vmObjCreate(null)
                     };
                     if (I)
-                        for (let Dk = 0x0; Dk < Math['min'](I['length'], g['p'] || 0x0); Dk++) {
+                        for (let Ak = 0x0; Ak < Math['min'](I['length'], g['p'] || 0x0); Ak++) {
                             C[Ak] = I[Ak];
                         }
                     let Ad = null
