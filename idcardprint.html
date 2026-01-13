@@ -252,133 +252,7 @@
             }
         };
 
-        // =========================================================
-        // 2. TOOLS DATA (मल्टी-लिंगुअल कंटेंट के साथ)
-        // =========================================================
 
-        const toolsConfig = {
-            "id-card-print": {
-                videoId: "XSdPj5NQHR4",
-                // Video ID
-                color: "linear-gradient(135deg, #0061ff 0%, #60efff 100%)",
-                content: {
-                    "en": {
-                        title: "How to Print ID Card?",
-                        desc: "Watch this video to learn how to print Aadhar or School IDs perfectly."
-                    },
-                    "hi": {
-                        title: "ID कार्ड कैसे प्रिंट करें?",
-                        desc: "आधार या स्कूल आईडी को सही साइज में सेट करने का तरीका वीडियो में देखें।"
-                    },
-                    "bn": {
-                        title: "আইডি কার্ড প্রিন্ট করবেন?",
-                        desc: "আধার বা স্কুল আইডি সঠিক মাপে প্রিন্ট করার পদ্ধতি দেখুন।"
-                    }
-                }
-            },
-
-            "resume": {
-                videoId: "VWOYGyS6xII",
-                color: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
-                content: {
-                    "en": {
-                        title: "Create Professional Resume",
-                        desc: "Make a CV in 2 minutes without typing."
-                    },
-                    "hi": {
-                        title: "प्रोफेशनल रेज़्यूमे (CV) बनाएं",
-                        desc: "बिना टाइपिंग के 2 मिनट में बायोडाटा बनाने का तरीका देखें।"
-                    },
-                    "bn": {
-                        title: "পেশাদার রিজিউম তৈরি করুন",
-                        desc: "টাইপিং ছাড়াই ২ মিনিটে সিভি তৈরি করুন।"
-                    }
-                }
-            },
-            // =========================================================
-            // UPDATED TOOLS DATA (With bn, hi, en, hi-en)
-            // =========================================================
-
-            // 3. Passport Photo Tool
-            "passport-photo": {
-                videoId: "1g5iNAjjHRk",
-                // यहाँ अपनी वीडियो ID डालें
-                color: "linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)",
-                // Red Theme
-                content: {
-                    // English
-                    "en": {
-                        title: "📸 Create Passport Photo",
-                        desc: "Upload a mobile photo and create a printable passport photo sheet instantly."
-                    },
-
-                    // Hindi (Devanagari)
-                    "hi": {
-                        title: "📸 पासपोर्ट फोटो कैसे बनाएं?",
-                        desc: "मोबाइल फोटो अपलोड करके प्रिंट करने योग्य पासपोर्ट शीट तैयार करें।"
-                    },
-
-                    // Bengali
-                    "bn": {
-                        title: "📸 পাসপোর্ট ছবি তৈরি করুন",
-                        desc: "মোবাইল ফটো আপলোড করে প্রিন্ট করার মতো পাসপোর্ট শিট তৈরি করুন।"
-                    },
-
-                    // Hindi-English (Hinglish) - अगर URL hi-en है
-                    "hi-en": {
-                        title: "📸 Passport Photo Kaise Banaye?",
-                        desc: "Mobile photo upload karke print karne layak sheet taiyar karein."
-                    }
-                }
-            },
-
-            // 4. Photo Resize & Crop Tool
-            "photo-crop-resize": {
-                videoId: "Mwf2Mv-FihY",
-                // यहाँ अपनी वीडियो ID डालें
-                color: "linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)",
-                // Purple Theme
-                content: {
-                    // English
-                    "en": {
-                        title: "✂️ Image Resize & Crop Tool",
-                        desc: "Set correct size (KB) for Photo, Signature, and Thumb for gov forms."
-                    },
-
-                    // Hindi (Devanagari)
-                    "hi": {
-                        title: "✂️ फोटो रिसाइज़ और क्रॉप टूल",
-                        desc: "सरकारी फॉर्म के लिए फोटो, साइन और थंब का साइज (KB) सेट करें।"
-                    },
-
-                    // Bengali
-                    "bn": {
-                        title: "✂️ ছবির সাইজ এবং ক্রপ টুল",
-                        desc: "সরকারি ফর্মের জন্য ছবি, সই এবং থাম্ব ইম্প্রেশনের সাইজ (KB) ঠিক করুন।"
-                    },
-
-                    // Hindi-English (Hinglish)
-                    "hi-en": {
-                        title: "✂️ Photo Resize aur Crop Tool",
-                        desc: "Govt form ke liye photo, sign aur thumb ka size (KB) set karein."
-                    }
-                }
-            },
-
-            // Job Section example
-            /*
-     "job": { 
-            videoId: "GHI789JKL",
-            color: "linear-gradient(135deg, #f12711 0%, #f5af19 100%)",
-            content: {
-                "en": { title: "Jobs & Mock Tests", desc: "Learn how to apply for jobs and take free tests." },
-                "hi": { title: "जॉब्स और मॉक टेस्ट", desc: "नौकरी के लिए आवेदन और फ्री टेस्ट देने का प्रोसेस जानें।" },
-                "bn": { title: "চাকরি এবং মক টেস্ট", desc: "চাকরির আবেদন এবং ফ্রি টেস্ট দেওয়ার পদ্ধতি জানুন।" }
-            }
-        }
-        */
-            // आप यहाँ और टूल्स जोड़ सकते हैं...
-        };
 
         // =========================================================
         // 3. LOGIC (Detect URL & Language)
@@ -413,76 +287,7 @@
         else if (path.includes("/job") || path.includes("mock-tests"))
             foundKey = "job";
 
-        // =========================================================
-        // 4. EXECUTION (दिखाना)
-        // =========================================================
-
-        if (foundKey && toolsConfig[foundKey]) {
-            const data = toolsConfig[foundKey];
-            const content = data.content[detectedLang] || data.content['en'];
-            // अगर भाषा नहीं मिली तो English
-            const labels = uiLabels[detectedLang] || uiLabels['en'];
-
-            const storageKey = 'tut_seen_' + foundKey;
-
-            // अगर यूजर ने "Don't show" नहीं किया है
-            if (!localStorage.getItem(storageKey)) {
-
-                // Text और Colors सेट करें
-                document.getElementById('vidTitle').textContent = content.title;
-                document.getElementById('vidDesc').textContent = content.desc;
-                document.getElementById('txtDontShow').textContent = labels.dontShow;
-                document.getElementById('btnSkip').textContent = labels.skip;
-                document.getElementById('vidActionBtn').textContent = labels.ok;
-
-                document.getElementById('vidHeader').style.background = data.color;
-                document.getElementById('vidActionBtn').style.background = data.color;
-
-                // Video सेट करें (autoplay=0 मतलब नहीं चलेगा, सिर्फ थंबनेल दिखेगा)
-                const iframe = document.getElementById('vidFrame');
-                // 'rel=0' मतलब वीडियो ख़त्म होने पर आपके ही चैनल की वीडियो दिखें
-                iframe.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&modestbranding=1`;
-
-                // मोडल दिखाएं
-                const modalOverlay = document.getElementById('dynamicTutorialModal');
-                const modalContainer = document.getElementById('modalContainer');
-
-                setTimeout( () => {
-                    modalOverlay.style.display = 'flex';
-                    setTimeout( () => {
-                        modalOverlay.classList.add('vid-show-overlay');
-                        modalContainer.classList.add('vid-show-container');
-                    }
-                    , 10);
-                }
-                , 1500);
-                // 1.5 सेकंड बाद दिखेगा
-
-                window.activeTutKey = storageKey;
-            }
-        }
-    });
-
-    function closeTutorialModal(saveRef) {
-        const modalOverlay = document.getElementById('dynamicTutorialModal');
-        const modalContainer = document.getElementById('modalContainer');
-        const checkbox = document.getElementById('vidDontShowCheck');
-        const iframe = document.getElementById('vidFrame');
-
-        if (checkbox.checked && window.activeTutKey) {
-            localStorage.setItem(window.activeTutKey, 'true');
-        }
-
-        modalOverlay.classList.remove('vid-show-overlay');
-        modalContainer.classList.remove('vid-show-container');
-
-        setTimeout( () => {
-            modalOverlay.style.display = 'none';
-            iframe.src = "";
-            // URL हटा दें ताकि मेमोरी फ्री हो जाए
-        }
-        , 300);
-    }
+      
 </script>
 <!DOCTYPE html>
 <html lang="en" prefix="og: http://ogp.me/ns#">
@@ -493,24 +298,24 @@
         <!-- [SECURITY] CSRF Meta Tag -->
         <meta name="csrf-token" content="c184efa26a6291cc6c3fb1bd8c3dee1b8575676d012452372dd61d7804a831e2">
         <!-- ★★★ ADVANCED SEO TAGS ★★★ -->
-        <title>Smart ID Card Printing Software Online - Auto Crop & A4 Setting | AkPrintHub</title>
+        <title>Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk jan Suvidha</title>
         <meta name="description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
         <meta name="keywords" content="id card printer online, aadhaar card crop, ayushman card print setting, eshram card a4 size, pvc card printing software, online photo editor for id card, smart crop tool">
-        <link rel="canonical" href="https://akprinthub.com/en/id-card-print"/>
+        <link rel="canonical" href="https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html"/>
         <meta name="theme-color" content="#2563eb">
         <meta name="robots" content="index, follow, max-image-preview:large">
-        <meta name="author" content="AkPrintHub">
+        <meta name="author" content="Dk Jan Suvidha">
         <!-- Open Graph / Facebook / WhatsApp -->
         <meta property="og:type" content="website">
-        <meta property="og:url" content="https://akprinthub.com/en/id-card-print">
-        <meta property="og:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | AkPrintHub">
+        <meta property="og:url" content="https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html">
+        <meta property="og:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk Jan Suvidha">
         <meta property="og:description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
         <meta property="og:image" content="https://akprinthub.com/images/social/id-card-tool.jpg">
-        <meta property="og:site_name" content="AkPrintHub">
+        <meta property="og:site_name" content="Dk Jan Suvidha">
         <meta property="og:locale" content="en">
         <!-- Twitter Cards -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | AkPrintHub">
+        <meta name="twitter:title" content="Smart ID Card Printing Software Online - Auto Crop & A4 Setting | Dk Jan Suvidha">
         <meta name="twitter:description" content="Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.">
         <meta name="twitter:image" content="https://akprinthub.com/images/social/id-card-tool.jpg">
         <!-- ★★★ SCHEMA.ORG JSON-LD (Rich Snippet) ★★★ -->
@@ -518,8 +323,8 @@
             {
                 "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
-                "name": "AkPrintHub Smart ID Card Printer",
-                "url": "https://akprinthub.com/en/id-card-print",
+                "name": "Dk Jan Suvidha Smart ID Card Printer",
+                "url": "https://dkraja906.github.io/DK-JAN-SUVIDHA-KENDRA/idcardprint.html",
                 "applicationCategory": "PhotoEditor",
                 "operatingSystem": "Web Browser",
                 "description": "Convert Aadhaar, Ayushman, eShram & Pan Cards to perfect ID size online. AI-powered auto cropping, brightness enhancement, and 5-card A4 alignment tool. Free & Secure.",
