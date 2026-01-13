@@ -2,197 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DK JAN SUVIDHA - ID Card Printer</title>
     
-    <!-- Title Changed -->
-    <title>DK JAN SUVIDHA KENDRA - Smart ID Card Printer</title>
-
-    <!-- 1. Libraries (जरूरी फाइल्स) -->
-    <!-- Tailwind CSS (डिजाइन के लिए) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome (आइकॉन्स के लिए) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- jsPDF (PDF बनाने के लिए) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- 2. Configuration -->
     <script>
-        // Tailwind कॉन्फ़िगरेशन
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bg: '#f1f5f9',
-                        brand: '#2563eb', // नीला रंग
-                        dark: '#0f172a'
-                    },
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif']
-                    }
+                    colors: { brand: '#2563eb', bg: '#f1f5f9' },
+                    fontFamily: { sans: ['Segoe UI', 'sans-serif'] }
                 }
             }
         }
     </script>
 
-    <!-- 3. OpenCV Engine (फोटो क्रॉपिंग के लिए - इसे रहने दिया है) -->
-    <script>
-        function loadOpenCV() {
-            let script = document.createElement('script');
-            script.src = 'https://docs.opencv.org/4.8.0/opencv.js';
-            script.async = true;
-            script.onload = function() { console.log("OpenCV Loaded"); };
-            document.head.appendChild(script);
-        }
-        loadOpenCV(); // लोड शुरू करें
-    </script>
-
-    <!-- 4. Styles (सिर्फ प्रिंटिंग और एडिटर के लिए) -->
     <style>
-        body {
-            background-color: #f1f5f9;
-            font-family: 'Manrope', sans-serif;
-            overflow: hidden; /* स्क्रॉल बंद */
-            touch-action: none;
-            user-select: none;
-        }
-
-        /* बटन्स का स्टाइल */
-        .doc-btn {
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .doc-btn.active {
-            background-color: white;
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-        }
-
-        /* एडिटर एरिया (जहाँ कार्ड दिखेगा) */
-        #editorScrollArea { 
-            overflow: auto; 
-            width: 100%; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background-color: #f8fafc;
-        }
-
-        /* कैनवास (असली कार्ड एरिया) */
+        body { background-color: #f1f5f9; user-select: none; }
         #canvasWrapper { 
-            position: relative; 
-            box-shadow: 0 20px 50px -12px rgba(0,0,0,0.25); 
-            z-index: 10; 
-            background: white;
+            width: 210mm; 
+            height: 297mm; 
+            background: white; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            position: relative;
+            margin: 20px auto;
         }
-
-        /* प्रिंट के समय बाकी सब छुपाना */
-        #printContainer { display: none; }
-        @media print { 
-            body > *:not(#printContainer) { display: none !important; } 
-            #printContainer { display: block !important; width: 100%; height: auto; } 
-            @page { margin: 0; }
+        .card-slot {
+            width: 85.6mm;
+            height: 54mm;
+            border: 1px dashed #ccc;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f8fafc;
         }
-
-        /* लोडिंग एनीमेशन */
-        .loader {
-            border: 3px solid #cbd5e1;
-            border-top: 3px solid #2563eb;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
+        .card-slot img { width: 100%; height: 100%; object-fit: contain; }
+        
+        /* Print Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #canvasWrapper, #canvasWrapper * { visibility: visible; }
+            #canvasWrapper { position: absolute; left: 0; top: 0; margin: 0; box-shadow: none; }
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
+<body class="h-screen flex flex-col lg:flex-row overflow-hidden">
 
-<body class="flex flex-col lg:flex-row h-screen">
-
-    <!-- SIDEBAR (बायां पैनल - सेटिंग्स) -->
-    <div class="w-full lg:w-80 bg-white border-r border-gray-200 flex flex-col z-20 shadow-lg">
-        
-        <!-- Header / Logo Area -->
-        <div class="p-5 border-b border-gray-100">
-            <h1 class="text-2xl font-bold text-brand font-heading">
-                <i class="fas fa-print mr-2"></i>DK JAN SUVIDHA
-            </h1>
-            <p class="text-xs text-gray-500 mt-1">Smart ID Card Printing Suite</p>
+    <!-- SIDEBAR -->
+    <div class="w-full lg:w-80 bg-white border-r shadow-lg z-20 flex flex-col h-full">
+        <div class="p-5 border-b">
+            <h1 class="text-2xl font-bold text-brand"><i class="fas fa-print mr-2"></i>DK JAN SUVIDHA</h1>
+            <p class="text-xs text-gray-500">Auto ID Card Printing Suite</p>
         </div>
 
-        <!-- Controls -->
         <div class="p-4 flex-1 overflow-y-auto">
-            
-            <!-- 1. Type Selection -->
+            <!-- 1. Upload Images -->
             <div class="mb-6">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 block">1. SELECT TYPE</label>
-                <div class="grid grid-cols-3 gap-2">
-                    <button class="doc-btn active p-3 rounded-xl flex flex-col items-center justify-center bg-gray-50">
-                        <i class="fas fa-id-card text-xl mb-1 text-brand"></i>
-                        <span class="text-[10px] font-bold text-gray-700">ID Card</span>
-                    </button>
-                    <button class="doc-btn p-3 rounded-xl flex flex-col items-center justify-center bg-gray-50">
-                        <i class="fas fa-file-invoice text-xl mb-1 text-gray-400"></i>
-                        <span class="text-[10px] font-bold text-gray-500">Large Doc</span>
-                    </button>
-                    <button class="doc-btn p-3 rounded-xl flex flex-col items-center justify-center bg-gray-50">
-                        <i class="fas fa-file text-xl mb-1 text-gray-400"></i>
-                        <span class="text-[10px] font-bold text-gray-500">A4 Page</span>
-                    </button>
+                <label class="text-xs font-bold text-gray-400 uppercase mb-2 block">1. UPLOAD CARDS</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Front Upload -->
+                    <div onclick="document.getElementById('fileFront').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
+                        <i class="fas fa-id-card text-2xl text-brand mb-2"></i>
+                        <span class="text-xs font-bold text-gray-600">Front Side</span>
+                        <input type="file" id="fileFront" hidden accept="image/*" onchange="previewImage(this, 'slotFront')">
+                    </div>
+
+                    <!-- Back Upload -->
+                    <div onclick="document.getElementById('fileBack').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
+                        <i class="fas fa-id-card-clip text-2xl text-brand mb-2"></i>
+                        <span class="text-xs font-bold text-gray-600">Back Side</span>
+                        <input type="file" id="fileBack" hidden accept="image/*" onchange="previewImage(this, 'slotBack')">
+                    </div>
                 </div>
             </div>
 
-            <!-- 2. Upload Area -->
-            <div class="mb-6">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 block">2. UPLOAD IMAGES</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
-                        <i class="fas fa-camera text-2xl text-gray-300 mb-2"></i>
-                        <span class="text-xs font-bold text-gray-500">Front Side</span>
-                        <input type="file" hidden id="inputFront">
-                    </div>
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-brand transition">
-                        <i class="fas fa-sync text-2xl text-gray-300 mb-2"></i>
-                        <span class="text-xs font-bold text-gray-500">Back Side</span>
-                        <input type="file" hidden id="inputBack">
-                    </div>
-                </div>
+            <!-- 2. Save Buttons -->
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <button onclick="saveAsJPG()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-3 rounded-lg text-sm transition">
+                    <i class="fas fa-image mr-1"></i> Save JPG
+                </button>
+                <button onclick="saveAsPDF()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-3 rounded-lg text-sm transition">
+                    <i class="fas fa-file-pdf mr-1"></i> Save PDF
+                </button>
             </div>
         </div>
 
-        <!-- Footer / Print Button -->
-        <div class="p-4 border-t border-gray-200 bg-gray-50">
-            <button onclick="window.print()" class="w-full bg-brand hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+        <!-- Print Button -->
+        <div class="p-4 border-t bg-gray-50">
+            <button onclick="window.print()" class="w-full bg-brand hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                 <i class="fas fa-print"></i> PRINT SHEET
             </button>
         </div>
     </div>
 
-    <!-- MAIN AREA (Preview) -->
-    <div id="editorScrollArea">
-        <div id="canvasWrapper" style="width: 210mm; height: 297mm;">
-            <!-- यहाँ कैनवास या A4 प्रीव्यू आएगा -->
-            <div class="flex items-center justify-center h-full text-gray-300">
-                A4 Preview Area
+    <!-- PREVIEW AREA -->
+    <div class="flex-1 bg-gray-100 overflow-auto flex justify-center p-8" id="mainArea">
+        <div id="canvasWrapper">
+            <!-- Card Slots (Positioned for A4) -->
+            <!-- Slot 1: Front -->
+            <div id="slotFront" class="card-slot" style="top: 10mm; left: 15mm;">
+                <span class="text-gray-300 text-xs">Front Preview</span>
             </div>
+            <!-- Slot 2: Back -->
+            <div id="slotBack" class="card-slot" style="top: 10mm; left: 110mm;">
+                <span class="text-gray-300 text-xs">Back Preview</span>
+            </div>
+            
+            <p class="absolute bottom-5 left-0 w-full text-center text-gray-300 text-sm">DK JAN SUVIDHA - A4 SHEET</p>
         </div>
     </div>
 
-    <!-- PRINT CONTAINER (Hidden) -->
-    <div id="printContainer"></div>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Image Preview Function
+        function previewImage(input, slotId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const slot = document.getElementById(slotId);
+                    slot.innerHTML = `<img src="${e.target.result}" draggable="false">`;
+                    slot.style.border = "1px solid #000"; // Remove dashed border
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-    <!-- LOADING SCREEN (शुरुआत में दिखेगा) -->
-    <div id="loaderScreen" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center hidden">
-        <div class="loader mb-4"></div>
-        <p class="text-gray-500 text-sm font-bold">Loading System...</p>
-    </div>
+        // 2. Save as JPG
+        function saveAsJPG() {
+            const canvasArea = document.getElementById('canvasWrapper');
+            html2canvas(canvasArea, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'ID-Card-Sheet.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+            });
+        }
 
+        // 3. Save as PDF
+        function saveAsPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const canvasArea = document.getElementById('canvasWrapper');
+
+            html2canvas(canvasArea, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                doc.save('ID-Card-Sheet.pdf');
+            });
+        }
+    </script>
 </body>
 </html>
