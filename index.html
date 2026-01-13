@@ -501,9 +501,7 @@
     <p>Developed by DK</p>
 
     <!-- Visitor Counter Display -->
-    <div style="text-align: center; margin-top: 15px; padding: 10px; background: #222; border-radius: 5px; color: #00e676; font-family: monospace; display: inline-block;">
-        👁️ Views: <span id="visitor-count">Loading...</span>
-    </div>
+    <div id="visitor-count" style="font-weight: bold; color: blue;">Loading...</div>
 </footer>
 
 <!-- Visitor Counter Script (इसे footer के बाहर रखें) -->
@@ -534,5 +532,46 @@
         setInterval(updateDateTime, 1000);
         updateDateTime();
     </script>
+        <script type="module">
+  // 1. Firebase के जरूरी फंक्शन इम्पोर्ट करें
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, onValue, runTransaction } 
+    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+  // 2. अपनी Firebase Config यहाँ पेस्ट करें (Firebase Console -> Project Settings से मिलेगा)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAAH2zdwtCJJwS-bb2AXDCx012yHUVYXtk",
+  authDomain: "dk-jan-suvidha-website.firebaseapp.com",
+  databaseURL: "https://dk-jan-suvidha-website-default-rtdb.firebaseio.com",
+  projectId: "dk-jan-suvidha-website",
+  storageBucket: "dk-jan-suvidha-website.firebasestorage.app",
+  messagingSenderId: "46152038424",
+  appId: "1:46152038424:web:400d7652cb432a0400eb6d",
+  measurementId: "G-WSEGR1GBR2"
+};
+
+  // 3. ऐप शुरू करें
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 4. डेटाबेस में 'visitors' नोड का रेफरेंस लें
+  const visitRef = ref(db, 'visitors');
+
+  // 5. पेज लोड होते ही काउंट बढ़ाएं (Transaction का यूज़ करें ताकि रेस कंडीशन न हो)
+  // यह sessionStorage चेक करता है ताकि एक ही सेशन में बार-बार रिफ्रेश करने पर काउंट न बढ़े
+  if (!sessionStorage.getItem("visited")) {
+      runTransaction(visitRef, (currentCount) => {
+        return (currentCount || 0) + 1;
+      }).then(() => {
+          sessionStorage.setItem("visited", "true");
+      });
+  }
+
+  // 6. रियल-टाइम अपडेट दिखाएं
+  onValue(visitRef, (snapshot) => {
+    const data = snapshot.val();
+    document.getElementById("visitor-count").innerText = `Total Visits: ${data || 0}`;
+  });
+        </script>
 </body>
 </html>
