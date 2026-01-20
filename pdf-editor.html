@@ -6,75 +6,96 @@
 </head>
 <body>
     <div style="margin-bottom: 20px;">
-        <!-- ID को सही किया (बिना स्पेस के) -->
         <input type="text" id="newName" placeholder="Customer Name">
-        <input type="text" id="newHusband" placeholder="Father Name">
+        <input type="text" id="newHusband" placeholder="Husband Name">
         <input type="text" id="newMobile" placeholder="Mobile Number">
         <button onclick="addPerson()">Add Customer</button>
+        <!-- लिस्ट को खाली करने का बटन भी दिया है -->
+        <button onclick="clearList()" style="background-color: red; color: white;">Clear List</button>
     </div>
 
-    <table border="1" style="width:100%; text-align:center; border-collapse:collapse;">
+    <table border="1" id="customerTable">
         <thead>
-            <tr style="background: linear-gradient(to right,#1e3c72,#2a5298); color:white;">
+            <tr style="background-color: yellow;"> <!-- आपका रंग भी लगा दिया -->
                 <th>Sl</th>
                 <th>Customer Name</th>
-                <th>Father Name</th>
+                <th>Husband Name</th>
                 <th>Mobile Number</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>Shivam</td>
-                <td>Ramlal</td>
-                <td>8318736819</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Raju</td>
-                <td>Rampal</td>
-                <td>8318736819</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Satish</td>
-                <td>Sukhpal</td>
-                <td>8318745819</td>
-            </tr>
+            <!-- यहाँ डेटा JavaScript से आएगा -->
         </tbody>
     </table>
 
     <script>
+    // पेज खुलते ही पुराना डेटा लोड करें
+    window.onload = function() {
+        loadData();
+    };
+
     function addPerson() {
-        // 1. सही ID का इस्तेमाल किया
         var name = document.getElementById("newName").value;
         var husband = document.getElementById("newHusband").value;
-        var mobile = document.getElementById("newMobile").value; // मोबाइल नंबर लिया
+        var mobile = document.getElementById("newMobile").value;
         
-        // चेक करें कि तीनों बॉक्स भरे हैं या नहीं
         if(name === "" || husband === "" || mobile === "") {
             alert("कृपया सभी जानकारी भरें!");
             return;
         }
 
-        var table = document.querySelector("table tbody");
-        var newRow = table.insertRow();
-        var rowCount = table.rows.length; // सही सीरियल नंबर (जितनी लाइनें हैं)
-        
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-        var cell4 = newRow.insertCell(3);
+        // 1. पुराना डेटा निकालें
+        var customers = JSON.parse(localStorage.getItem("myCustomers") || "[]");
 
-        cell1.innerHTML = rowCount;
-        cell2.innerHTML = name;
-        cell3.innerHTML = husband; 
-        cell4.innerHTML = mobile; // अब यह सही काम करेगा
+        // 2. नया कस्टमर जोड़ें
+        var newCustomer = {
+            name: name,
+            husband: husband,
+            mobile: mobile
+        };
+        customers.push(newCustomer);
 
-        // इनपुट बॉक्स खाली करें
+        // 3. वापस सेव करें
+        localStorage.setItem("myCustomers", JSON.stringify(customers));
+
+        // 4. टेबल दोबारा दिखाएं
+        loadData();
+
+        // इनपुट खाली करें
         document.getElementById("newName").value = "";
         document.getElementById("newHusband").value = "";
         document.getElementById("newMobile").value = "";
+    }
+
+    function loadData() {
+        var tableBody = document.querySelector("table tbody");
+        tableBody.innerHTML = ""; // पुरानी टेबल साफ करें
+
+        // सेव किया हुआ डेटा लाएं
+        var customers = JSON.parse(localStorage.getItem("myCustomers") || "[]");
+
+        // लूप चलाकर टेबल में भरें
+        customers.forEach(function(customer, index) {
+            var newRow = tableBody.insertRow();
+            
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+
+            cell1.innerHTML = index + 1; // सीरियल नंबर (1 से शुरू)
+            cell2.innerHTML = customer.name;
+            cell3.innerHTML = customer.husband;
+            cell4.innerHTML = customer.mobile;
+        });
+    }
+
+    // अगर पूरी लिस्ट डिलीट करनी हो
+    function clearList() {
+        if(confirm("क्या आप पूरी लिस्ट डिलीट करना चाहते हैं?")) {
+            localStorage.removeItem("myCustomers");
+            loadData(); // टेबल खाली हो जाएगी
+        }
     }
     </script>
 </body>
