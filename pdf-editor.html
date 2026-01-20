@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>My Customer</title>
-    <!-- CSS फाइल को लिंक करना न भूलें -->
 </head>
 <body>
     <div style="margin-bottom: 20px;">
-    <input type="text" id="NewCustmerName" placeholder="Customer Name">
-    <input type="text" id="FatherName" placeholder="Father Name">
-    <input type="text" id="MobileNumber" placeholder="Mobile Number">
-    <button onclick="addCustomer()">Add Customer</button>
-</div>
+        <!-- ID को सही किया (बिना स्पेस के) -->
+        <input type="text" id="newName" placeholder="Customer Name">
+        <input type="text" id="newHusband" placeholder="Father Name">
+        <input type="text" id="newMobile" placeholder="Mobile Number">
+        <button onclick="addPerson()">Add Customer</button>
+    </div>
+
     <table border="1">
         <thead>
             <tr>
                 <th>Sl</th>
                 <th>Customer Name</th>
-                <th>Husband Name</th>
+                <th>Father Name</th>
                 <th>Mobile Number</th>
             </tr>
         </thead>
@@ -42,42 +43,39 @@
             </tr>
         </tbody>
     </table>
+
     <script>
     function addPerson() {
-        // 1. इनपुट बॉक्स से वैल्यू लेना
-        var name = document.getElementById("NewCustmerName").value;
-        var husband = document.getElementById("FatherName").value;
-        var husband = document.getElementById("MobileNumber").value;
+        // 1. सही ID का इस्तेमाल किया
+        var name = document.getElementById("newName").value;
+        var husband = document.getElementById("newHusband").value;
+        var mobile = document.getElementById("newMobile").value; // मोबाइल नंबर लिया
         
-        // अगर बॉक्स खाली हो तो अलर्ट दें
-        if(name === "" || husband === "") {
-            alert("कृपया दोनों नाम भरें!");
+        // चेक करें कि तीनों बॉक्स भरे हैं या नहीं
+        if(name === "" || husband === "" || mobile === "") {
+            alert("कृपया सभी जानकारी भरें!");
             return;
         }
 
-        // 2. टेबल ढूँढना और नई Row बनाना
-        var table = document.querySelector("table tbody"); // टेबल की बॉडी सेलेक्ट करें
-        var newRow = table.insertRow(); // नई लाइन (row) डालें
-
-        // 3. सीरियल नंबर (Sl) अपने आप निकालना (जितनी लाइनें हैं + 1)
-        var rowCount = table.rows.length; 
+        var table = document.querySelector("table tbody");
+        var newRow = table.insertRow();
+        var rowCount = table.rows.length; // सही सीरियल नंबर (जितनी लाइनें हैं)
         
-        // 4. नए सेल (Cells) बनाना और डेटा डालना
-        var cell1 = newRow.insertCell(0); // Sl
-        var cell2 = newRow.insertCell(1); // Name
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
         var cell3 = newRow.insertCell(2);
-        var cell4 = newRow.insertCell(3);// Husband Name
+        var cell4 = newRow.insertCell(3);
 
-        cell1.innerHTML = rowCount; // सीरियल नंबर
-        cell2.innerHTML = name;     // नाम
+        cell1.innerHTML = rowCount;
+        cell2.innerHTML = name;
         cell3.innerHTML = husband; 
-        cell4.innerHTML = mobilenumber;// पति/पिता का नाम
+        cell4.innerHTML = mobile; // अब यह सही काम करेगा
 
-        // 5. काम होने के बाद इनपुट बॉक्स खाली करना
-        document.getElementById("NewCustmerName").value = "";
-        document.getElementById("FatherName").value = "";
-        document.getElementById("MobileNumber").value = "";
+        // इनपुट बॉक्स खाली करें
+        document.getElementById("newName").value = "";
+        document.getElementById("newHusband").value = "";
+        document.getElementById("newMobile").value = "";
     }
-</script>
+    </script>
 </body>
 </html>
