@@ -18,6 +18,7 @@
                 <th>Sl</th>
                 <th>Customer Name</th>
                 <th>Husband Name</th>
+                <th>Mobile Number</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
                 <td>1</td>
                 <td>Shivam</td>
                 <td>Ramlal</td>
+                <td>8318736819</td>
             </tr>
             <tr>
                 <td>2</td>
@@ -35,8 +37,42 @@
                 <td>3</td>
                 <td>Satish</td>
                 <td>Sukhpal</td>
+                <td>8318745819</td>
             </tr>
         </tbody>
     </table>
+    <script>
+    function addPerson() {
+        // 1. इनपुट बॉक्स से वैल्यू लेना
+        var name = document.getElementById("newName").value;
+        var husband = document.getElementById("newHusband").value;
+        
+        // अगर बॉक्स खाली हो तो अलर्ट दें
+        if(name === "" || husband === "") {
+            alert("कृपया दोनों नाम भरें!");
+            return;
+        }
+
+        // 2. टेबल ढूँढना और नई Row बनाना
+        var table = document.querySelector("table tbody"); // टेबल की बॉडी सेलेक्ट करें
+        var newRow = table.insertRow(); // नई लाइन (row) डालें
+
+        // 3. सीरियल नंबर (Sl) अपने आप निकालना (जितनी लाइनें हैं + 1)
+        var rowCount = table.rows.length; 
+        
+        // 4. नए सेल (Cells) बनाना और डेटा डालना
+        var cell1 = newRow.insertCell(0); // Sl
+        var cell2 = newRow.insertCell(1); // Name
+        var cell3 = newRow.insertCell(2); // Husband Name
+
+        cell1.innerHTML = rowCount; // सीरियल नंबर
+        cell2.innerHTML = name;     // नाम
+        cell3.innerHTML = husband;  // पति/पिता का नाम
+
+        // 5. काम होने के बाद इनपुट बॉक्स खाली करना
+        document.getElementById("newName").value = "";
+        document.getElementById("newHusband").value = "";
+    }
+</script>
 </body>
 </html>
