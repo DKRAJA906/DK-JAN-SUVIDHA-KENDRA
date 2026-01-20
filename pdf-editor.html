@@ -7,9 +7,9 @@
 </head>
 <body>
     <div style="margin-bottom: 20px;">
-    <input type="text" id="New Custmer Name" placeholder="Customer Name">
-    <input type="text" id="Father Name" placeholder="Father Name">
-    <input type="text" id="Mobile Number" placeholder="Mobile Number">
+    <input type="text" id="NewCustmerName" placeholder="Customer Name">
+    <input type="text" id="FatherName" placeholder="Father Name">
+    <input type="text" id="MobileNumber" placeholder="Mobile Number">
     <button onclick="addCustomer()">Add Customer</button>
 </div>
     <table border="1">
@@ -47,6 +47,7 @@
         // 1. इनपुट बॉक्स से वैल्यू लेना
         var name = document.getElementById("newName").value;
         var husband = document.getElementById("newHusband").value;
+        var husband = document.getElementById("newMobile").value;
         
         // अगर बॉक्स खाली हो तो अलर्ट दें
         if(name === "" || husband === "") {
@@ -70,11 +71,12 @@
         cell1.innerHTML = rowCount; // सीरियल नंबर
         cell2.innerHTML = name;     // नाम
         cell3.innerHTML = husband; 
-        cell4.innerHTML = mobile number;// पति/पिता का नाम
+        cell4.innerHTML = mobilenumber;// पति/पिता का नाम
 
         // 5. काम होने के बाद इनपुट बॉक्स खाली करना
         document.getElementById("newName").value = "";
         document.getElementById("newHusband").value = "";
+        document.getElementById("newMobile").value = "";
     }
 </script>
 </body>
