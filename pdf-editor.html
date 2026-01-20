@@ -45,9 +45,9 @@
     <script>
     function addPerson() {
         // 1. इनपुट बॉक्स से वैल्यू लेना
-        var name = document.getElementById("newName").value;
-        var husband = document.getElementById("newHusband").value;
-        var husband = document.getElementById("newMobile").value;
+        var name = document.getElementById("NewCustmerName").value;
+        var husband = document.getElementById("FatherName").value;
+        var husband = document.getElementById("MobileNumber").value;
         
         // अगर बॉक्स खाली हो तो अलर्ट दें
         if(name === "" || husband === "") {
@@ -74,9 +74,9 @@
         cell4.innerHTML = mobilenumber;// पति/पिता का नाम
 
         // 5. काम होने के बाद इनपुट बॉक्स खाली करना
-        document.getElementById("newName").value = "";
-        document.getElementById("newHusband").value = "";
-        document.getElementById("newMobile").value = "";
+        document.getElementById("NewCustmerName").value = "";
+        document.getElementById("FatherName").value = "";
+        document.getElementById("MobileNumber").value = "";
     }
 </script>
 </body>
