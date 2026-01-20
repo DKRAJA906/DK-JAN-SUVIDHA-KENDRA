@@ -32,6 +32,7 @@
                 <td>2</td>
                 <td>Raju</td>
                 <td>Rampal</td>
+                <td>8318736819</td>
             </tr>
             <tr>
                 <td>3</td>
@@ -63,11 +64,13 @@
         // 4. नए सेल (Cells) बनाना और डेटा डालना
         var cell1 = newRow.insertCell(0); // Sl
         var cell2 = newRow.insertCell(1); // Name
-        var cell3 = newRow.insertCell(2); // Husband Name
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);// Husband Name
 
         cell1.innerHTML = rowCount; // सीरियल नंबर
         cell2.innerHTML = name;     // नाम
-        cell3.innerHTML = husband;  // पति/पिता का नाम
+        cell3.innerHTML = husband; 
+        cell4.innerHTML = mobile number;// पति/पिता का नाम
 
         // 5. काम होने के बाद इनपुट बॉक्स खाली करना
         document.getElementById("newName").value = "";
