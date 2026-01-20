@@ -1,58 +1,36 @@
-<!-- फाइल अपलोड करने का बटन -->
-<div style="margin-bottom: 20px;">
-    <input type="file" id="csvFileInput" accept=".csv">
-    <button onclick="uploadCSV()">Upload List</button>
-</div>
-
-<!-- स्क्रिप्ट (Script) -->
-<script>
-    function uploadCSV() {
-        // 1. फाइल इनपुट को पकड़ें
-        var fileInput = document.getElementById("csvFileInput");
-        var file = fileInput.files[0];
-
-        // अगर कोई फाइल नहीं चुनी है तो अलर्ट दें
-        if (!file) {
-            alert("कृपया पहले CSV फाइल चुनें!");
-            return;
-        }
-
-        var reader = new FileReader();
-
-        // 2. फाइल पढ़ने के बाद क्या करना है
-        reader.onload = function(e) {
-            var text = e.target.result;
-            var rows = text.split("
-"); // हर नई लाइन पर डेटा तोड़े
-
-            var tableBody = document.querySelector("table tbody");
-            
-            // पुरानी लिस्ट हटाने के लिए (Optional)
-            // tableBody.innerHTML = ""; 
-
-            // 3. हर लाइन के लिए लूप चलाएं
-            // (i = 1 से शुरू करें ताकि हेडिंग 'Name, Husband Name' न आए)
-            for (var i = 1; i < rows.length; i++) {
-                var cols = rows[i].split(","); // कॉमा (,) से डेटा अलग करें
-                
-                // खाली लाइन चेक करें
-                if (cols.length > 1) {
-                    var newRow = tableBody.insertRow();
-                    
-                    // Sl No (अगर CSV में है तो cols[0] लें, नहीं तो ऑटोमैटिक रखें)
-                    var cell1 = newRow.insertCell(0);
-                    var cell2 = newRow.insertCell(1);
-                    var cell3 = newRow.insertCell(2);
-
-                    cell1.innerHTML = cols[0]; // Sl
-                    cell2.innerHTML = cols[1]; // Name
-                    cell3.innerHTML = cols[2]; // Husband Name
-                }
-            }
-            alert("लिस्ट सफलतापूर्वक अपलोड हो गई!");
-        };
-
-        // 4. फाइल को टेक्स्ट के रूप में पढ़ें
-        reader.readAsText(file);
-    }
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Table</title>
+    <!-- CSS फाइल को लिंक करना न भूलें -->
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Sl</th>
+                <th>Name</th>
+                <th>Husband Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Shivam</td>
+                <td>Ramlal</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Raju</td>
+                <td>Rampal</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Satish</td>
+                <td>Sukhpal</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
