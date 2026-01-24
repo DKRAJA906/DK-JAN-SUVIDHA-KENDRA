@@ -127,6 +127,92 @@
             resultDiv.innerHTML = y + " साल, " + m + " महीने, " + d + " दिन";
         }
     </script>
+    <!-- इसे body टैग के तुरंत बाद पेस्ट करें -->
+<header class="shop-header">
+    <div class="logo-container">
+        <!-- अगर लोगो इमेज है तो यहाँ इमेज टैग लगा सकते हैं, अभी टेक्स्ट लोगो है -->
+        <h1 class="shop-name">DK JAN SUVIDHA <span class="highlight">KENDRA</span></h1>
+        <p class="tagline">CSC Center • Online Services • Digital Solutions</p>
+    </div>
+    <div class="marquee-strip">
+        <marquee behavior="scroll" direction="left">
+            आधार कार्ड प्रिंट • पैन कार्ड • आय/जाति प्रमाण पत्र • मनी ट्रांसफर • फोटोकॉपी • लेमिनेशन • सभी ऑनलाइन फॉर्म यहाँ भरे जाते हैं।
+        </marquee>
+    </div>
+</header>
+
+<style>
+    /* Header Styling */
+    .shop-header {
+        background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); /* शाही नीला और आसमानी रंग */
+        color: white;
+        text-align: center;
+        padding-top: 20px;
+        padding-bottom: 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        margin-bottom: 30px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* दुकान के नाम का स्टाइल */
+    .shop-name {
+        font-family: 'Arial Black', sans-serif;
+        font-size: 32px;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        animation: fadeInDown 1.5s ease-in-out;
+    }
+
+    /* "Kendra" को अलग रंग से हाईलाइट करना */
+    .highlight {
+        color: #ffeb3b; /* पीला रंग (Yellow) */
+    }
+
+    /* छोटी टैगलाइन */
+    .tagline {
+        font-size: 14px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        color: #e0f7fa;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    /* नीचे चलने वाली पट्टी (Marquee) */
+    .marquee-strip {
+        background: rgba(0, 0, 0, 0.3);
+        color: #fff;
+        padding: 8px 0;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    /* एनिमेशन */
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* मोबाइल के लिए फोंट छोटा करना */
+    @media (max-width: 600px) {
+        .shop-name {
+            font-size: 24px;
+        }
+        .tagline {
+            font-size: 12px;
+        }
+    }
+</style>
 
 </body>
 </html>
