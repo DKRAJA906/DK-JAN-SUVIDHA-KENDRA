@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator - DK Jan Suvidha</title>
+    <style>
+        /* CSS: डिजाइन और स्टाइलिंग */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box; /* Padding को width में शामिल करने के लिए */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Age Calculator</h2>
+        
+        <div class="input-group">
+            <label for="dob">जन्म तिथि (Date of Birth):</label>
+            <input type="date" id="dob">
+        </div>
+
+        <button onclick="calculateAge()">Calculate Age</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // JavaScript: लॉजिक और कैलकुलेशन
+        function calculateAge() {
+            // 1. इनपुट वैल्यू लेना
+            const dobInput = document.getElementById('dob').value;
+            const resultDiv = document.getElementById('result');
+
+            // अगर डेट सेलेक्ट नहीं की है तो एरर दिखाएं
+            if (!dobInput) {
+                resultDiv.innerHTML = "<span class='error'>कृपया अपनी जन्म तिथि चुनें (Please select DOB)</span>";
+                return;
+            }
+
+            // 2. डेट ऑब्जेक्ट्स बनाना
+            const dob = new Date(dobInput);
+            const today = new Date();
+
+            // 3. साल, महीने और दिन का अंतर निकालना
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            // अगर अभी तक इस साल जन्मदिन नहीं आया है, तो 1 साल कम करें
+            if (months < 0 || (months === 0 && days < 0)) {
+                years--;
+                months += 12; // महीने को एडजस्ट करें
+            }
+
+            // अगर दिन नेगेटिव हैं, तो पिछले महीने के दिन जोड़ें
+            if (days < 0) {
+                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += lastMonth.getDate();
+                months--;
+            }
+
+            // 4. रिजल्ट दिखाना
+            resultDiv.innerHTML = आपकी उम्र है: <br> ${years} साल, ${months} महीने, और ${days} दिन;
+        }
+    </script>
+</body>
+</html>
