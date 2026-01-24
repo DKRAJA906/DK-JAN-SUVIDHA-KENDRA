@@ -1,129 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator - DK Jan Suvidha</title>
+    <title>Age Calculator - Jan Suvidha Kendra</title>
     <style>
-        /* CSS: डिजाइन और स्टाइलिंग */
+        /* CSS: वेबसाइट के लिए प्रोफेशनल लुक */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #eef2f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
-        .container {
-            background-color: white;
+
+        .calculator-card {
+            background: white;
+            width: 100%;
+            max-width: 400px;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
-            width: 350px;
         }
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
+
+        .calculator-card h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+            padding-bottom: 5px;
         }
-        .input-group {
+
+        .input-box {
             margin-bottom: 20px;
             text-align: left;
         }
-        label {
+
+        .input-box label {
             display: block;
             margin-bottom: 8px;
             color: #555;
             font-weight: 600;
         }
-        input[type="date"] {
+
+        .input-box input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
-            box-sizing: border-box; /* Padding को width में शामिल करने के लिए */
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
         }
-        button {
-            background-color: #007bff;
-            color: white;
+
+        .input-box input:focus {
+            border-color: #3498db;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
             border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: 0.3s;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .btn-calc {
+            background-color: #3498db;
+            color: white;
         }
+        .btn-calc:hover { background-color: #2980b9; }
+
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-reset:hover { background-color: #c0392b; }
+
         #result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #28a745;
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none; /* शुरू में छुपा रहेगा */
+            border-left: 5px solid #2ecc71;
+        }
+
+        .age-text {
+            font-size: 20px;
+            color: #2c3e50;
             font-weight: bold;
         }
-        .error {
-            color: red;
+        
+        .small-text {
             font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Age Calculator</h2>
+    <div class="calculator-card">
+        <h2>आयु कैलकुलेटर</h2>
         
-        <div class="input-group">
-            <label for="dob">जन्म तिथि (Date of Birth):</label>
+        <div class="input-box">
+            <label for="dob">जन्म तिथि चुनें (Date of Birth)</label>
             <input type="date" id="dob">
         </div>
 
-        <button onclick="calculateAge()">Calculate Age</button>
+        <div class="input-box">
+            <label for="today">आज की तारीख (Today's Date)</label>
+            <input type="date" id="today">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-calc" onclick="calculateAge()">Calculate Age</button>
+            <button class="btn btn-reset" onclick="resetForm()">Reset</button>
+        </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        // JavaScript: लॉजिक और कैलकुलेशन
+        // वेबसाइट लोड होते ही आज की तारीख अपने आप सेट हो जाएगी
+        window.onload = function() {
+            const todayInput = document.getElementById('today');
+            const now = new Date();
+            // Format: YYYY-MM-DD
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            todayInput.value = ${year}-${month}-${day};
+        };
+
         function calculateAge() {
-            // 1. इनपुट वैल्यू लेना
-            const dobInput = document.getElementById('dob').value;
+            const dobVal = document.getElementById('dob').value;
+            const todayVal = document.getElementById('today').value;
             const resultDiv = document.getElementById('result');
 
-            // अगर डेट सेलेक्ट नहीं की है तो एरर दिखाएं
-            if (!dobInput) {
-                resultDiv.innerHTML = "<span class='error'>कृपया अपनी जन्म तिथि चुनें (Please select DOB)</span>";
+            if (!dobVal || !todayVal) {
+                alert("कृपया दोनों तारीखें चुनें!");
                 return;
             }
 
-            // 2. डेट ऑब्जेक्ट्स बनाना
-            const dob = new Date(dobInput);
-            const today = new Date();
+            const dob = new Date(dobVal);
+            const today = new Date(todayVal);
 
-            // 3. साल, महीने और दिन का अंतर निकालना
+            if (dob > today) {
+                alert("जन्म तिथि भविष्य की नहीं हो सकती!");
+                return;
+            }
+
             let years = today.getFullYear() - dob.getFullYear();
             let months = today.getMonth() - dob.getMonth();
             let days = today.getDate() - dob.getDate();
 
-            // अगर अभी तक इस साल जन्मदिन नहीं आया है, तो 1 साल कम करें
+            // अगर महीना नेगेटिव है
             if (months < 0 || (months === 0 && days < 0)) {
                 years--;
-                months += 12; // महीने को एडजस्ट करें
+                months += 12;
             }
 
-            // अगर दिन नेगेटिव हैं, तो पिछले महीने के दिन जोड़ें
+            // अगर दिन नेगेटिव है
             if (days < 0) {
-                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                days += lastMonth.getDate();
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
                 months--;
             }
 
-            // 4. रिजल्ट दिखाना
-            resultDiv.innerHTML = आपकी उम्र है: <br> ${years} साल, ${months} महीने, और ${days} दिन;
+            // रिजल्ट दिखाना
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `
+                <div class="age-text">${years} साल, ${months} महीने, ${days} दिन</div>
+                <div class="small-text">आपकी सटीक आयु</div>
+            `;
+        }
+
+        function resetForm() {
+            document.getElementById('dob').value = "";
+            document.getElementById('result').style.display = "none";
+            // आज की तारीख रिसेट करें
+            window.onload();
         }
     </script>
+
 </body>
 </html>
