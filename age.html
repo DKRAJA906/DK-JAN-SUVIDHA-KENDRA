@@ -3,158 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator</title>
+    <title>DK Jan Suvidha Kendra</title>
     <style>
+        /* 1. Body Setting (इसे बदला गया है ताकि हेडर ऊपर ही रहे) */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* यह जरुरी है: चीजें ऊपर से नीचे सजेंगी */
+            align-items: center;    /* यह कैलकुलेटर को बीच में लाएगा */
+            min-height: 100vh;
         }
+
+        /* 2. Header Design (दुकान का नाम) */
+        .shop-header {
+            background: linear-gradient(135deg, #005c97 0%, #363795 100%); /* CSC जैसा नीला रंग */
+            color: white;
+            text-align: center;
+            width: 100%;       /* पूरी चौड़ाई */
+            padding-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 40px; /* कैलकुलेटर और हेडर के बीच गैप */
+        }
+
+        .shop-name {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .highlight { color: #ffd700; /* गोल्डन येलो */ }
+
+        .tagline {
+            font-size: 14px;
+            margin: 5px 0 15px 0;
+            color: #e0e0e0;
+        }
+
+        /* Marquee पट्टी */
+        .marquee-strip {
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        /* 3. Calculator Box Design */
         .container {
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            width: 320px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 350px; /* मोबाइल और पीसी दोनों पर सही दिखेगा */
             text-align: center;
         }
-        h2 { margin-top: 0; color: #333; }
-        
-        label { display: block; text-align: left; margin: 10px 0 5px; font-weight: bold; }
-        
-        /* बड़ा और साफ़ इनपुट बॉक्स */
+
+        .container h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 15px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
         input[type="date"] {
-            width: 90%;
+            width: 100%;
             padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
+            box-sizing: border-box; /* यह बॉक्स को बाहर नहीं जाने देगा */
             outline: none;
         }
-        input[type="date"]:focus { border-color: #007bff; }
 
-        /* कैलकुलेट बटन */
+        input[type="date"]:focus { border-color: #363795; }
+
         button {
             width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            background-color: #007bff;
+            margin-top: 25px;
+            padding: 14px;
+            background: linear-gradient(to right, #005c97, #363795);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 18px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #0056b3; }
-
-        /* रिजल्ट बॉक्स */
-        #result {
-            margin-top: 20px;
-            font-size: 20px;
             font-weight: bold;
-            color: #28a745;
-            min-height: 30px;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .error { color: red; font-size: 14px; }
+
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        #result {
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            display: none; /* जब तक रिजल्ट न आए, छिपा रहे */
+        }
+        
+        .error { color: red; background: #ffebee; display: block !important; }
+
     </style>
 </head>
 <body>
-    <!-- इसे body टैग के तुरंत बाद पेस्ट करें -->
-<header class="shop-header">
-    <div class="logo-container">
-        <!-- अगर लोगो इमेज है तो यहाँ इमेज टैग लगा सकते हैं, अभी टेक्स्ट लोगो है -->
+
+    <!-- Header Section -->
+    <header class="shop-header">
         <h1 class="shop-name">DK JAN SUVIDHA <span class="highlight">KENDRA</span></h1>
-        <p class="tagline">CSC Center • Online Services • Digital Solutions</p>
-    </div>
-    <div class="marquee-strip">
-        <marquee behavior="scroll" direction="left">
-            आधार कार्ड प्रिंट • पैन कार्ड • आय/जाति प्रमाण पत्र • मनी ट्रांसफर • फोटोकॉपी • लेमिनेशन • सभी ऑनलाइन फॉर्म यहाँ भरे जाते हैं।
-        </marquee>
-    </div>
-</header>
+        <p class="tagline">CSC Center • Online Services • Money Transfer</p>
+        
+        <div class="marquee-strip">
+            <marquee behavior="scroll" direction="left">
+                आधार कार्ड • पैन कार्ड • आय/जाति प्रमाण पत्र • रेलवे टिकट • सभी ऑनलाइन फॉर्म यहाँ भरे जाते हैं।
+            </marquee>
+        </div>
+    </header>
 
-<style>
-    /* Header Styling */
-    .shop-header {
-        background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); /* शाही नीला और आसमानी रंग */
-        color: white;
-        text-align: center;
-        padding-top: 20px;
-        padding-bottom: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        margin-bottom: 30px;
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* दुकान के नाम का स्टाइल */
-    .shop-name {
-        font-family: 'Arial Black', sans-serif;
-        font-size: 32px;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        animation: fadeInDown 1.5s ease-in-out;
-    }
-
-    /* "Kendra" को अलग रंग से हाईलाइट करना */
-    .highlight {
-        color: #ffeb3b; /* पीला रंग (Yellow) */
-    }
-
-    /* छोटी टैगलाइन */
-    .tagline {
-        font-size: 14px;
-        margin-top: 5px;
-        margin-bottom: 15px;
-        color: #e0f7fa;
-        font-weight: 300;
-        letter-spacing: 1px;
-    }
-
-    /* नीचे चलने वाली पट्टी (Marquee) */
-    .marquee-strip {
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
-        padding: 8px 0;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    /* एनिमेशन */
-    @keyframes fadeInDown {
-        0% {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* मोबाइल के लिए फोंट छोटा करना */
-    @media (max-width: 600px) {
-        .shop-name {
-            font-size: 24px;
-        }
-        .tagline {
-            font-size: 12px;
-        }
-    }
-</style>
-
+    <!-- Calculator Section -->
     <div class="container">
         <h2>Age Calculator</h2>
         
         <label>जन्म तिथि (Date of Birth):</label>
-        <!-- id="dob" यहाँ जरुरी है -->
         <input type="date" id="dob">
 
         <button onclick="calculateAge()">आयु देखें (Calculate)</button>
@@ -164,52 +150,42 @@
 
     <script>
         function calculateAge() {
-            // 1. इनपुट से वैल्यू लेना
             var userDate = document.getElementById("dob").value;
             var resultDiv = document.getElementById("result");
 
-            // अगर डेट खाली है
             if(userDate == ""){
+                resultDiv.style.display = "block";
                 resultDiv.innerHTML = "<span class='error'>कृपया तारीख चुनें!</span>"; 
                 return;
             }
 
-            // 2. मैन्युअल तरीके से तारीख अलग करना (YYYY-MM-DD)
-            // यह तरीका कभी फेल नहीं होता
             var parts = userDate.split("-"); 
-            var d1 = parseInt(parts[2]); // जन्म का दिन
-            var m1 = parseInt(parts[1]); // जन्म का महीना
-            var y1 = parseInt(parts[0]); // जन्म का साल
+            var d1 = parseInt(parts[2]);
+            var m1 = parseInt(parts[1]); 
+            var y1 = parseInt(parts[0]); 
 
-            // 3. आज की तारीख लेना
             var date = new Date();
-            var d2 = date.getDate();      // आज का दिन
-            var m2 = 1 + date.getMonth(); // आज का महीना (JS में 0 से शुरू होता है इसलिए +1)
-            var y2 = date.getFullYear();  // आज का साल
+            var d2 = date.getDate();      
+            var m2 = 1 + date.getMonth(); 
+            var y2 = date.getFullYear();  
             
-            // महीने में कितने दिन होते हैं (Jan, Feb, Mar...)
             var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-            // 4. गणित (Calculation Logic)
-            
-            // अगर जन्म का दिन आज के दिन से बड़ा है (Borrow करना पड़ेगा)
             if(d1 > d2){
-                d2 = d2 + monthDays[m2 - 2]; // पिछले महीने के दिन जोड़ें
+                d2 = d2 + monthDays[m2 - 2]; 
                 m2 = m2 - 1;
             }
             
-            // अगर जन्म का महीना आज के महीने से बड़ा है
             if(m1 > m2){
                 m2 = m2 + 12;
                 y2 = y2 - 1;
             }
 
-            // फाइनल घटाना (Subtraction)
             var d = d2 - d1;
             var m = m2 - m1;
             var y = y2 - y1;
 
-            // 5. रिजल्ट दिखाना
+            resultDiv.style.display = "block";
             resultDiv.innerHTML = y + " साल, " + m + " महीने, " + d + " दिन";
         }
     </script>
