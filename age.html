@@ -63,70 +63,6 @@
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>Age Calculator</h2>
-        
-        <label>जन्म तिथि (Date of Birth):</label>
-        <!-- id="dob" यहाँ जरुरी है -->
-        <input type="date" id="dob">
-
-        <button onclick="calculateAge()">आयु देखें (Calculate)</button>
-
-        <div id="result"></div>
-    </div>
-
-    <script>
-        function calculateAge() {
-            // 1. इनपुट से वैल्यू लेना
-            var userDate = document.getElementById("dob").value;
-            var resultDiv = document.getElementById("result");
-
-            // अगर डेट खाली है
-            if(userDate == ""){
-                resultDiv.innerHTML = "<span class='error'>कृपया तारीख चुनें!</span>"; 
-                return;
-            }
-
-            // 2. मैन्युअल तरीके से तारीख अलग करना (YYYY-MM-DD)
-            // यह तरीका कभी फेल नहीं होता
-            var parts = userDate.split("-"); 
-            var d1 = parseInt(parts[2]); // जन्म का दिन
-            var m1 = parseInt(parts[1]); // जन्म का महीना
-            var y1 = parseInt(parts[0]); // जन्म का साल
-
-            // 3. आज की तारीख लेना
-            var date = new Date();
-            var d2 = date.getDate();      // आज का दिन
-            var m2 = 1 + date.getMonth(); // आज का महीना (JS में 0 से शुरू होता है इसलिए +1)
-            var y2 = date.getFullYear();  // आज का साल
-            
-            // महीने में कितने दिन होते हैं (Jan, Feb, Mar...)
-            var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-            // 4. गणित (Calculation Logic)
-            
-            // अगर जन्म का दिन आज के दिन से बड़ा है (Borrow करना पड़ेगा)
-            if(d1 > d2){
-                d2 = d2 + monthDays[m2 - 2]; // पिछले महीने के दिन जोड़ें
-                m2 = m2 - 1;
-            }
-            
-            // अगर जन्म का महीना आज के महीने से बड़ा है
-            if(m1 > m2){
-                m2 = m2 + 12;
-                y2 = y2 - 1;
-            }
-
-            // फाइनल घटाना (Subtraction)
-            var d = d2 - d1;
-            var m = m2 - m1;
-            var y = y2 - y1;
-
-            // 5. रिजल्ट दिखाना
-            resultDiv.innerHTML = y + " साल, " + m + " महीने, " + d + " दिन";
-        }
-    </script>
     <!-- इसे body टैग के तुरंत बाद पेस्ट करें -->
 <header class="shop-header">
     <div class="logo-container">
@@ -213,6 +149,70 @@
         }
     }
 </style>
+
+    <div class="container">
+        <h2>Age Calculator</h2>
+        
+        <label>जन्म तिथि (Date of Birth):</label>
+        <!-- id="dob" यहाँ जरुरी है -->
+        <input type="date" id="dob">
+
+        <button onclick="calculateAge()">आयु देखें (Calculate)</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            // 1. इनपुट से वैल्यू लेना
+            var userDate = document.getElementById("dob").value;
+            var resultDiv = document.getElementById("result");
+
+            // अगर डेट खाली है
+            if(userDate == ""){
+                resultDiv.innerHTML = "<span class='error'>कृपया तारीख चुनें!</span>"; 
+                return;
+            }
+
+            // 2. मैन्युअल तरीके से तारीख अलग करना (YYYY-MM-DD)
+            // यह तरीका कभी फेल नहीं होता
+            var parts = userDate.split("-"); 
+            var d1 = parseInt(parts[2]); // जन्म का दिन
+            var m1 = parseInt(parts[1]); // जन्म का महीना
+            var y1 = parseInt(parts[0]); // जन्म का साल
+
+            // 3. आज की तारीख लेना
+            var date = new Date();
+            var d2 = date.getDate();      // आज का दिन
+            var m2 = 1 + date.getMonth(); // आज का महीना (JS में 0 से शुरू होता है इसलिए +1)
+            var y2 = date.getFullYear();  // आज का साल
+            
+            // महीने में कितने दिन होते हैं (Jan, Feb, Mar...)
+            var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            // 4. गणित (Calculation Logic)
+            
+            // अगर जन्म का दिन आज के दिन से बड़ा है (Borrow करना पड़ेगा)
+            if(d1 > d2){
+                d2 = d2 + monthDays[m2 - 2]; // पिछले महीने के दिन जोड़ें
+                m2 = m2 - 1;
+            }
+            
+            // अगर जन्म का महीना आज के महीने से बड़ा है
+            if(m1 > m2){
+                m2 = m2 + 12;
+                y2 = y2 - 1;
+            }
+
+            // फाइनल घटाना (Subtraction)
+            var d = d2 - d1;
+            var m = m2 - m1;
+            var y = y2 - y1;
+
+            // 5. रिजल्ट दिखाना
+            resultDiv.innerHTML = y + " साल, " + m + " महीने, " + d + " दिन";
+        }
+    </script>
 
 </body>
 </html>
