@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resize an Image - DK Jan Suvidha</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* हेडर (Header) */
+        .main-title {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* ड्रॉप जोन (नीला वाला बॉक्स) */
+        .upload-container {
+            background-color: #eaf4ff; /* हल्का नीला बैकग्राउंड */
+            border: 2px dashed #007bff; /* नीली डैश वाली लाइन */
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            padding: 50px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-container:hover {
+            background-color: #dbeeff;
+        }
+
+        /* आइकॉन (Icon) */
+        .upload-icon {
+            font-size: 60px;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        /* टेक्स्ट */
+        .upload-text {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* सेलेक्ट बटन */
+        .select-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .select-btn:hover { background-color: #0056b3; }
+
+        /* असली इनपुट को छुपाना */
+        #fileInput { display: none; }
+
+        /* जब फोटो सेलेक्ट हो जाए, तब सेटिंग दिखाने वाला एरिया */
+        .settings-area {
+            display: none; /* शुरू में छिपा रहेगा */
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .settings-area img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            margin: 15px 0;
+            text-align: left;
+        }
+        .controls label { display: block; margin-top: 10px; font-weight: bold; }
+        .controls input { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="main-title">Resize an Image</h1>
+
+    <!-- 1. ड्रैग एंड ड्रॉप बॉक्स -->
+    <div class="upload-container" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <!-- ऊपर की तरफ तीर (Arrow Icon) -->
+        <div class="upload-icon">⬆️</div>
+        
+        <p class="upload-text">Drop your images here or browse.</p>
+        
+        <button class="select-btn">Select Image</button>
+        
+        <!-- छुपा हुआ इनपुट -->
+        <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <!-- 2. रिसाइज सेटिंग्स (फोटो सेलेक्ट करने के बाद दिखेगा) -->
+    <div class="settings-area" id="settingsArea">
+        <h3>Image Preview</h3>
+        <img id="previewImg" src="" alt="Preview">
+        
+        <div class="controls">
+            <label>Width (px):</label>
+            <input type="number" id="widthInput" placeholder="Width">
+            
+            <label>Height (px):</label>
+            <input type="number" id="heightInput" placeholder="Height">
+            
+            <label>Quality (1-100%):</label>
+            <input type="range" id="qualityInput" min="1" max="100" value="90">
+            <span id="qualityVal">90%</span>
+        </div>
+
+        <button class="download-btn" onclick="resizeAndDownload()">Resize & Download</button>
+        <br><br>
+        <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer;">Cancel</button>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const settingsArea = document.getElementById('settingsArea');
+        const previewImg = document.getElementById('previewImg');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const qualityInput = document.getElementById('qualityInput');
+
+        let originalImage = null;
+
+        // 1. जब फाइल चुनी जाए
+        fileInput.addEventListener('change', function(e) {
+            handleFile(e.target.files[0]);
+        });
+
+        // 2. ड्रैग एंड ड्रॉप इवेंट्स
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#dbeeff'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.backgroundColor = '#eaf4ff'; });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#eaf4ff';
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                originalImage = new Image();
+                originalImage.src = event.target.result;
+                
+                originalImage.onload = function() {
+                    // इमेज लोड होने पर सेटिंग्स दिखाएं
+                    dropZone.style.display = 'none'; // ड्रॉप जोन छुपाएं
+                    document.querySelector('.main-title').style.display = 'none';
+                    settingsArea.style.display = 'block'; // सेटिंग्स दिखाएं
+                    
+                    previewImg.src = originalImage.src;
+                    widthInput.value = originalImage.width;
+                    heightInput.value = originalImage.height;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // क्वालिटी स्लाइडर बदलने पर टेक्स्ट अपडेट
+        qualityInput.addEventListener('input', function() {
+            document.getElementById('qualityVal').innerText = this.value + "%";
+        });
+
+        // 3. रिसाइज और डाउनलोड लॉजिक (Client Side)
+        function resizeAndDownload() {
+            if (!originalImage) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const newWidth = parseInt(widthInput.value);
+            const newHeight = parseInt(heightInput.value);
+            const quality = parseInt(qualityInput.value) / 100;
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            // कैनवास पर इमेज ड्रा करें (Resize)
+            ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+            // इमेज डाउनलोड करें
+            const link = document.createElement('a');
+            link.download = 'resized-image.jpg';
+            link.href = canvas.toDataURL('image/jpeg', quality); // क्वालिटी कंट्रोल
+            link.click();
+        }
+    </script>
+
+</body>
+</html>
