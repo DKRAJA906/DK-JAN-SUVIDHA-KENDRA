@@ -87,7 +87,25 @@
             margin-bottom: 40px;
             box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
         }
+        @media only screen and (max-width: 600px) {
+  .download-box {
+    padding: 15px;       /* 25px से घटाकर 15px किया (बॉक्स पतला होगा) */
+    margin-bottom: 20px; /* नीचे का गैप कम किया */
+    width: 90%;          /* मोबाइल स्क्रीन पर थोड़ा छोटा दिखे */
+    margin-left: auto;   /* अपने आप बीच (Center) में आ जाएगा */
+    margin-right: auto;
+  }
 
+  /* बॉक्स के अंदर लिखे टेक्स्ट को भी छोटा करें */
+  .download-box h2, .download-box h3 {
+    font-size: 18px;     /* हेडिंग छोटी की */
+    margin-bottom: 5px;
+  }
+  
+  .download-box p {
+    font-size: 13px;     /* पैराग्राफ छोटा किया */
+  }
+}
         .btn {
             background-color: #ffffff;
             color: #6200ea;
