@@ -9,6 +9,7 @@
         <input type="text" id="newName" placeholder="Customer Name">
         <input type="text" id="newHusband" placeholder="Father Name">
         <input type="text" id="newMobile" placeholder="Mobile Number">
+        <input type="text" id="Account" placeholder="Account Number">
         <button onclick="addPerson()">Add Customer</button>
         <!-- लिस्ट को खाली करने का बटन भी दिया है -->
         <button onclick="clearList()" style="background-color: red; color: white;">Clear List</button>
@@ -21,6 +22,7 @@
                 <th>Customer Name</th>
                 <th>Husband Name</th>
                 <th>Mobile Number</th>
+                <th>Account Number</th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +40,7 @@
         var name = document.getElementById("newName").value;
         var husband = document.getElementById("newHusband").value;
         var mobile = document.getElementById("newMobile").value;
+        var Account = document.getElementById("account Number").value;
         
         if(name === "" || husband === "" || mobile === "") {
             alert("कृपया सभी जानकारी भरें!");
@@ -51,7 +54,8 @@
         var newCustomer = {
             name: name,
             husband: husband,
-            mobile: mobile
+            mobile: mobile,
+            account: account
         };
         customers.push(newCustomer);
 
@@ -65,6 +69,7 @@
         document.getElementById("newName").value = "";
         document.getElementById("newHusband").value = "";
         document.getElementById("newMobile").value = "";
+        document.getElementById("account number").value = "";
     }
 
     function loadData() {
@@ -82,11 +87,13 @@
             var cell2 = newRow.insertCell(1);
             var cell3 = newRow.insertCell(2);
             var cell4 = newRow.insertCell(3);
+            var cell4 = newRow.insertCell(4);
 
             cell1.innerHTML = index + 1; // सीरियल नंबर (1 से शुरू)
             cell2.innerHTML = customer.name;
             cell3.innerHTML = customer.husband;
             cell4.innerHTML = customer.mobile;
+            cell5.innerHTML = customer.account;
         });
     }
 
