@@ -40,9 +40,9 @@
         var name = document.getElementById("newName").value;
         var husband = document.getElementById("newHusband").value;
         var mobile = document.getElementById("newMobile").value;
-        var Account = document.getElementById("account Number").value;
+        var Account = document.getElementById("account").value;
         
-        if(name === "" || husband === "" || mobile === "") {
+        if(name === "" || husband === "" || mobile === ""|| account === "") {
             alert("कृपया सभी जानकारी भरें!");
             return;
         }
@@ -69,7 +69,7 @@
         document.getElementById("newName").value = "";
         document.getElementById("newHusband").value = "";
         document.getElementById("newMobile").value = "";
-        document.getElementById("account number").value = "";
+        document.getElementById("account").value = "";
     }
 
     function loadData() {
@@ -87,7 +87,7 @@
             var cell2 = newRow.insertCell(1);
             var cell3 = newRow.insertCell(2);
             var cell4 = newRow.insertCell(3);
-            var cell4 = newRow.insertCell(4);
+            var cell5 = newRow.insertCell(4);
 
             cell1.innerHTML = index + 1; // सीरियल नंबर (1 से शुरू)
             cell2.innerHTML = customer.name;
