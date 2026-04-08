@@ -265,6 +265,30 @@
         .rang-age { background: linear-gradient(135deg, #0EECE5, #1201F9); }
         .rang-youtubemp3 { background: linear-gradient(135deg, #F0290A, #79E713); }
         .rang-cvmaker { background: linear-gradient(135deg, #F0290A, #79E713); }
+        .header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative;
+}
+
+.header-text h1 {
+    margin: 0;
+}
+
+.header-text p {
+    margin: 5px 0 0 0;
+}
+
+.profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    flex-shrink: 0;
+}
 
 
 
@@ -282,9 +306,13 @@
 
     <header>
         <div id="datetime-display"></div>
+        <div class="header-wrapper">
+    <img src="DK.png" alt="profile photo" class="profile-pic">
+    <div class="header-text">
         <h1>DK Jan Suvidha Kendra</h1>
-        <img src="DK.png" alt="profile photo" class="profile-pic">
         <p>Aapki Seva Mein Hamesha Tatpar</p>
+    </div>
+</div>
     </header>
 
     <div style="background-color: #ff0000; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
