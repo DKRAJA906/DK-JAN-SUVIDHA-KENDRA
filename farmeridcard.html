@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgriStack Farmer ID Card Generator with Dynamic Land</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("elements", "1", { packages: "transliteration" });
+
+        function onLoad() {
+            var options = {
+                sourceLanguage: google.elements.transliteration.LanguageCode.ENGLISH,
+                destinationLanguage: [google.elements.transliteration.LanguageCode.HINDI],
+                shortcutKey: 'ctrl+g',
+                transliterationEnabled: true
+            };
+            var control = new google.elements.transliteration.TransliterationControl(options);
+            control.makeTransliteratable(['nameHi']);
+        }
+        google.setOnLoadCallback(onLoad);
+    </script>
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -136,9 +153,18 @@
             align-items: center;
             border-bottom: 2px solid #e2a114;
         }
-        .header-title { text-align: center; flex: 1; }
+        .header-title { text-align: center; flex: 1; margin-right: 10px; }
         .header-title h3 { margin: 0; font-size: 15px; font-weight: bold; }
         .header-title p { margin: 0; font-size: 11px; color: #f0f0f0; }
+
+        /* 2. कोड में लोगो जोड़ने के लिए class को स्टाइल करें */
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid #e2a114;
+        }
 
         .card-body-front {
             padding: 10px;
@@ -231,7 +257,7 @@
         </div>
         <div class="form-group">
             <label>किसान का नाम (Hindi):</label>
-            <input type="text" id="nameHi" value="रामनरेश चौधरी" oninput="updateCard()">
+            <input type="text" id="nameHi" value="रामनरेश चौधरी" onkeypress="transliterate(event)">
         </div>
         <div class="form-group">
             <label>Date of Birth (DOB):</label>
@@ -305,6 +331,7 @@
                 <h3>AgriStack फार्मर आईडी कार्ड</h3>
                 <p>(Farmer ID Card)</p>
             </div>
+            <img class="header-logo" src="image_1.png" alt="AgriStack Logo">
         </div>
         
         <div class="card-body-front">
@@ -456,6 +483,17 @@
     
     // Auto-load row on startup
     updateCard();
+
+    // 5. हिंदी में स्वचालित रूप से टाइप करने के लिए एक फ़ंक्शन जोड़ें
+    function transliterate(event) {
+        var englishName = document.getElementById('nameEn').value;
+        if (englishName.length > 0) {
+            // गूगल ट्रांसलिट्रेशन को कॉल करें (जब यूजर स्पेस या एंटर दबाता है)
+            if (event.keyCode == 32 || event.keyCode == 13) {
+                // यह गूगल API द्वारा अपने आप हैंडल किया जाता है
+            }
+        }
+    }
 </script>
 
 </body>
