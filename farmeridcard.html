@@ -129,7 +129,7 @@
         }
 
         .card-header {
-            background-color: ##6e917e;
+            background-color: #0b4622;
             color: #ffffff;
             padding: 6px 10px;
             display: flex;
@@ -260,7 +260,7 @@
         </div>
         <div class="form-group">
             <label>Aadhar No:</label>
-            <input type="text" id="aadhar" value="[Aadhaar Redacted]" oninput="updateCard()">
+            <input type="text" id="aadhar" value="5095 0312 7099" oninput="updateCard()">
         </div>
         <div class="form-group">
             <label>Farmer ID Number:</label>
@@ -328,7 +328,7 @@
                     <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 98</td></tr>
                     <tr><td class="info-label">Caste Category:</td><td id="lblCaste">General</td></tr>
                     <tr><td class="info-label">Mobile No:</td><td id="lblMobile">7070393730</td></tr>
-                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">[Aadhaar Redacted]</td></tr>
+                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">5095 0312 7099</td></tr>
                 </table>
             </div>
             
@@ -371,7 +371,7 @@
                     </tr>
                 </thead>
                 <tbody id="landTableBody">
-                    </tbody>
+                </tbody>
             </table>
             
             <div style="position: absolute; bottom: 20px; width: 92%; font-size: 6.5px; color: #666; text-align: justify; line-height: 1.1;">
@@ -387,9 +387,8 @@
 </div>
 
 <script>
-    // नया सुपरफास्ट और ऑटोमैटिक हिंदी ट्रांसलेशन सिस्टम
     let typingTimer;
-    const doneTypingInterval = 400; // टाइपिंग रोकने के 0.4 सेकंड बाद ट्रांसलेट होगा
+    const doneTypingInterval = 400;
 
     function handleTransliteration() {
         clearTimeout(typingTimer);
@@ -401,7 +400,6 @@
             return;
         }
 
-        // जैसे ही यूजर स्पेस दबाएगा या टाइपिंग रोकेगा, यह तुरंत काम करेगा
         typingTimer = setTimeout(fetchHindiTranslation, doneTypingInterval);
     }
 
@@ -409,7 +407,6 @@
         const text = document.getElementById('nameEn').value;
         if(!text.trim()) return;
 
-        // बिना किसी लोड के सीधा लाइव काम करने वाला गूगल का सुरक्षित इनपुट यूआरएल
         const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`;
 
         fetch(url)
@@ -418,7 +415,7 @@
                 if (data && data[0] === 'SUCCESS' && data[1][0][1][0]) {
                     const translatedText = data[1][0][1][0];
                     document.getElementById('nameHi').value = translatedText;
-                    updateCard(); // कार्ड का प्रीव्यू लाइव रीफ्रेश करें
+                    updateCard();
                 }
             })
             .catch(err => console.error("Translation Error: ", err));
