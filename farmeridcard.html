@@ -1,397 +1,576 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Farmer Card Maker</title>
+  <title>Farmer Card Maker Aadhaar Size</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;700;800&display=swap" rel="stylesheet">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.5.136/pdf.min.js"></script>
 
   <style>
-    :root {
-      --bg: #f4f7f2;
-      --surface: #ffffff;
-      --surface-2: #eef5ef;
-      --text: #16302b;
-      --muted: #5b6f68;
-      --primary: #0f6d55;
-      --accent: #d8a31d;
-      --border: rgba(22, 48, 43, 0.12);
-      --shadow: 0 20px 50px rgba(10, 40, 32, 0.12);
-      --radius: 22px;
+    :root{
+      --green-1:#0d5f49;
+      --green-2:#187153;
+      --green-3:#1e825c;
+      --lime:#c7f04a;
+      --text:#20342d;
+      --shadow:0 18px 50px rgba(6,37,25,.16);
+      --card-w:85.60mm;
+      --card-h:53.98mm;
+      --radius:3.2mm;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(180deg, #e8f3ea 0%, #f7faf8 100%);
-      color: var(--text);
+    body{
+      margin:0;
+      font-family:'Inter','Noto Sans Devanagari',sans-serif;
+      background:linear-gradient(180deg,#ebf4ed 0%,#f7faf8 100%);
+      color:var(--text);
+      padding:18px;
     }
 
-    .wrap {
-      width: min(1200px, calc(100% - 24px));
-      margin: 24px auto 60px;
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 20px;
+    .app{
+      max-width:1250px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:20px;
+      align-items:start;
     }
 
-    .panel {
-      background: rgba(255,255,255,0.96);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
+    .panel,.preview-wrap{
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(32,52,45,.10);
+      border-radius:22px;
+      box-shadow:var(--shadow);
     }
 
-    .panel h2 {
-      margin: 0 0 14px;
-      font-size: 22px;
+    .panel{padding:18px}
+    .panel h2{margin:0 0 14px;font-size:24px}
+
+    .upload{
+      border:2px dashed #b8ccbf;
+      background:#f8fcf8;
+      border-radius:18px;
+      padding:16px;
+      text-align:center;
+      margin-bottom:14px;
     }
 
-    .upload-area {
-      border: 2px dashed #b6cfc2;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-      background: #f8fcf9;
-      margin-bottom: 14px;
+    .upload input{width:100%;margin-top:10px}
+
+    .field-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
     }
 
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .field{display:grid;gap:6px}
+    .field.full{grid-column:1/-1}
+
+    label{
+      font-size:13px;
+      font-weight:800;
     }
 
-    .field {
-      display: grid;
-      gap: 6px;
+    input,textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(32,52,45,.14);
+      background:#fff;
+      font:inherit;
     }
 
-    .field.full {
-      grid-column: 1 / -1;
+    textarea{
+      min-height:82px;
+      resize:vertical;
     }
 
-    label {
-      font-size: 13px;
-      font-weight: 700;
+    .btn-row{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
     }
 
-    input, textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: white;
-      font: inherit;
+    button{
+      flex:1;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:800;
+      cursor:pointer;
+      font:inherit;
     }
 
-    textarea {
-      min-height: 86px;
-      resize: vertical;
+    .primary{background:var(--green-2);color:#fff}
+    .secondary{background:#edf4ef;color:var(--text);border:1px solid rgba(32,52,45,.12)}
+
+    .status{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#eff8f1;
+      border:1px solid #d3e6d6;
+      font-size:14px;
     }
 
-    .btn {
-      border: none;
-      border-radius: 14px;
-      padding: 13px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
-      background: var(--primary);
-      color: #fff;
-      width: 100%;
-      margin-top: 14px;
+    .preview-wrap{padding:18px}
+
+    .preview-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
     }
 
-    .status {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: #eef7f1;
-      border: 1px solid #cfe4d6;
-      font-size: 14px;
+    .preview-head h3{
+      margin:0;
+      font-size:22px;
     }
 
-    .preview-shell {
-      display: grid;
-      gap: 18px;
+    .preview-head p{
+      margin:0;
+      color:#61736d;
+      font-size:14px;
     }
 
-    .card-preview {
-      aspect-ratio: 1.72/1;
-      background: #f8fbf8;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid #cddbd3;
-      box-shadow: 0 12px 30px rgba(0,0,0,.12);
-      position: relative;
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+      gap:18px;
     }
 
-    .card-top {
-      height: 64px;
-      background: linear-gradient(90deg,#0c6c58,#1d8e67);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
+    .aadhaar-card{
+      width:var(--card-w);
+      height:var(--card-h);
+      max-width:100%;
+      margin:0 auto;
+      border-radius:var(--radius);
+      overflow:hidden;
+      position:relative;
+      background:#fdfefc;
+      box-shadow:0 10px 28px rgba(0,0,0,.16);
+      border:.35mm solid #b9ccc0;
     }
 
-    .logo-title {
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: .02em;
+    .texture::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 78%, rgba(40,139,83,.12) 0 10%, transparent 11%),
+        radial-gradient(circle at 90% 24%, rgba(32,132,73,.14) 0 9%, transparent 10%),
+        linear-gradient(115deg, rgba(255,255,255,.92), rgba(243,248,244,.82)),
+        repeating-linear-gradient(0deg, rgba(32,52,45,.018) 0 1px, transparent 1px 3px),
+        repeating-linear-gradient(90deg, rgba(32,52,45,.012) 0 1px, transparent 1px 4px);
+      pointer-events:none;
     }
 
-    .logo-sub {
-      font-size: 12px;
-      opacity: .9;
+    .front-top{
+      position:relative;
+      z-index:1;
+      height:11.5mm;
+      background:linear-gradient(90deg,var(--green-1),var(--green-3));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:1.8mm 2.4mm;
     }
 
-    .card-body {
-      display: grid;
-      grid-template-columns: 110px 1fr 120px;
-      gap: 14px;
-      padding: 18px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:1.8mm;
     }
 
-    .photo {
-      width: 100px;
-      height: 122px;
-      background: #dce7e0;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #bfcfc6;
+    .brand-mark{
+      width:6.4mm;
+      height:6.4mm;
+      border-radius:1.6mm;
+      background:linear-gradient(180deg,#2ab56d,#0f6f52);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:900;
+      font-size:3.1mm;
+      box-shadow:inset 0 0 0 .35mm rgba(255,255,255,.28);
     }
 
-    .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .brand-text{line-height:1}
+    .brand-text .t1{font-size:2.55mm;font-weight:900;letter-spacing:.02em}
+    .brand-text .t2{font-size:2.05mm;font-weight:700;color:#eaf7ea;margin-top:.5mm}
+
+    .leaf-badge{
+      width:8mm;
+      height:8mm;
+      border-radius:50%;
+      background:rgba(255,255,255,.14);
+      border:.3mm solid rgba(255,255,255,.25);
+      position:relative;
     }
 
-    .info h3 {
-      margin: 0 0 8px;
-      color: #234d35;
-      font-size: 28px;
-      line-height: 1;
+    .leaf-badge:before,.leaf-badge:after{
+      content:"";
+      position:absolute;
+      background:#8df06f;
+      border-radius:100% 0 100% 0;
+      transform:rotate(45deg);
     }
 
-    .info .name-hindi {
-      margin-bottom: 8px;
-      color: #2b6b45;
-      font-weight: 700;
+    .leaf-badge:before{width:3.2mm;height:5mm;left:1.4mm;top:1.4mm}
+    .leaf-badge:after{width:3.2mm;height:5mm;right:1.4mm;top:1.4mm}
+
+    .front-main{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:15mm 1fr 15mm;
+      gap:2.2mm;
+      padding:2mm 2.4mm 0;
     }
 
-    .info .line {
-      margin: 3px 0;
-      font-size: 15px;
+    .photo-frame{
+      width:14mm;
+      height:17mm;
+      border:.35mm solid #d3ddd6;
+      border-radius:1.1mm;
+      overflow:hidden;
+      background:#dce9df;
+      box-shadow:0 1mm 2.4mm rgba(0,0,0,.08);
     }
 
-    .qr {
-      width: 108px;
-      height: 108px;
-      margin-top: 24px;
-      border-radius: 8px;
+    .photo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .meta{
+      padding-top:.4mm;
+    }
+
+    .meta .name{
+      font-size:3.4mm;
+      font-weight:800;
+      color:#234534;
+      line-height:1.05;
+      margin-bottom:.6mm;
+    }
+
+    .meta .hindi{
+      font-size:2.5mm;
+      font-weight:700;
+      color:#2f6c44;
+      margin-bottom:.8mm;
+    }
+
+    .meta .line{
+      font-size:2.3mm;
+      line-height:1.3;
+      margin:.3mm 0;
+      font-weight:600;
+    }
+
+    .meta .line span{font-weight:500}
+
+    .qr-box{
+      width:13.2mm;
+      height:13.2mm;
+      margin-top:3.4mm;
+      border:.45mm solid #fff;
+      background-color:#fff;
+      border-radius:1mm;
       background-image:
         linear-gradient(45deg,#111 25%,transparent 25%),
         linear-gradient(-45deg,#111 25%,transparent 25%),
         linear-gradient(45deg,transparent 75%,#111 75%),
         linear-gradient(-45deg,transparent 75%,#111 75%);
-      background-size: 16px 16px;
-      background-position: 0 0,0 8px,8px -8px,-8px 0;
-      background-color: #fff;
-      border: 6px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      background-size:2.1mm 2.1mm;
+      background-position:0 0,0 1.05mm,1.05mm -1.05mm,-1.05mm 0;
+      box-shadow:0 .8mm 2mm rgba(0,0,0,.08);
     }
 
-    .card-footer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 56px;
-      background: #13664f;
-      color: #d4ff70;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: .04em;
+    .leaf-left,.leaf-right{
+      position:absolute;
+      z-index:1;
+      width:9mm;
+      height:9mm;
+      bottom:6.4mm;
     }
 
-    .back-card {
-      background: #fbfdfb;
-      border-radius: 24px;
-      border: 1px solid #cddbd3;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 12px 30px rgba(0,0,0,.12);
+    .leaf-left{left:1.4mm}
+    .leaf-right{right:1.8mm}
+
+    .leaf-left:before,.leaf-left:after,.leaf-right:before,.leaf-right:after{
+      content:"";
+      position:absolute;
+      width:3.7mm;
+      height:6.2mm;
+      background:#2b9d56;
+      border-radius:100% 0 100% 0;
+      transform:rotate(40deg);
     }
 
-    .back-head {
-      background: linear-gradient(180deg,#0c6c58,#157258);
-      color: white;
-      padding: 16px 18px;
-      text-align: center;
+    .leaf-left:before{left:0;bottom:1.1mm}
+    .leaf-left:after{left:3mm;bottom:0}
+    .leaf-right:before{left:0;bottom:1.1mm}
+    .leaf-right:after{left:3mm;bottom:0}
+
+    .front-footer{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:7.6mm;
+      background:linear-gradient(90deg,#13644e,#0f5b46);
+      color:var(--lime);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1.2mm;
+      font-weight:900;
+      z-index:1;
+      text-shadow:0 .2mm .3mm rgba(0,0,0,.22);
     }
 
-    .back-head .id {
-      font-size: 18px;
-      font-weight: 800;
-      color: #d4ff70;
-      margin-top: 6px;
+    .front-footer span:first-child{
+      font-size:2.75mm;
+      color:#fff5a7;
     }
 
-    .address {
-      padding: 14px 18px 0;
-      font-size: 14px;
-      font-weight: 600;
-      color: #365149;
+    .front-footer span:last-child{
+      font-size:4.25mm;
+      letter-spacing:.04em;
     }
 
-    .table-wrap {
-      padding: 14px 18px 18px;
+    .seal{
+      position:absolute;
+      right:1.2mm;
+      bottom:3.8mm;
+      z-index:2;
+      width:10.5mm;
+      height:10.5mm;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, #fff5c4, #d39a23 70%, #8d5a00 100%);
+      border:.45mm solid #f4d67c;
+      display:grid;
+      place-items:center;
+      color:#193a2e;
+      font-size:1.6mm;
+      font-weight:900;
+      box-shadow:0 1mm 2.4mm rgba(0,0,0,.15);
+      transform:rotate(-12deg);
     }
 
-    .table-title {
-      font-weight: 800;
-      font-size: 24px;
-      color: #345346;
-      margin-bottom: 10px;
+    .seal::before{
+      content:"";
+      position:absolute;
+      inset:.8mm;
+      border:.35mm dashed rgba(40,52,32,.5);
+      border-radius:50%;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
+    .back-top{
+      position:relative;
+      z-index:1;
+      background:linear-gradient(180deg,#0d654e,#176f56);
+      padding:2mm 2.4mm 1.8mm;
+      color:#fff;
+      text-align:center;
     }
 
-    th, td {
-      border: 1px solid #bbcfc4;
-      padding: 7px 6px;
-      text-align: left;
+    .back-top .title{
+      font-size:3.2mm;
+      font-weight:900;
+      line-height:1;
     }
 
-    th {
-      background: #edf6ef;
+    .back-top .id{
+      font-size:2.85mm;
+      font-weight:900;
+      color:var(--lime);
+      margin-top:1mm;
+      letter-spacing:.03em;
     }
 
-    .note {
-      font-size: 11px;
-      color: #5d7168;
-      padding: 0 18px 16px;
+    .back-address{
+      position:relative;
+      z-index:1;
+      padding:1.8mm 2.2mm 0;
+      font-size:2.1mm;
+      font-weight:700;
+      color:#476056;
+      line-height:1.35;
     }
 
-    @media (max-width: 920px) {
-      .wrap {
-        grid-template-columns: 1fr;
-      }
-      .field-grid {
-        grid-template-columns: 1fr;
-      }
+    .back-body{
+      position:relative;
+      z-index:1;
+      padding:1.4mm 2.2mm 0;
     }
 
-    @media (max-width: 640px) {
-      .card-body {
-        grid-template-columns: 88px 1fr;
-      }
+    .back-body h4{
+      margin:0 0 1.3mm;
+      font-size:2.9mm;
+      color:#355344;
+      line-height:1;
+    }
 
-      .qr {
-        grid-column: 2;
-        margin-top: 8px;
-        width: 86px;
-        height: 86px;
-      }
+    .back-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:1.45mm;
+      background:rgba(255,255,255,.78);
+    }
 
-      .photo {
-        width: 82px;
-        height: 100px;
-      }
+    .back-table th,.back-table td{
+      border:.22mm solid #b7c9bf;
+      padding:.8mm .6mm;
+      text-align:left;
+      vertical-align:top;
+    }
 
-      .info h3 {
-        font-size: 18px;
-      }
+    .back-table th{
+      background:#eef5ef;
+      font-weight:800;
+    }
 
-      .info .line {
-        font-size: 12px;
-      }
+    .annex{
+      position:relative;
+      z-index:1;
+      padding:1.2mm 2.2mm 0;
+      text-align:center;
+      color:#698078;
+      font-size:1.35mm;
+      line-height:1.2;
+    }
 
-      .card-footer {
-        font-size: 17px;
-        height: 48px;
-      }
+    .back-note{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:4.8mm;
+      background:linear-gradient(90deg,#e9f1eb,#f8fbf8);
+      border-top:.22mm solid #d6e1d9;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.7mm;
+      font-weight:700;
+      color:#516a60;
+      z-index:1;
+    }
+
+    .mini-leaf{
+      position:absolute;
+      left:1.4mm;
+      bottom:1.4mm;
+      z-index:1;
+      width:7mm;
+      height:7mm;
+    }
+
+    .mini-leaf:before,.mini-leaf:after{
+      content:"";
+      position:absolute;
+      width:3mm;
+      height:5.2mm;
+      background:#4ba85d;
+      border-radius:100% 0 100% 0;
+      transform:rotate(40deg);
+    }
+
+    .mini-leaf:before{left:0;bottom:1mm}
+    .mini-leaf:after{left:2.4mm;bottom:0}
+
+    .print-note{
+      margin-top:10px;
+      font-size:13px;
+      color:#6c7e77;
+    }
+
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr}
+    }
+
+    @media (max-width:640px){
+      body{padding:10px}
+      .cards{grid-template-columns:1fr}
+      .field-grid{grid-template-columns:1fr}
+      .preview-wrap,.panel{padding:14px;border-radius:18px}
+    }
+
+    @media print{
+      body{background:#fff;padding:0}
+      .panel,.preview-head,.print-note{display:none!important}
+      .app{display:block;max-width:none;margin:0}
+      .preview-wrap{box-shadow:none;border:none;padding:0;background:#fff}
+      .cards{display:grid;grid-template-columns:1fr 1fr;gap:6mm;padding:6mm}
+      .aadhaar-card{box-shadow:none}
     }
   </style>
 </head>
 <body>
 
-  <div class="wrap">
-    <div class="panel">
-      <h2>Input Panel</h2>
+  <div class="app">
+    <aside class="panel">
+      <h2>Card Editor</h2>
 
-      <div class="upload-area">
+      <div class="upload">
         <div style="font-size:18px;font-weight:800">PDF ya image upload kijiye</div>
-        <div style="margin-top:6px;color:#5b6f68">PDF se text nikalne ki koshish hogi. Agar kuch miss ho to niche edit kar lijiye.</div>
-        <input id="pdfFile" type="file" accept=".pdf,image/*" style="margin-top:12px;width:100%">
+        <div style="margin-top:6px;color:#61736d;font-size:14px">Aadhaar size card preview ke liye fields auto-fill karne ki koshish hogi.</div>
+        <input id="pdfFile" type="file" accept=".pdf,image/*">
       </div>
 
       <div class="field-grid">
         <div class="field full">
-          <label>Photo</label>
+          <label>Photo Upload</label>
           <input id="photoInput" type="file" accept="image/*">
         </div>
 
         <div class="field">
           <label>Name</label>
-          <input id="name" value="Ramnaresh Chaudhari">
+          <input id="name" value="Sita Kumari">
         </div>
 
         <div class="field">
           <label>Name Hindi</label>
-          <input id="nameHindi" value="रामनरेश चौधरी">
+          <input id="nameHindi" value="सीता कुमारी">
         </div>
 
         <div class="field">
           <label>DOB</label>
-          <input id="dob" value="01/01/1927">
+          <input id="dob" value="01/01/2000">
         </div>
 
         <div class="field">
           <label>Gender</label>
-          <input id="gender" value="Male">
-        </div>
-
-        <div class="field">
-          <label>Age</label>
-          <input id="age" value="98">
+          <input id="gender" value="Female">
         </div>
 
         <div class="field">
           <label>Mobile</label>
-          <input id="mobile" value="7070393730">
+          <input id="mobile" value="8708353599">
+        </div>
+
+        <div class="field">
+          <label>Aadhaar</label>
+          <input id="aadhaar" value="XXXX XXXX 1234">
         </div>
 
         <div class="field full">
-          <label>Aadhaar</label>
-          <input id="aadhaar" value="5095 0342 7099">
-        </div>
-
-        <div class="field">
-          <label>Caste Category</label>
-          <input id="caste" value="General">
-        </div>
-
-        <div class="field">
           <label>Farmer ID</label>
-          <input id="farmerId" value="36565207294">
+          <input id="farmerId" value="X00X111313213">
         </div>
 
         <div class="field full">
@@ -406,100 +585,122 @@
 
         <div class="field full">
           <label>Land Details (State|District|SubDistrict|Village|Survey|Owner|Type|Area)</label>
-          <textarea id="landDetails">BIHAR|SAMASTIPUR|PUR|Kalyanpur|215|रामनरेश|Joint|0.80000</textarea>
+          <textarea id="landDetails">BIHAR|SAMASTIPUR|PUR|Kalyanpur|215|सीता कुमारी|Joint|0.80000</textarea>
         </div>
       </div>
 
-      <button class="btn" onclick="downloadCard()">Card Download</button>
-      <div class="status" id="statusBox">Ready. PDF upload karte hi parser text read karne ki koshish karega.</div>
-    </div>
+      <div class="btn-row">
+        <button class="primary" onclick="downloadCard()">Print / Save PDF</button>
+        <button class="secondary" onclick="fillDemo()">Demo Data</button>
+      </div>
 
-    <div class="preview-shell">
-      <div class="card-preview">
-        <div class="card-top">
-          <div>
-            <div class="logo-title">AgriStack Farmer ID Card</div>
-            <div class="logo-sub">Smart farmer identity preview</div>
+      <div class="status" id="statusBox">Ready. Card ka size Aadhaar standard 85.60mm × 53.98mm set kiya gaya hai.</div>
+    </aside>
+
+    <section class="preview-wrap">
+      <div class="preview-head">
+        <div>
+          <h3>Farmer Card Preview</h3>
+          <p>Texture aur layout ko sample ke kareeb rakha gaya hai.</p>
+        </div>
+        <div style="font-size:13px;color:#64766f">Front aur back dono Aadhaar-size ratio me hain.</div>
+      </div>
+
+      <div class="cards">
+        <div class="aadhaar-card texture" id="frontCard">
+          <div class="front-top">
+            <div class="brand">
+              <div class="brand-mark">A</div>
+              <div class="brand-text">
+                <div class="t1">Agri Card</div>
+                <div class="t2">मेरा किसान कार्ड</div>
+              </div>
+            </div>
+            <div class="leaf-badge"></div>
           </div>
-          <div style="font-size:12px;font-weight:800;text-align:right">2026<br>Digital Card</div>
+
+          <div class="front-main">
+            <div class="photo-frame">
+              <img id="photoPreview" alt="farmer photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80">
+            </div>
+
+            <div class="meta">
+              <div class="name" id="pName">Sita Kumari</div>
+              <div class="hindi" id="pNameHindi">सीता कुमारी</div>
+              <div class="line"><b>जन्म:</b> <span id="pDob">01/01/2000</span></div>
+              <div class="line"><b>लिंग:</b> <span id="pGender">Female</span></div>
+              <div class="line"><b>मोबाइल:</b> <span id="pMobile">8708353599</span></div>
+              <div class="line"><b>आधार:</b> <span id="pAadhaar">XXXX XXXX 1234</span></div>
+            </div>
+
+            <div class="qr-box"></div>
+          </div>
+
+          <div class="leaf-left"></div>
+          <div class="leaf-right"></div>
+          <div class="seal">SAFE<br>USE</div>
+
+          <div class="front-footer">
+            <span>Farmer Id</span>
+            <span id="pFarmerId">X00X111313213</span>
+          </div>
         </div>
 
-        <div class="card-body">
-          <div class="photo">
-            <img id="photoPreview" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="farmer photo">
+        <div class="aadhaar-card texture" id="backCard">
+          <div class="back-top">
+            <div class="title">Farmer Enrollment Id</div>
+            <div class="id" id="pEnrollId">217 1284 236194 005001</div>
           </div>
 
-          <div class="info">
-            <h3 id="pName">Ramnaresh Chaudhari</h3>
-            <div class="name-hindi" id="pNameHindi">रामनरेश चौधरी</div>
-            <div class="line"><strong>DOB:</strong> <span id="pDob">01/01/1927</span></div>
-            <div class="line"><strong>Gender:</strong> <span id="pGender">Male</span></div>
-            <div class="line"><strong>Age:</strong> <span id="pAge">98</span></div>
-            <div class="line"><strong>Caste Category:</strong> <span id="pCaste">General</span></div>
-            <div class="line"><strong>Mobile No.:</strong> <span id="pMobile">7070393730</span></div>
-            <div class="line"><strong>Aadhaar No.:</strong> <span id="pAadhaar">5095 0342 7099</span></div>
+          <div class="back-address">
+            Address : <span id="pAddress">yadu paran, ward no. 14, Kalyanpur, Samastipur, Bihar-848302</span>
           </div>
 
-          <div class="qr"></div>
-        </div>
+          <div class="back-body">
+            <h4>Land Ownership Details</h4>
+            <table class="back-table">
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>District</th>
+                  <th>Sub</th>
+                  <th>Village</th>
+                  <th>Survey</th>
+                  <th>Owner</th>
+                  <th>Type</th>
+                  <th>Area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="landRow">
+                  <td>BIHAR</td>
+                  <td>SAMASTIPUR</td>
+                  <td>PUR</td>
+                  <td>Kalyanpur</td>
+                  <td>215</td>
+                  <td>सीता कुमारी</td>
+                  <td>Joint</td>
+                  <td>0.80000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <div class="card-footer">
-          Farmer ID : <span id="pFarmerId" style="margin-left:8px">36565207294</span>
+          <div class="annex">Annexure<br>Yeh preview personal use aur print layout testing ke liye hai.</div>
+          <div class="mini-leaf"></div>
+          <div class="back-note">This card is for personal use only and is not a government-issued identity.</div>
         </div>
       </div>
 
-      <div class="back-card">
-        <div class="back-head">
-          <div style="font-size:28px;font-weight:800">Farmer Enrollment Id</div>
-          <div class="id" id="pEnrollId">217 1284 236194 005001</div>
-        </div>
-
-        <div class="address">
-          Address : <span id="pAddress">yadu paran, ward no. 14, Kalyanpur, Samastipur, Bihar-848302</span>
-        </div>
-
-        <div class="table-wrap">
-          <div class="table-title">Land Ownership Details</div>
-          <table>
-            <thead>
-              <tr>
-                <th>State</th>
-                <th>District</th>
-                <th>Sub District</th>
-                <th>Village</th>
-                <th>Survey</th>
-                <th>Owner Name</th>
-                <th>Type</th>
-                <th>Area</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="landRow">
-                <td>BIHAR</td>
-                <td>SAMASTIPUR</td>
-                <td>PUR</td>
-                <td>Kalyanpur</td>
-                <td>215</td>
-                <td>रामनरेश</td>
-                <td>Joint</td>
-                <td>0.80000</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="note">
-          This card is for personal use preview only. Production use ke liye real QR aur PDF export jod sakte hain.
-        </div>
-      </div>
-    </div>
+      <div class="print-note">Print karte waqt browser print setting me margins None aur scale Default rakhiye.</div>
+    </section>
   </div>
 
   <script>
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.5.136/pdf.worker.min.js';
 
-    const ids = ['name','nameHindi','dob','gender','age','mobile','aadhaar','caste','farmerId','enrollId','address','landDetails'];
+    const ids = ['name','nameHindi','dob','gender','mobile','aadhaar','farmerId','enrollId','address','landDetails'];
 
     ids.forEach(id => {
       document.getElementById(id).addEventListener('input', updatePreview);
@@ -508,121 +709,127 @@
     document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
     document.getElementById('pdfFile').addEventListener('change', handleMainUpload);
 
-    function val(id) {
+    function val(id){
       return document.getElementById(id).value.trim();
     }
 
-    function setText(id, value) {
+    function setText(id, value){
       document.getElementById(id).textContent = value || '-';
     }
 
-    function updatePreview() {
+    function setStatus(msg){
+      document.getElementById('statusBox').textContent = msg;
+    }
+
+    function updatePreview(){
       setText('pName', val('name'));
       setText('pNameHindi', val('nameHindi'));
       setText('pDob', val('dob'));
       setText('pGender', val('gender'));
-      setText('pAge', val('age'));
       setText('pMobile', val('mobile'));
       setText('pAadhaar', val('aadhaar'));
-      setText('pCaste', val('caste'));
       setText('pFarmerId', val('farmerId'));
       setText('pEnrollId', val('enrollId'));
       setText('pAddress', val('address'));
       drawLandRow(val('landDetails'));
     }
 
-    function drawLandRow(raw) {
-      const parts = raw.split('|').map(v => v.trim()).filter(Boolean);
-      const padded = [...parts, '', '', '', '', '', '', '', ''];
-      const tr = document.getElementById('landRow');
+    function drawLandRow(raw){
+      const parts = raw.split('|').map(v => v.trim());
+      const row = document.getElementById('landRow');
 
-      tr.innerHTML = `
-        <td>${padded[0] || '-'}</td>
-        <td>${padded[1] || '-'}</td>
-        <td>${padded[2] || '-'}</td>
-        <td>${padded[3] || '-'}</td>
-        <td>${padded[4] || '-'}</td>
-        <td>${padded[5] || '-'}</td>
-        <td>${padded[6] || '-'}</td>
-        <td>${padded[7] || '-'}</td>
+      row.innerHTML = `
+        <td>${parts[0] || '-'}</td>
+        <td>${parts[1] || '-'}</td>
+        <td>${parts[2] || '-'}</td>
+        <td>${parts[3] || '-'}</td>
+        <td>${parts[4] || '-'}</td>
+        <td>${parts[5] || '-'}</td>
+        <td>${parts[6] || '-'}</td>
+        <td>${parts[7] || '-'}</td>
       `;
     }
 
-    function handlePhotoUpload(e) {
+    function handlePhotoUpload(e){
       const file = e.target.files[0];
-      if (!file) return;
+      if(!file) return;
       const url = URL.createObjectURL(file);
       document.getElementById('photoPreview').src = url;
-      setStatus('Photo updated.');
+      setStatus('Photo updated. Aadhaar-size preview refresh ho gaya.');
     }
 
-    async function handleMainUpload(e) {
+    async function handleMainUpload(e){
       const file = e.target.files[0];
-      if (!file) return;
+      if(!file) return;
 
-      if (file.type.startsWith('image/')) {
+      if(file.type.startsWith('image/')){
         const url = URL.createObjectURL(file);
         document.getElementById('photoPreview').src = url;
-        setStatus('Image upload hua. Isko photo preview me use kar diya gaya hai.');
+        setStatus('Image upload hua. Photo preview update kar diya gaya.');
         return;
       }
 
-      if (file.type !== 'application/pdf') {
-        setStatus('Sirf PDF ya image file upload kijiye.');
+      if(file.type !== 'application/pdf'){
+        setStatus('Sirf PDF ya image upload kijiye.');
         return;
       }
 
-      setStatus('PDF read ho raha hai...');
+      setStatus('PDF se text read ho raha hai...');
 
-      try {
+      try{
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
         let extracted = '';
         const maxPages = Math.min(pdf.numPages, 3);
 
-        for (let i = 1; i <= maxPages; i++) {
+        for(let i = 1; i <= maxPages; i++){
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
           extracted += ' ' + content.items.map(item => item.str).join(' ');
         }
 
         autoFill(extracted);
-        setStatus('PDF parse complete. Jo data mila hai wo fields me bhar diya gaya hai.');
-      } catch (err) {
+        setStatus('PDF parse complete. Jo text mila hai usse fields auto-fill kar diye gaye hain.');
+      }catch(err){
         console.error(err);
         setStatus('PDF parse nahi ho paya. Aap fields manually edit kar sakte hain.');
       }
     }
 
-    function autoFill(text) {
-      const clean = text.replace(/s+/g, ' ').trim();
+    function autoFill(text){
+      const clean = text.replace(/s+/g,' ').trim();
 
       const dob = clean.match(/DOB[:s-]*([0-9]{1,2}[/.-][0-9]{1,2}[/.-][0-9]{2,4})/i);
       const gender = clean.match(/Gender[:s-]*(Male|Female|Other)/i);
-      const age = clean.match(/Age[:s-]*([0-9]{1,3})/i);
       const mobile = clean.match(/(?:Mobile|Mob(?:ile)?s*No.?)[s:-]*([0-9]{10})/i);
-      const aadhaar = clean.match(/(?:Aadhar|Aadhaar)[sw.:/-]*([0-9]{4}s?[0-9]{4}s?[0-9]{4})/i);
-      const farmerId = clean.match(/Farmers*ID[s:#-]*([0-9]{6,})/i);
+      const aadhaar = clean.match(/(?:Aadhar|Aadhaar)[sw.:/-]*([0-9Xx]{4}s?[0-9Xx]{4}s?[0-9Xx]{4})/i);
+      const farmerId = clean.match(/Farmers*ID[s:#-]*([A-Z0-9]{6,})/i);
 
-      if (dob) document.getElementById('dob').value = dob[1];
-      if (gender) document.getElementById('gender').value = gender[1];
-      if (age) document.getElementById('age').value = age[1];
-      if (mobile) document.getElementById('mobile').value = mobile[1];
-      if (aadhaar) {
-        document.getElementById('aadhaar').value = aadhaar[1]
-          .replace(/s+/g, '')
-          .replace(/(d{4})(d{4})(d{4})/, '$1 $2 $3');
-      }
-      if (farmerId) document.getElementById('farmerId').value = farmerId[1];
+      if(dob) document.getElementById('dob').value = dob[1];
+      if(gender) document.getElementById('gender').value = gender[1];
+      if(mobile) document.getElementById('mobile').value = mobile[1];
+      if(aadhaar) document.getElementById('aadhaar').value = aadhaar[1];
+      if(farmerId) document.getElementById('farmerId').value = farmerId[1];
 
       updatePreview();
     }
 
-    function setStatus(msg) {
-      document.getElementById('statusBox').textContent = msg;
+    function fillDemo(){
+      document.getElementById('name').value = 'Sita Kumari';
+      document.getElementById('nameHindi').value = 'सीता कुमारी';
+      document.getElementById('dob').value = '01/01/2000';
+      document.getElementById('gender').value = 'Female';
+      document.getElementById('mobile').value = '8708353599';
+      document.getElementById('aadhaar').value = 'XXXX XXXX 1234';
+      document.getElementById('farmerId').value = 'X00X111313213';
+      document.getElementById('enrollId').value = '217 1284 236194 005001';
+      document.getElementById('address').value = 'yadu paran, ward no. 14, Kalyanpur, Samastipur, Bihar-848302';
+      document.getElementById('landDetails').value = 'BIHAR|SAMASTIPUR|PUR|Kalyanpur|215|सीता कुमारी|Joint|0.80000';
+      updatePreview();
+      setStatus('Demo data load kar diya gaya.');
     }
 
-    function downloadCard() {
+    function downloadCard(){
       window.print();
     }
 
