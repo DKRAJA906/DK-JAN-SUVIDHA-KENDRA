@@ -3,9 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriStack Farmer ID Card Generator with Dynamic Land</title>
+    <title>DK Jan Suvidha Kendra - AgriStack Farmer ID Card Portal</title>
 
     <style>
+        /* TOP BANNER SYSTEM (DK JAN SUVIDHA KENDRA) */
+        .shop-banner {
+            width: 100%;
+            max-width: 850px;
+            background: linear-gradient(180deg, #0f529a 0%, #0a396c 100%);
+            color: white;
+            text-align: center;
+            padding: 20px 10px 15px 10px;
+            box-sizing: border-box;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            font-family: 'Arial Black', 'Arial', sans-serif;
+        }
+        .shop-name {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+        .shop-name span {
+            color: #fcc419; /* Golden color for KENDRA */
+        }
+        .shop-sub {
+            font-size: 14px;
+            font-weight: normal;
+            font-family: 'Arial', sans-serif;
+            margin: 5px 0 15px 0;
+            color: #e0e0e0;
+            letter-spacing: 1px;
+        }
+        .services-strip {
+            background-color: #061e38;
+            padding: 8px 5px;
+            font-size: 13px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            color: #ffffff;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            word-spacing: 2px;
+        }
+
+        /* BODY & CONTAINER STYLES */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #eef2f3;
@@ -18,17 +62,18 @@
         .container {
             background-color: #ffffff;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             max-width: 850px;
             width: 100%;
             margin-bottom: 30px;
+            box-sizing: border-box;
         }
         h2 {
             text-align: center;
             color: #0b4622;
-            margin-top: 0;
-            font-size: 22px;
+            margin-top: 10px;
+            font-size: 24px;
             border-bottom: 3px solid #0b4622;
             padding-bottom: 10px;
         }
@@ -58,7 +103,7 @@
             box-sizing: border-box;
         }
         
-        /* Dynamic Land Section Styling */
+        /* Land Section Styling */
         .land-entry-row {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -224,14 +269,22 @@
             #id-card-print-area, #id-card-print-area * { visibility: visible; }
             #id-card-print-area { position: absolute; left: 0; top: 0; display: flex; gap: 20px; }
             .id-card { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .container, button, .btn-add-land { display: none !important; }
+            .shop-banner, .container, button, .btn-add-land { display: none !important; }
         }
     </style>
 </head>
 <body>
 
+<div class="shop-banner">
+    <div class="shop-name">DK JAN SUVIDHA <span>KENDRA</span></div>
+    <div class="shop-sub">CSC Center • Online Services • Money Transfer</div>
+    <div class="services-strip">
+        आधार कार्ड • पैन कार्ड • आय/जाति प्रमाण पत्र • रेलवे टिकट • सभी ऑनलाइन फॉर्म यहाँ भरे जाते हैं।
+    </div>
+</div>
+
 <div class="container">
-    <h2>AgriStack Farmer ID Card Portal</h2>
+    <h2>AgriStack फार्मर आईडी कार्ड पोर्टल (Farmer ID Card Portal)</h2>
     
     <div class="form-grid">
         <div class="form-group">
@@ -314,7 +367,7 @@
                 <h3>AgriStack फार्मर आईडी कार्ड</h3>
                 <p>(Farmer ID Card)</p>
             </div>
-            <img class="header-logo" src="Indian Character.jpg" alt="AgriStack Logo">
+            <div style="font-size: 24px; background: white; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2a114;">👨‍🌾</div>
         </div>
         
         <div class="card-body-front">
