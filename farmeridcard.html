@@ -60,6 +60,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* सुरक्षा: टेक्स्ट सिलेक्शन रोकना */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         .container {
             background-color: #ffffff;
@@ -241,7 +246,6 @@
         }
         .farmer-id-ribbon span { color: #8ce99a; }
         
-        /* पत्तियों का बड़ा साइज और पोजीशन सेट */
         .leaf-left { position: absolute; bottom: 45px; left: 8px; font-size: 28px; }
         .leaf-right { position: absolute; bottom: 45px; right: 8px; font-size: 28px; }
         
@@ -258,17 +262,77 @@
         .land-table th { background-color: #f2f2f2; color: #0b4622; font-weight: bold; border: 1px solid #dddddd; padding: 3px 1px; }
         .land-table td { border: 1px solid #dddddd; padding: 4px 1px; height: 15px; }
 
+        /* NEW PAYMENT MODAL STYLES */
+        .payment-modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(3px);
+        }
+        .payment-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+        .payment-box h3 {
+            margin: 0 0 10px 0;
+            color: #d9534f;
+            font-size: 18px;
+        }
+        .qr-code-img {
+            width: 200px;
+            height: 200px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .btn-modal-pay {
+            background-color: #0b4622;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .btn-modal-pay:hover { background-color: #062c14; }
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 6px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .cancel-btn:hover { background-color: #c0392b; }
+
         /* Print Rule */
         @media print {
             body * { visibility: hidden; }
             #id-card-print-area, #id-card-print-area * { visibility: visible; }
             #id-card-print-area { position: absolute; left: 0; top: 0; display: flex; gap: 20px; }
             .id-card { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .shop-banner, .container, button, .btn-add-land { display: none !important; }
+            .shop-banner, .container, button, .btn-add-land, .payment-modal, .payment-box { display: none !important; }
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="shop-banner">
     <div class="shop-name">DK JAN SUVIDHA <span>KENDRA</span></div>
@@ -325,13 +389,12 @@
         </div>
 
         <div class="form-group">
-    <label>Upload Photo (फोटो अपलोड करें):</label>
-    <input type="file" accept="image/*" onchange="loadPhoto(event)" style="margin-bottom: 10px;">
-    
-    <div style="margin-top: 5px; margin-bottom: 10px;">
-        <img id="logoPreview" src="indianCharacter.jpg" style="max-width: 100px; max-height: 100px; display: block; border: 1px solid #ccc; border-radius: 4px;">
-    </div>
-</div>
+            <label>Upload Photo (फोटो अपलोड करें):</label>
+            <input type="file" accept="image/*" onchange="loadPhoto(event)" style="margin-bottom: 10px;">
+            <div style="margin-top: 5px; margin-bottom: 10px;">
+                <img id="logoPreview" src="indianCharacter.jpg" style="max-width: 100px; max-height: 100px; display: block; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+        </div>
         <div class="form-group" style="display: flex; align-items: flex-end; margin-bottom: 5px;">
             <button type="button" class="btn-add-land" onclick="addNewLandRow()">Add Land Details ( + )</button>
         </div>
@@ -352,8 +415,24 @@
         </div>
 
         <div class="action-buttons">
-            <button class="btn-submit" onclick="window.print()">Print ID Card (Front & Back)</button>
+            <button class="btn-submit" onclick="openPaymentModal()">Print ID Card (Front & Back)</button>
         </div>
+    </div>
+</div>
+
+<div class="payment-modal" id="myPaymentModal">
+    <div class="payment-box">
+        <h3>प्रिंट करने के लिए फीस ₹20 पे करें</h3>
+        <p style="font-size: 13px; color: #555; margin: 5px 0;">कृपया किसी भी UPI ऐप से इस QR कोड को स्कैन करें:</p>
+        
+        <img src="your_qr_code.png" alt="UPI QR Code" class="qr-code-img">
+        
+        <p style="color: #e74c3c; font-size: 12px; font-weight: bold; margin: 8px 0;">
+            * पेमेंट पूरा हो जाने के बाद ही नीचे बटन दबाएं
+        </p>
+        
+        <button class="btn-modal-pay" onclick="actionPrint()">मैंने पेमेंट कर दिया, प्रिंट करें</button>
+        <button class="cancel-btn" onclick="closePaymentModal()">कैंसिल करें</button>
     </div>
 </div>
 
@@ -379,7 +458,7 @@
                     <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 98</td></tr>
                     <tr><td class="info-label">Caste Category:</td><td id="lblCaste">General</td></tr>
                     <tr><td class="info-label">Mobile No:</td><td id="lblMobile">7070393730</td></tr>
-                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">5095 0312 7099</td></tr>
+                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">[Aadhaar Redacted]</td></tr>
                 </table>
             </div>
             
@@ -516,7 +595,6 @@
         document.getElementById('lblEnrollId').innerText = document.getElementById('enrollId').value || '-';
         document.getElementById('lblAddr').innerText = document.getElementById('addr').value || '-';
         
-        // ऑफ़लाइन QR को बिना इंटरनेट तुरंत अपडेट करने का कोड
         qrcode.makeCode("AgriStackFarmer" + farmerID);
 
         var tableBody = document.getElementById('landTableBody');
@@ -552,6 +630,54 @@
         };
         reader.readAsDataURL(event.target.files[0]);
     }
+
+    /* === पेमेंट और सुरक्षा की थ्री-लेयर सेटिंग्स === */
+
+    // पॉप-अप विंडो कंट्रोल करने के फंक्शन्स
+    function openPaymentModal() {
+        document.getElementById('myPaymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+        document.getElementById('myPaymentModal').style.display = 'none';
+    }
+
+    function actionPrint() {
+        closePaymentModal(); 
+        setTimeout(function() {
+            window.print();  
+        }, 300);
+    }
+
+    // सुरक्षा लेयर 2: कीबोर्ड शॉर्टकट लॉक करना (PrintScreen, Ctrl+P, डेवलपर टूल्स)
+    document.addEventListener('keydown', function(e) {
+        // कीबोर्ड का स्क्रीनशॉट बटन लॉक करना
+        if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            e.preventDefault();
+            alert('सुरक्षा कारणों से इस पेज का स्क्रीनशॉट नहीं लिया जा सकता!');
+            navigator.clipboard.writeText(""); // क्लिपबोर्ड डेटा डिलीट करना
+        }
+        
+        // Ctrl+P (शॉर्टकट से सीधे प्रिंट करना रोकना)
+        if (e.ctrlKey && (e.key === 'p' || e.keyCode === 80)) {
+            e.preventDefault();
+            alert('कृपया कार्ड प्रिंट करने के लिए नीचे दिए गए मुख्य प्रिंट बटन का उपयोग करें।');
+        }
+
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J (कोड इंस्पेक्ट करना रोकना)
+        if (e.keyCode === 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+            (e.ctrlKey && e.keyCode === 85)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // सुरक्षा लेयर 3: टेक्स्ट या इमेज कॉपी करने पर अलर्ट और क्लिपबोर्ड खाली रखना
+    document.addEventListener('copy', function(e) {
+        e.preventDefault();
+        alert('इस पोर्टल से डेटा कॉपी करना प्रतिबंधित है!');
+    });
     
     updateCard();
 </script>
