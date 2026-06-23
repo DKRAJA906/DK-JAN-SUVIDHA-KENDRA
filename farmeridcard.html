@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DK Jan Suvidha Kendra - AgriStack Farmer ID Card Portal</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         /* TOP BANNER SYSTEM (DK JAN SUVIDHA KENDRA) */
         .shop-banner {
@@ -28,7 +30,7 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         }
         .shop-name span {
-            color: #fcc419; /* Golden color for KENDRA */
+            color: #fcc419;
         }
         .shop-sub {
             font-size: 14px;
@@ -186,14 +188,6 @@
         .header-title h3 { margin: 0; font-size: 15px; font-weight: bold; }
         .header-title p { margin: 0; font-size: 11px; color: #f0f0f0; }
 
-        .header-logo {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 1px solid #e2a114;
-        }
-
         .card-body-front {
             padding: 10px;
             display: flex;
@@ -223,17 +217,15 @@
         
         .qr-box {
             position: absolute;
-            right: 10px;
-            top: 25px;
+            right: 12px;
+            top: 22px;
             width: 65px;
             height: 65px;
-            border: 1px solid #ccc;
-            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .qr-box img { width: 90%; height: 90%; }
+        .qr-box img { width: 100%; height: 100%; }
 
         .farmer-id-ribbon {
             position: absolute;
@@ -248,8 +240,11 @@
             padding: 5px 0;
         }
         .farmer-id-ribbon span { color: #8ce99a; }
-        .leaf-left { position: absolute; bottom: 45px; left: 8px; font-size: 22px; }
-        .leaf-right { position: absolute; bottom: 45px; right: 8px; font-size: 22px; }
+        
+        /* पत्तियों का बड़ा साइज और पोजीशन सेट */
+        .leaf-left { position: absolute; bottom: 45px; left: 8px; font-size: 28px; }
+        .leaf-right { position: absolute; bottom: 45px; right: 8px; font-size: 28px; }
+        
         .card-footer-text { position: absolute; bottom: 0; width: 100%; background: #072e16; color: #fff; text-align: center; font-size: 8px; padding: 4px 0; }
 
         /* BACK SIDE STYLES */
@@ -385,9 +380,7 @@
                 </table>
             </div>
             
-            <div class="qr-box">
-                <img src="indian Character.jpg">
-            </div>
+            <div class="qr-box" id="qrcode"></div>
         </div>
 
         <div class="leaf-left">🌿</div><div class="leaf-right">🌿</div>
@@ -442,6 +435,13 @@
 <script>
     let typingTimer;
     const doneTypingInterval = 400;
+
+    // ऑफ़लाइन QR कोड इंजन की सेटिंग
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width: 65,
+        height: 65,
+        correctLevel : QRCode.CorrectLevel.H
+    });
 
     function handleTransliteration() {
         clearTimeout(typingTimer);
@@ -506,11 +506,16 @@
         document.getElementById('lblCaste').innerText = document.getElementById('caste').value || '-';
         document.getElementById('lblMobile').innerText = document.getElementById('mobile').value || '-';
         document.getElementById('lblAadhar').innerText = document.getElementById('aadhar').value || '-';
-        document.getElementById('lblFid').innerText = document.getElementById('fid').value || '-';
+        
+        var farmerID = document.getElementById('fid').value || '-';
+        document.getElementById('lblFid').innerText = farmerID;
 
         document.getElementById('lblEnrollId').innerText = document.getElementById('enrollId').value || '-';
         document.getElementById('lblAddr').innerText = document.getElementById('addr').value || '-';
         
+        // ऑफ़लाइन QR को बिना इंटरनेट तुरंत अपडेट करने का कोड
+        qrcode.makeCode("AgriStackFarmer" + farmerID);
+
         var tableBody = document.getElementById('landTableBody');
         tableBody.innerHTML = ''; 
         
