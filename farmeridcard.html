@@ -4,22 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgriStack Farmer ID Card Generator with Dynamic Land</title>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("elements", "1", { packages: "transliteration" });
-
-        function onLoad() {
-            var options = {
-                sourceLanguage: google.elements.transliteration.LanguageCode.ENGLISH,
-                destinationLanguage: [google.elements.transliteration.LanguageCode.HINDI],
-                shortcutKey: 'ctrl+g',
-                transliterationEnabled: true
-            };
-            var control = new google.elements.transliteration.TransliterationControl(options);
-            control.makeTransliteratable(['nameHi']);
-        }
-        google.setOnLoadCallback(onLoad);
-    </script>
 
     <style>
         body {
@@ -157,7 +141,6 @@
         .header-title h3 { margin: 0; font-size: 15px; font-weight: bold; }
         .header-title p { margin: 0; font-size: 11px; color: #f0f0f0; }
 
-        /* 2. कोड में लोगो जोड़ने के लिए class को स्टाइल करें */
         .header-logo {
             width: 45px;
             height: 45px;
@@ -253,11 +236,11 @@
     <div class="form-grid">
         <div class="form-group">
             <label>Farmer Name (English):</label>
-            <input type="text" id="nameEn" value="Ramnaresh Chaudhari" oninput="updateCard()">
+            <input type="text" id="nameEn" value="Ramnaresh Chaudhari" oninput="updateCard(); handleTransliteration();">
         </div>
         <div class="form-group">
             <label>किसान का नाम (Hindi):</label>
-            <input type="text" id="nameHi" value="रामनरेश चौधरी" onkeypress="transliterate(event)">
+            <input type="text" id="nameHi" value="रामनरेश चौधरी" oninput="updateCard()">
         </div>
         <div class="form-group">
             <label>Date of Birth (DOB):</label>
@@ -277,7 +260,7 @@
         </div>
         <div class="form-group">
             <label>Aadhar No:</label>
-            <input type="text" id="aadhar" value="5095 0312 7099" oninput="updateCard()">
+            <input type="text" id="aadhar" value="[Aadhaar Redacted]" oninput="updateCard()">
         </div>
         <div class="form-group">
             <label>Farmer ID Number:</label>
@@ -345,7 +328,7 @@
                     <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 98</td></tr>
                     <tr><td class="info-label">Caste Category:</td><td id="lblCaste">General</td></tr>
                     <tr><td class="info-label">Mobile No:</td><td id="lblMobile">7070393730</td></tr>
-                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">5095 0312 7099</td></tr>
+                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">[Aadhaar Redacted]</td></tr>
                 </table>
             </div>
             
@@ -404,12 +387,47 @@
 </div>
 
 <script>
-    // Function to add a new land input row dynamically
+    // नया सुपरफास्ट और ऑटोमैटिक हिंदी ट्रांसलेशन सिस्टम
+    let typingTimer;
+    const doneTypingInterval = 400; // टाइपिंग रोकने के 0.4 सेकंड बाद ट्रांसलेट होगा
+
+    function handleTransliteration() {
+        clearTimeout(typingTimer);
+        const nameEnValue = document.getElementById('nameEn').value;
+        
+        if (nameEnValue.trim() === '') {
+            document.getElementById('nameHi').value = '';
+            updateCard();
+            return;
+        }
+
+        // जैसे ही यूजर स्पेस दबाएगा या टाइपिंग रोकेगा, यह तुरंत काम करेगा
+        typingTimer = setTimeout(fetchHindiTranslation, doneTypingInterval);
+    }
+
+    function fetchHindiTranslation() {
+        const text = document.getElementById('nameEn').value;
+        if(!text.trim()) return;
+
+        // बिना किसी लोड के सीधा लाइव काम करने वाला गूगल का सुरक्षित इनपुट यूआरएल
+        const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data[0] === 'SUCCESS' && data[1][0][1][0]) {
+                    const translatedText = data[1][0][1][0];
+                    document.getElementById('nameHi').value = translatedText;
+                    updateCard(); // कार्ड का प्रीव्यू लाइव रीफ्रेश करें
+                }
+            })
+            .catch(err => console.error("Translation Error: ", err));
+    }
+
     function addNewLandRow() {
         var container = document.getElementById('landInputsContainer');
         var rowCount = container.getElementsByClassName('land-entry-row').length;
         
-        // Limit to 4 rows to fit perfectly inside the card height
         if(rowCount >= 4) {
             alert("कार्ड के बैक साइड में अधिकतम 4 ज़मीन की डिटेल ही प्रिंट की जा सकती है!");
             return;
@@ -431,7 +449,6 @@
     }
 
     function updateCard() {
-        // Front Text Update
         document.getElementById('lblNameEn').innerText = document.getElementById('nameEn').value || '-';
         document.getElementById('lblNameHi').innerText = document.getElementById('nameHi').value || '-';
         document.getElementById('lblDob').innerText = document.getElementById('dob').value || '-';
@@ -441,13 +458,11 @@
         document.getElementById('lblAadhar').innerText = document.getElementById('aadhar').value || '-';
         document.getElementById('lblFid').innerText = document.getElementById('fid').value || '-';
 
-        // Back Address Update
         document.getElementById('lblEnrollId').innerText = document.getElementById('enrollId').value || '-';
         document.getElementById('lblAddr').innerText = document.getElementById('addr').value || '-';
         
-        // Dynamic Table Syncing Logic
         var tableBody = document.getElementById('landTableBody');
-        tableBody.innerHTML = ''; // Clear previous data
+        tableBody.innerHTML = ''; 
         
         var inputRows = document.getElementsByClassName('land-entry-row');
         
@@ -465,7 +480,6 @@
                 
                 tr.innerHTML = `<td>${state}</td><td>${dist}</td><td>${sub}</td><td>${vill}</td><td>${khata}</td><td>${khasra}</td><td>${area}</td>`;
             } else {
-                // Empty rows to maintain table structure look
                 tr.innerHTML = `<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td>`;
             }
             tableBody.appendChild(tr);
@@ -481,19 +495,7 @@
         reader.readAsDataURL(event.target.files[0]);
     }
     
-    // Auto-load row on startup
     updateCard();
-
-    // 5. हिंदी में स्वचालित रूप से टाइप करने के लिए एक फ़ंक्शन जोड़ें
-    function transliterate(event) {
-        var englishName = document.getElementById('nameEn').value;
-        if (englishName.length > 0) {
-            // गूगल ट्रांसलिट्रेशन को कॉल करें (जब यूजर स्पेस या एंटर दबाता है)
-            if (event.keyCode == 32 || event.keyCode == 13) {
-                // यह गूगल API द्वारा अपने आप हैंडल किया जाता है
-            }
-        }
-    }
 </script>
 
 </body>
