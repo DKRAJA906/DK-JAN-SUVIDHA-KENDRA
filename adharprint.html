@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DK Jan Suvidha Kendra - Instant Aadhaar A4 Print Portal</title>
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
 
   <style>
     :root {
@@ -28,7 +29,6 @@
       align-items: center;
     }
 
-    /* कंट्रोल पैनल (वेबसाइट पर दिखने वाला हिस्सा) */
     .control-panel {
       background: var(--panel-bg);
       border-radius: 12px;
@@ -99,7 +99,6 @@
 
     .btn-print:hover { background: #1b5e20; }
 
-    /* प्रिंट प्रीव्यू एरिया (स्क्रीन पर कैसा दिखेगा) */
     .preview-title {
       font-weight: bold;
       margin-bottom: 10px;
@@ -109,39 +108,34 @@
       text-align: left;
     }
 
-    /* A4 शीट का लाइव प्रीव्यू स्क्रीन पर */
     #a4-page-sheet {
       background: white;
       width: 210mm;
       height: 297mm;
       box-shadow: 0 4px 25px rgba(0,0,0,0.15);
-      padding: 15mm 12mm; /* ए4 मार्जिन सेटिंग्स */
+      padding: 15mm 12mm;
       position: relative;
     }
 
-    /* दोनों कार्ड्स को अगल-बगल रखने के लिए फ्लेक्स ग्रिड */
     .cards-wrapper {
       display: flex;
       flex-direction: row;
-      gap: 6mm; /* दोनों कार्ड्स के बीच की दूरी */
+      gap: 6mm;
       justify-content: flex-start;
     }
 
     .aadhaar-card-render {
       width: var(--card-w);
       height: var(--card-h);
-      border: 0.3mm solid #999;
-      border-radius: 3mm;
+      border: 0.2mm solid #ccc;
+      border-radius: 2.5mm;
       overflow: hidden;
-      position: relative;
       background: #fff;
     }
 
-    /* पीडीएफ पेज को ऑटो-फिट स्केल करने के लिए */
     .pdf-canvas-render {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
     }
 
@@ -152,7 +146,6 @@
       color: #d32f2f;
     }
 
-    /* --- PRINT STYLES (केवल प्रिंटर के लिए) --- */
     @media print {
       body { background: white; padding: 0; margin: 0; }
       .control-panel, .preview-title { display: none !important; }
@@ -183,11 +176,11 @@
   <div class="control-panel">
     <div class="shop-header">
       <h1>DK JAN SUVIDHA KENDRA</h1>
-      <p>Instant Password-Protected Aadhaar PDF Printing System (A4 Layout)</p>
+      <p>Instant Digital Aadhaar Auto-Crop Print Portal (A4 Layout)</p>
     </div>
 
     <div class="upload-box">
-      <label>🔒 ई-आधार पीडीएफ अपलोड करें और पासवर्ड डालें:</label>
+      <label>🔒 ओरिजिनल आधार पीडीएफ चुनें और पासवर्ड डालें:</label>
       <div class="input-group">
         <input type="file" id="pdfFile" accept=".pdf" />
         <input type="password" id="pdfPassword" placeholder="PDF पासवर्ड दर्ज करें" />
@@ -195,31 +188,26 @@
       </div>
       <div id="statusOutput" class="status-msg" style="color: #2e7d32; margin-top: 12px;">कृपया पीडीएफ और पासवर्ड दर्ज करें...</div>
     </div>
-    
-    <p style="font-size: 12px; color: #666; text-align: center;">
-      💡 <b>टिप:</b> आधार पीडीएफ का पासवर्ड आपके नाम के पहले 4 अक्षर (CAPITAL) और आपका जन्म का वर्ष होता है (जैसे: <code>RAMN2002</code>)।
-    </p>
   </div>
 
-  <div class="preview-title">A4 पेपर प्रिंट प्रीव्यू (अगल-बगल लेआउट):</div>
+  <div class="preview-title">A4 पेपर प्रिंट प्रीव्यू (अगल-बगल परफेक्ट फिटिंग):</div>
 
   <div id="a4-page-sheet">
     <div class="cards-wrapper">
-      
-      <div class="aadhaar-card-render" id="frontCardBox">
+      <div class="aadhaar-card-render">
         <canvas id="frontCanvas" class="pdf-canvas-render"></canvas>
       </div>
-
-      <div class="aadhaar-card-render" id="backCardBox">
+      <div class="aadhaar-card-render">
         <canvas id="backCanvas" class="pdf-canvas-render"></canvas>
       </div>
-
     </div>
   </div>
 
+  <canvas id="hiddenFullCanvas" style="display: none;"></canvas>
+
   <script>
-    // PDF.js worker फ़ाइल कॉन्फ़िगरेशन
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    // मैचिंग वर्कर फाइल पाथ सेट करना
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
     const fileInput = document.getElementById('pdfFile');
     const passwordInput = document.getElementById('pdfPassword');
@@ -228,7 +216,6 @@
 
     let pdfDataBuffer = null;
 
-    // फाइल सेलेक्ट होने पर बफर में लोड करना
     fileInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -237,102 +224,82 @@
       reader.onload = function(evt) {
         pdfDataBuffer = new Uint8Array(evt.target.result);
         statusOutput.style.color = '#333';
-        statusOutput.textContent = "पीडीएफ लोड हो गई है। अब पासवर्ड डालकर चेक करें।";
+        statusOutput.textContent = "पीडीएफ लोड हो गई है। कृपया पासवर्ड डालें।";
         processAadhaarPdf();
       };
       reader.readAsArrayBuffer(file);
     });
 
-    // पासवर्ड बदलने पर तुरंत रेंडर ट्रिगर करना
     passwordInput.addEventListener('input', function() {
-      if (pdfDataBuffer) {
-        processAadhaarPdf();
-      }
+      if (pdfDataBuffer) processAadhaarPdf();
     });
 
-    // आधार पीडीएफ को रेंडर और ऑटो-क्रॉप करने का मेन फंक्शन
     async function processAadhaarPdf() {
       if (!pdfDataBuffer) return;
       
       const password = passwordInput.value.trim();
       statusOutput.style.color = '#0f529a';
-      statusOutput.textContent = "पीडीएफ को डिक्रिप्ट और रेंडर किया जा रहा है...";
+      statusOutput.textContent = "पीडीएफ को डिक्रिप्ट किया जा रहा है...";
 
       try {
-        // पासवर्ड के साथ पीडीएफ खोलना
         const loadingTask = pdfjsLib.getDocument({
           data: pdfDataBuffer,
           password: password
         });
 
         const pdf = await loadingTask.promise;
-        // आधार आमतौर पर 1 पेज का ही होता है
         const page = await pdf.getPage(1); 
         
         statusOutput.style.color = '#2e7d32';
-        statusOutput.textContent = "🎉 सफलता! पीडीएफ अनलॉक हो गई है और कार्ड्स सेट कर दिए गए हैं।";
+        statusOutput.textContent = "🎉 सफलता! कार्ड्स को एकदम सटीक क्रॉप कर दिया गया है।";
 
-        // कार्ड रेंडरिंग की सेटिंग्स (High Quality Resolution)
-        const scale = 4.0; 
-        const viewport = page.getViewport({ scale: scale });
+        const renderScale = 4.0; 
+        const viewport = page.getViewport({ scale: renderScale });
 
-        // --- फ्रंट कार्ड रेंडरिंग (Front Card) ---
+        const hiddenCanvas = document.getElementById('hiddenFullCanvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d');
+        hiddenCanvas.width = viewport.width;
+        hiddenCanvas.height = viewport.height;
+
+        const renderContext = { canvasContext: hiddenCtx, viewport: viewport };
+        await page.render(renderContext).promise;
+
         const frontCanvas = document.getElementById('frontCanvas');
         const frontCtx = frontCanvas.getContext('2d');
-        
-        // पूरे पेज का साइज
-        frontCanvas.width = viewport.width;
-        frontCanvas.height = viewport.height;
-
-        // --- बैक कार्ड रेंडरिंग (Back Card) ---
         const backCanvas = document.getElementById('backCanvas');
         const backCtx = backCanvas.getContext('2d');
-        
-        backCanvas.width = viewport.width;
-        backCanvas.height = viewport.height;
 
-        const renderContextFront = { canvasContext: frontCtx, viewport: viewport };
-        await page.render(renderContextFront).promise;
+        // मानक कार्ड साइज अनुपात
+        frontCanvas.width = 1011;
+        frontCanvas.height = 638;
+        backCanvas.width = 1011;
+        backCanvas.height = 638;
 
-        // दोबारा रेंडर करके दूसरे कैनवास पर लाना
-        const renderContextBack = { canvasContext: backCtx, viewport: viewport };
-        await page.render(renderContextBack).promise;
+        const fullW = hiddenCanvas.width;
+        const fullH = hiddenCanvas.height;
 
-        // आधुनिक ई-आधार पीडीएफ में नीचे के हिस्से को फ्रंट और बैक में काटने का एकदम सटीक CSS क्रॉपिंग पोजीशन
-        adjustCardViewports();
+        const cropW = fullW * 0.49;  
+        const cropH = fullH * 0.285; 
+        const cropY = fullH - cropH; 
+
+        const srcFrontX = 0;
+        const srcBackX = fullW * 0.51; 
+
+        // बिना किसी खिंचाव के डिजिटल कटिंग लॉजिक
+        frontCtx.drawImage(hiddenCanvas, srcFrontX, cropY, cropW, cropH, 0, 0, frontCanvas.width, frontCanvas.height);
+        backCtx.drawImage(hiddenCanvas, srcBackX, cropY, cropW, cropH, 0, 0, backCanvas.width, backCanvas.height);
 
       } catch (error) {
         statusOutput.style.color = '#d32f2f';
-        if (error.name === 'PasswordException') {
-          statusOutput.textContent = "❌ गलत पासवर्ड! कृपया सही CAPITAL अक्षरों और जन्म वर्ष का इस्तेमाल करें।";
+        if (error.name === 'PasswordException' || error.name === 'PasswordException ') {
+          statusOutput.textContent = "❌ गलत पासवर्ड! कृपया ध्यान दें कि पासवर्ड CAPITAL अक्षरों में होना चाहिए।";
         } else {
-          statusOutput.textContent = "❌ एरर: पीडीएफ रीड करने में दिक्कत आई है। कृपया ओरिजिनल फाइल चुनें।";
+          statusOutput.textContent = "❌ एरर: फाइल को खोलने में समस्या आई। कृपया सही डिजिटल फाइल का उपयोग करें।";
           console.error(error);
         }
       }
     }
 
-    // दोनों कैनवास को आधार कार्ड के नीचे के दोनों हिस्सों पर फोकस करने के लिए स्मार्ट क्लिपिंग/पोजीशनिंग
-    function adjustCardViewports() {
-      const frontCanvas = document.getElementById('frontCanvas');
-      const backCanvas = document.getElementById('backCanvas');
-
-      // CSS का उपयोग करके कैनवास के केवल निचले हिस्से (आधार कार्ड विंग्स) को व्यू-बॉक्स में फिट करना
-      // डिफ़ॉल्ट सरकारी आधार लेआउट के अनुसार:
-      frontCanvas.style.width = '203%'; 
-      frontCanvas.style.height = '335%';
-      frontCanvas.style.position = 'absolute';
-      frontCanvas.style.bottom = '0';
-      frontCanvas.style.left = '0';
-
-      backCanvas.style.width = '203%';
-      backCanvas.style.height = '335%';
-      backCanvas.style.position = 'absolute';
-      backCanvas.style.bottom = '0';
-      backCanvas.style.right = '0'; // बैक साइड हमेशा दाईं तरफ होती है नीचे पट्टी में
-    }
-
-    // प्रिंट बटन एक्शन
     printActionBtn.addEventListener('click', function() {
       if (!pdfDataBuffer) {
         alert("कृपया पहले आधार पीडीएफ फाइल सेलेक्ट करें!");
