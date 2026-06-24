@@ -1,61 +1,352 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <title>Aadhaar Print</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <style>
-        body { font-family: sans-serif; padding: 20px; text-align: center; }
-        .controls { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; display: inline-block; }
-        canvas { border: 2px solid #000; width: 323px; height: 203px; margin: 10px; }
-        @media print { .controls { display: none; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DK Jan Suvidha Kendra - Instant Aadhaar A4 Print Portal</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #f3f4f6;
+      --panel-bg: #ffffff;
+      --primary-blue: #0f529a;
+      --card-w: 85.6mm;
+      --card-h: 53.98mm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      padding: 20px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .control-panel {
+      background: var(--panel-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 25px;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    .shop-header {
+      background: linear-gradient(135deg, #0f529a 0%, #0a396c 100%);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .shop-header h1 { font-size: 24px; letter-spacing: 1px; }
+    .shop-header p { font-size: 13px; color: #e0e0e0; margin-top: 5px; }
+
+    .upload-box {
+      border: 2px dashed var(--primary-blue);
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .upload-box label {
+      display: block;
+      font-weight: bold;
+      color: var(--primary-blue);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="file"], input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    input[type="password"] { width: 200px; }
+
+    .btn-print {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-print:hover { background: #1b5e20; }
+
+    .preview-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #555;
+      width: 100%;
+      max-width: 210mm;
+      text-align: left;
+    }
+
+    #a4-page-sheet {
+      background: white;
+      width: 210mm;
+      height: 297mm;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+      padding: 15mm 12mm;
+      position: relative;
+    }
+
+    .cards-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 6mm;
+      justify-content: flex-start;
+    }
+
+    .aadhaar-card-render {
+      width: var(--card-w);
+      height: var(--card-h);
+      border: 0.3mm solid #999;
+      border-radius: 3mm;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .pdf-canvas-render {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #d32f2f;
+    }
+
+    @media print {
+      body { background: white; padding: 0; margin: 0; }
+      .control-panel, .preview-title { display: none !important; }
+      #a4-page-sheet {
+        box-shadow: none !important;
+        padding: 15mm 12mm !important;
+        margin: 0 !important;
+        border: none !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        display: block !important;
+      }
+      .cards-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 6mm !important;
+      }
+      .aadhaar-card-render {
+        border: 0.3mm solid #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      @page { size: A4 portrait; margin: 0; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="controls">
-    <input type="file" id="f">
-    <input type="password" id="p" placeholder="Password">
-    <button onclick="run()">प्रिंट प्रीव्यू</button>
-</div>
-<br>
-<canvas id="c1"></canvas>
-<canvas id="c2"></canvas>
+  <div class="control-panel">
+    <div class="shop-header">
+      <h1>DK JAN SUVIDHA KENDRA</h1>
+      <p>Instant Digital Aadhaar Auto-Crop Print Portal (A4 Layout)</p>
+    </div>
 
-<script>
+    <div class="upload-box">
+      <label>🔒 ओरिजिनल आधार पीडीएफ चुनें और पासवर्ड डालें:</label>
+      <div class="input-group">
+        <input type="file" id="pdfFile" accept=".pdf" />
+        <input type="password" id="pdfPassword" placeholder="PDF पासवर्ड दर्ज करें" />
+        <button class="btn-print" id="printActionBtn">क्विक प्रिंट (Print)</button>
+      </div>
+      <div id="statusOutput" class="status-msg" style="color: #2e7d32; margin-top: 12px;">कृपया पीडीएफ और पासवर्ड दर्ज करें...</div>
+    </div>
+  </div>
+
+  <div class="preview-title">A4 पेपर प्रिंट प्रीव्यू (अगल-बगल परफेक्ट फिटिंग):</div>
+
+  <div id="a4-page-sheet">
+    <div class="cards-wrapper">
+      <div class="aadhaar-card-render">
+        <canvas id="frontCanvas" class="pdf-canvas-render"></canvas>
+      </div>
+      <div class="aadhaar-card-render">
+        <canvas id="backCanvas" class="pdf-canvas-render"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="hiddenFullCanvas" style="display: none;"></canvas>
+
+  <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    async function run() {
-        const file = document.getElementById('f').files[0];
-        const pass = document.getElementById('p').value;
-        const reader = new FileReader();
+    const fileInput = document.getElementById('pdfFile');
+    const passwordInput = document.getElementById('pdfPassword');
+    const statusOutput = document.getElementById('statusOutput');
+    const printActionBtn = document.getElementById('printActionBtn');
 
-        reader.onload = async function() {
-            const pdf = await pdfjsLib.getDocument({data: new Uint8Array(this.result), password: pass}).promise;
-            const page = await pdf.getPage(1);
-            const viewport = page.getViewport({ scale: 4 });
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width; canvas.height = viewport.height;
-            await page.render({canvasContext: canvas.getContext('2d'), viewport: viewport}).promise;
+    let pdfDataBuffer = null;
 
-            const c1 = document.getElementById('c1');
-            const c2 = document.getElementById('c2');
-            c1.width = 1011; c1.height = 638;
-            c2.width = 1011; c2.height = 638;
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-            const ctx1 = c1.getContext('2d');
-            const ctx2 = c2.getContext('2d');
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        pdfDataBuffer = new Uint8Array(evt.target.result);
+        statusOutput.style.color = '#333';
+        statusOutput.textContent = "पीडीएफ लोड हो गई है। कृपया पासवर्ड डालें।";
+        processAadhaarPdf();
+      };
+      reader.readAsArrayBuffer(file);
+    });
 
-            // आधार का कटिंग एरिया फिक्स किया गया है
-            const w = canvas.width / 2;
-            const h = canvas.height * 0.28;
-            const y = canvas.height * 0.72;
+    passwordInput.addEventListener('input', function() {
+      if (pdfDataBuffer) processAadhaarPdf();
+    });
 
-            ctx1.drawImage(canvas, 0, y, w, h, 0, 0, 1011, 638);
-            ctx2.drawImage(canvas, w, y, w, h, 0, 0, 1011, 638);
-        };
-        reader.readAsArrayBuffer(file);
+    async function processAadhaarPdf() {
+      if (!pdfDataBuffer) return;
+      
+      const password = passwordInput.value.trim();
+      statusOutput.style.color = '#0f529a';
+      statusOutput.textContent = "पीडीएफ को डिक्रिप्ट किया जा रहा है...";
+
+      try {
+        const loadingTask = pdfjsLib.getDocument({
+          data: pdfDataBuffer,
+          password: password
+        });
+
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1); 
+        
+        statusOutput.style.color = '#2e7d32';
+        statusOutput.textContent = "🎉 सफलता! कार्ड्स को एकदम सटीक क्रॉप और एनहांस कर दिया गया है।";
+
+        const renderScale = 4.0; 
+        const viewport = page.getViewport({ scale: renderScale });
+
+        const hiddenCanvas = document.getElementById('hiddenFullCanvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d');
+        hiddenCanvas.width = viewport.width;
+        hiddenCanvas.height = viewport.height;
+
+        const renderContext = { canvasContext: hiddenCtx, viewport: viewport };
+        await page.render(renderContext).promise;
+
+        const frontCanvas = document.getElementById('frontCanvas');
+        const frontCtx = frontCanvas.getContext('2d');
+        const backCanvas = document.getElementById('backCanvas');
+        const backCtx = backCanvas.getContext('2d');
+
+        // मानक कार्ड साइज अनुपात
+        frontCanvas.width = 1011;
+        frontCanvas.height = 638;
+        backCanvas.width = 1011;
+        backCanvas.height = 638;
+
+        const fullW = hiddenCanvas.width;
+        const fullH = hiddenCanvas.height;
+
+        // संशोधित एकदम सटीक यूआईडीएआई लेआउट डाइमेंशन्स
+        const cropW = fullW * 0.485;  
+        const cropH = fullH * 0.292; 
+        const cropY = fullH - (fullH * 0.302); 
+
+        const srcFrontX = fullW * 0.012;
+        const srcBackX = fullW * 0.504; 
+
+        // डिजिटल कटिंग लॉजिक
+        frontCtx.drawImage(hiddenCanvas, srcFrontX, cropY, cropW, cropH, 0, 0, frontCanvas.width, frontCanvas.height);
+        backCtx.drawImage(hiddenCanvas, srcBackX, cropY, cropW, cropH, 0, 0, backCanvas.width, backCanvas.height);
+
+        // ✨ फोटो एनहांसमेंट इफ़ेक्ट (सिर्फ फ्रंट कार्ड की फोटो पर लाइट बढ़ाना)
+        enhanceFarmerPhoto(frontCtx, frontCanvas.width, frontCanvas.height);
+
+      } catch (error) {
+        statusOutput.style.color = '#d32f2f';
+        if (error.name === 'PasswordException' || error.name === 'PasswordException ') {
+          statusOutput.textContent = "❌ गलत पासवर्ड! कृपया ध्यान दें कि पासवर्ड CAPITAL अक्षरों में होना चाहिए।";
+        } else {
+          statusOutput.textContent = "❌ एरर: फाइल को खोलने में समस्या आई। कृपया सही डिजिटल फाइल का उपयोग करें।";
+          console.error(error);
+        }
+      }
     }
-</script>
+
+    // फोटो वाले हिस्से पर ब्राइटनेस बढ़ाने का स्मार्ट फंक्शन
+    function enhanceFarmerPhoto(ctx, cardW, cardH) {
+      try {
+        // आधार कार्ड पर फोटो का अनुमानित एरिया अनुपात के हिसाब से
+        const pX = Math.round(cardW * 0.04);
+        const pY = Math.round(cardH * 0.28);
+        const pW = Math.round(cardW * 0.22);
+        const pH = Math.round(cardH * 0.52);
+
+        const imgData = ctx.getImageData(pX, pY, pW, pH);
+        const data = imgData.data;
+
+        // लाइट और कंट्रास्ट बढ़ाने की सेटिंग्स (+35 ब्राइटनेस)
+        const brightnessOffset = 35; 
+        const contrastFactor = 1.1; 
+
+        for (let i = 0; i < data.length; i += 4) {
+          // लाल, हरा, नीला (RGB) चैनल्स पर इफ़ेक्ट डालना
+          for (let j = 0; j < 3; j++) {
+            let v = data[i + j];
+            // कंट्रास्ट एडजस्ट करना
+            v = (v - 128) * contrastFactor + 128;
+            // ब्राइटनेस बढ़ाना
+            v += brightnessOffset;
+            // वैल्यू को 0 से 255 के बीच लॉक रखना
+            data[i + j] = Math.min(255, Math.max(0, v));
+          }
+        }
+
+        // संशोधित फोटो को वापस कैनवास पर लगाना
+        ctx.putImageData(imgData, pX, pY);
+      } catch (e) {
+        console.warn("Photo enhancement skipped or failed:", e);
+      }
+    }
+
+    printActionBtn.addEventListener('click', function() {
+      if (!pdfDataBuffer) {
+        alert("कृपया पहले आधार पीडीएफ फाइल सेलेक्ट करें!");
+        return;
+      }
+      window.print();
+    });
+  </script>
 </body>
 </html>
