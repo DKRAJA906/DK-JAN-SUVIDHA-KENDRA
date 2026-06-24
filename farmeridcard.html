@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DK Jan Suvidha Kendra - AgriStack Farmer ID Card Portal</title>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
@@ -17,15 +16,16 @@
       --gold:#e2a114;
       --bg:#eef2f3;
       --text:#222;
-      --muted:#666;
       --danger:#d9534f;
       --danger-dark:#c0392b;
-      --radius:12px;
+
+      --card-w:85.6mm;
+      --card-h:53.98mm;
     }
 
     *{box-sizing:border-box}
     body{
-      font-family: Arial, sans-serif;
+      font-family:Arial,sans-serif;
       background:var(--bg);
       margin:0;
       padding:20px;
@@ -56,14 +56,7 @@
     }
 
     .shop-name span{color:#fcc419}
-
-    .shop-sub{
-      font-size:14px;
-      margin:5px 0 15px;
-      color:#e0e0e0;
-      letter-spacing:1px;
-    }
-
+    .shop-sub{font-size:14px;margin:5px 0 15px;color:#e0e0e0;letter-spacing:1px}
     .services-strip{
       background:#061e38;
       padding:8px 5px;
@@ -176,16 +169,12 @@
       min-width:220px;
     }
 
-    .btn-submit:hover{background:var(--green-dark)}
-
     .btn-add-land{
       background:var(--green-mid);
       color:#fff;
       padding:10px 20px;
       font-size:14px;
     }
-
-    .btn-add-land:hover{background:#1b5e20}
 
     .btn-secondary{
       background:#e9ecef;
@@ -195,137 +184,179 @@
       min-width:180px;
     }
 
-    .btn-secondary:hover{background:#dfe3e6}
-
     #id-card-print-area{
       display:flex;
       justify-content:center;
       gap:20px;
       flex-wrap:wrap;
       margin-top:10px;
+      width:100%;
     }
 
     .id-card{
-      width:85.6mm;
-      height:53.98mm;
+      width:var(--card-w);
+      height:var(--card-h);
       border:.8px solid var(--green);
-      border-radius:5px;
+      border-radius:3.2mm;
       background:#fff;
-      position:relative;
-      box-shadow:0 4px 10px rgba(0,0,0,.15);
       overflow:hidden;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
+      box-shadow:0 4px 10px rgba(0,0,0,.15);
+      flex:0 0 auto;
+      position:relative;
     }
 
     .card-header{
       background:var(--green);
       color:#fff;
-      padding:2px 6px;
+      padding:1.4mm 2.2mm;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      border-bottom:1.2px solid var(--gold);
-      height:25px;
+      border-bottom:.5mm solid var(--gold);
+      min-height:9.2mm;
+      gap:2mm;
     }
 
-    .header-title{text-align:center;flex:1}
-    .header-title h3{margin:0;font-size:9.5px;font-weight:bold;line-height:1}
-    .header-title p{margin:0;font-size:7px;color:#f0f0f0;line-height:1}
+    .header-title{
+      text-align:center;
+      flex:1;
+      min-width:0;
+    }
+
+    .header-title h3{
+      margin:0;
+      font-size:3.2mm;
+      font-weight:700;
+      line-height:1.05;
+    }
+
+    .header-title p{
+      margin:.4mm 0 0;
+      font-size:2.1mm;
+      color:#f0f0f0;
+      line-height:1;
+    }
+
     .header-icon{
-      font-size:12px;
-      background:#fff;
-      border-radius:50%;
-      width:18px;
-      height:18px;
+      width:5.7mm;
+      height:5.7mm;
       display:flex;
       align-items:center;
       justify-content:center;
-      border:.8px solid var(--gold);
+      background:#fff;
+      border-radius:50%;
+      border:.35mm solid var(--gold);
+      overflow:hidden;
       flex-shrink:0;
     }
 
+    .header-icon img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
     .card-body-front{
-      padding:4px 6px;
-      display:flex;
-      position:relative;
-      flex-grow:1;
-      align-items:flex-start;
-      gap:8px;
-      height:calc(100% - 47px);
+      padding:1.8mm 2mm 1.1mm;
+      display:grid;
+      grid-template-columns:15.5mm 1fr 13mm;
+      gap:1.6mm;
+      align-items:start;
+      flex:1;
+      min-height:0;
     }
 
     .photo-box{
-      width:52px;
-      height:62px;
-      border:2px solid var(--green);
+      width:15.5mm;
+      height:19mm;
+      border:.45mm solid var(--green);
       background:#f9f9f9;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:8px;
+      font-size:2.2mm;
       color:#888;
-      flex-shrink:0;
-      margin-top:4px;
-      border-radius:2px;
+      border-radius:1mm;
       overflow:hidden;
+      flex-shrink:0;
     }
 
-    .photo-box img{width:100%;height:100%;object-fit:cover}
-    .info-box{flex:1;color:#111;font-weight:bold;line-height:1.25;min-width:0}
+    .photo-box img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .info-box{
+      min-width:0;
+      color:#111;
+      font-weight:700;
+      line-height:1.08;
+      position:relative;
+      z-index:2;
+    }
+
     .farmer-name-en{
-      font-size:11px;
-      font-weight:bold;
+      font-size:3.05mm;
+      font-weight:700;
       color:var(--green);
       margin:0;
-      line-height:1.05;
+      line-height:1.03;
       word-break:break-word;
     }
+
     .farmer-name-hi{
-      font-size:10px;
-      font-weight:bold;
-      margin:1px 0 3px;
+      font-size:2.55mm;
+      font-weight:700;
+      margin:.4mm 0 .9mm;
       color:#444;
-      line-height:1.05;
+      line-height:1.03;
       word-break:break-word;
     }
 
     .info-table{
       width:100%;
       border-collapse:collapse;
-      font-size:8px;
-      font-weight:bold;
+      font-size:1.95mm;
+      font-weight:700;
       table-layout:fixed;
     }
 
     .info-table td{
-      padding:.6px 0;
+      padding:.22mm 0;
       vertical-align:top;
       word-break:break-word;
+      line-height:1.08;
     }
 
     .info-label{
-      font-weight:bold;
+      font-weight:700;
       color:#555;
-      width:64px;
+      width:16mm;
+      padding-right:1mm;
     }
 
     .qr-box{
-      width:54px;
-      height:54px;
+      width:13mm;
+      height:13mm;
       display:flex;
       align-items:center;
       justify-content:center;
       flex-shrink:0;
-      margin-top:20px;
       overflow:hidden;
       background:#fff;
+      border:.25mm solid #dfe5df;
+      border-radius:1mm;
+      padding:.4mm;
     }
 
     .qr-box img,.qr-box canvas{
       width:100%!important;
       height:100%!important;
+      display:block!important;
     }
 
     .farmer-id-ribbon{
@@ -333,109 +364,136 @@
       background:var(--green);
       color:#fff;
       text-align:center;
-      font-size:9px;
-      font-weight:bold;
-      padding:1.5px 0;
-      height:14px;
+      font-size:2.3mm;
+      font-weight:700;
+      padding:1mm 1.5mm;
+      min-height:5.2mm;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .farmer-id-ribbon span{color:#8ce99a}
+    .farmer-id-ribbon span{
+      color:#8ce99a;
+      display:inline-block;
+      max-width:65%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      vertical-align:bottom;
+    }
+
     .leaf-left,.leaf-right{
       position:absolute;
-      bottom:16px;
-      font-size:22px;
-      opacity:.3;
-      z-index:1;
+      bottom:4.6mm;
+      font-size:5mm;
+      opacity:.18;
+      z-index:0;
       pointer-events:none;
+      line-height:1;
     }
 
-    .leaf-left{left:2px}
-    .leaf-right{right:2px}
+    .leaf-left{left:1.2mm}
+    .leaf-right{right:1.2mm}
 
     .card-footer-text{
       width:100%;
       background:#072e16;
       color:#fff;
       text-align:center;
-      font-size:5px;
-      padding:1.5px 0;
+      font-size:1.65mm;
+      padding:.8mm 1.2mm;
       flex-shrink:0;
-      height:10px;
+      min-height:4.2mm;
+      line-height:1.05;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
     .enrollment-header{
       background:var(--green);
       color:#fff;
       text-align:center;
-      padding:2px;
-      font-size:7.5px;
-      font-weight:bold;
-      border-bottom:1px solid var(--gold);
-      line-height:1.1;
+      padding:1.1mm 1.5mm;
+      font-size:2.2mm;
+      font-weight:700;
+      border-bottom:.4mm solid var(--gold);
+      line-height:1.05;
     }
 
-    .enrollment-id{color:#8ce99a;font-size:7.5px;font-weight:bold;word-break:break-all}
+    .enrollment-id{
+      color:#8ce99a;
+      font-size:2.1mm;
+      font-weight:700;
+      word-break:break-all;
+    }
 
     .back-body{
-      padding:4px 6px;
-      font-size:7.5px;
-      flex-grow:1;
+      padding:1.6mm 2mm 1.1mm;
+      font-size:2mm;
+      flex:1;
       display:flex;
       flex-direction:column;
       justify-content:flex-start;
       position:relative;
-      height:calc(100% - 35px);
+      min-height:0;
     }
 
     .address-text{
-      font-weight:bold;
-      margin-bottom:2px;
+      font-weight:700;
+      margin-bottom:.9mm;
       color:#333;
-      line-height:1.2;
-      font-size:7.2px;
+      line-height:1.12;
+      font-size:1.95mm;
       word-break:break-word;
     }
 
     .land-title{
-      font-weight:bold;
+      font-weight:700;
       color:var(--green);
-      margin:2px 0 1px;
-      font-size:7.8px;
+      margin:.6mm 0 .8mm;
+      font-size:2.15mm;
     }
 
     .land-table{
       width:100%;
       border-collapse:collapse;
-      font-size:6px;
+      font-size:1.45mm;
       text-align:center;
-      margin-bottom:1px;
+      margin-bottom:.6mm;
       table-layout:fixed;
     }
 
     .land-table th{
       background:#f2f2f2;
       color:var(--green);
-      font-weight:bold;
-      border:.4px solid #ddd;
-      padding:1px .5px;
+      font-weight:700;
+      border:.15mm solid #ddd;
+      padding:.35mm .2mm;
       word-break:break-word;
+      line-height:1.03;
     }
 
     .land-table td{
-      border:.4px solid #ddd;
-      padding:1px .5px;
-      height:8px;
-      font-weight:bold;
+      border:.15mm solid #ddd;
+      padding:.25mm .2mm;
+      height:4.5mm;
+      font-weight:700;
       word-break:break-word;
+      line-height:1.03;
     }
 
     .disclaimer-text{
-      font-size:4.8px;
+      font-size:1.42mm;
       color:#666;
       text-align:justify;
-      line-height:1;
+      line-height:1.06;
       margin-top:auto;
-      padding-bottom:2px;
+      padding-bottom:.4mm;
     }
 
     .payment-modal{
@@ -462,12 +520,6 @@
       box-shadow:0 10px 30px rgba(0,0,0,.3);
     }
 
-    .payment-box h3{
-      margin:0 0 10px;
-      color:var(--danger);
-      font-size:18px;
-    }
-
     .qr-code-img{
       width:200px;
       height:200px;
@@ -489,8 +541,6 @@
       margin-top:5px;
     }
 
-    .btn-modal-pay:hover{background:var(--green-dark)}
-
     .cancel-btn{
       background:#e74c3c;
       color:#fff;
@@ -500,17 +550,17 @@
       width:100%;
     }
 
-    .cancel-btn:hover{background:var(--danger-dark)}
-
     @media (max-width:768px){
       .form-grid{grid-template-columns:1fr}
       .form-group.full-width,.action-buttons{grid-column:span 1}
       .land-entry-row{grid-template-columns:1fr 1fr}
       .action-buttons{flex-direction:column}
       .btn-submit,.btn-secondary{width:100%}
+      #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
     }
 
     @media print{
+      body{padding:0;background:#fff}
       body *{visibility:hidden}
       #id-card-print-area,#id-card-print-area *{visibility:visible}
       #id-card-print-area{
@@ -518,11 +568,12 @@
         left:5mm;
         top:5mm;
         display:flex;
-        gap:10mm;
+        gap:8mm;
+        flex-wrap:nowrap;
       }
       .id-card{
         box-shadow:none;
-        border:.5px solid var(--green);
+        border:.35mm solid var(--green);
         -webkit-print-color-adjust:exact;
         print-color-adjust:exact;
       }
@@ -637,35 +688,24 @@
     <div class="payment-box">
       <h3>प्रिंट करने के लिए फीस ₹20 पे करें</h3>
       <p style="font-size:13px;color:#555;margin:5px 0;">कृपया किसी भी UPI ऐप से इस QR कोड को स्कैन करें:</p>
-
-      <img
-        src="your_qr_code.png"
-        alt="UPI QR Code"
-        class="qr-code-img"
-        id="paymentQrImg"
-        onerror="this.style.display='none';"
-      >
-
-      <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:8px 0;">
-        * पेमेंट पूरा हो जाने के बाद ही नीचे बटन दबाएं
-      </p>
-
+      <img src="your_qr_code.png" alt="UPI QR Code" class="qr-code-img" id="paymentQrImg" onerror="this.style.display='none';">
+      <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:8px 0;">* पेमेंट पूरा हो जाने के बाद ही नीचे बटन दबाएं</p>
       <button class="btn-modal-pay" id="confirmPayBtn" type="button">मैंने पेमेंट कर दिया, प्रिंट करें</button>
       <button class="cancel-btn" id="cancelModalBtn" type="button">कैंसिल करें</button>
     </div>
   </div>
 
   <div id="id-card-print-area">
-
     <div class="id-card">
       <div class="card-header">
         <div class="header-title">
           <h3>AgriStack फार्मर आईडी कार्ड</h3>
           <p>(Farmer ID Card)</p>
         </div>
-       <div class="header-icon">
-  <img src="./indianCharacter.jpg" alt="DK Jan Suvidha Logo">
-</div>
+        <div class="header-icon">
+          <img src="./indianCharacter.jpg" alt="DK Jan Suvidha Logo" onerror="this.parentElement.textContent='🌾'">
+        </div>
+      </div>
 
       <div class="card-body-front">
         <div class="photo-box" id="picPreview">Photo</div>
@@ -677,9 +717,9 @@
           <table class="info-table">
             <tr><td class="info-label">DOB:</td><td id="lblDob">01/01/2000</td></tr>
             <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 00</td></tr>
-            <tr><td class="info-label">Caste Category:</td><td id="lblCaste">NA</td></tr>
-            <tr><td class="info-label">Mobile No:</td><td id="lblMobile">**********</td></tr>
-            <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">**** **** ****</td></tr>
+            <tr><td class="info-label">Caste:</td><td id="lblCaste">NA</td></tr>
+            <tr><td class="info-label">Mobile:</td><td id="lblMobile">**********</td></tr>
+            <tr><td class="info-label">Aadhaar:</td><td id="lblAadhar">**** **** ****</td></tr>
           </table>
         </div>
 
@@ -689,13 +729,8 @@
       <div class="leaf-left">🌿</div>
       <div class="leaf-right">🌿</div>
 
-      <div class="farmer-id-ribbon">
-        Farmer ID : <span id="lblFid">***********</span>
-      </div>
-
-      <div class="card-footer-text">
-        Department of Agriculture and Farmers Welfare • Government of India
-      </div>
+      <div class="farmer-id-ribbon">Farmer ID : <span id="lblFid">***********</span></div>
+      <div class="card-footer-text">Department of Agriculture and Farmers Welfare • Government of India</div>
     </div>
 
     <div class="id-card">
@@ -718,22 +753,20 @@
               <th>District</th>
               <th>Sub-Dist</th>
               <th>Village</th>
-              <th>Khata No</th>
+              <th>Khata</th>
               <th>Khasra</th>
-              <th>Area(Hect)</th>
+              <th>Area</th>
             </tr>
           </thead>
           <tbody id="landTableBody"></tbody>
         </table>
 
         <div class="disclaimer-text">
-          * This Card is For Personal Use Only. This is not a government issued identity. All land records displayed here are extracted from the integrated state land database.
+          * This card is for personal facilitation use only. This is not a government-issued identity. Land details shown here are based on user-provided or integrated record data.
         </div>
       </div>
 
-      <div class="card-footer-text">
-        Digital AgriStack Services • Powered by Government Land Records Databank
-      </div>
+      <div class="card-footer-text">Digital AgriStack Services • Powered by Land Records Databank</div>
     </div>
   </div>
 
@@ -741,10 +774,8 @@
     const MAX_LAND_ROWS = 4;
     const doneTypingInterval = 500;
     let typingTimer = null;
-    let qrInstance = null;
 
     const el = (id) => document.getElementById(id);
-
     const fields = {
       nameEn: el('nameEn'),
       nameHi: el('nameHi'),
@@ -768,57 +799,33 @@
       return String(value || '').trim();
     }
 
+    function digitsOnly(val) {
+      return String(val || '').replace(/D/g, '');
+    }
+
     function maskAadhar(val) {
-      const raw = val.replace(/D/g, '').slice(0, 12);
+      const raw = digitsOnly(val).slice(0, 12);
       if (raw.length === 12) return raw.replace(/(d{4})(d{4})(d{4})/, '$1 $2 $3');
-      return val || '-';
+      return sanitizeText(val) || '-';
     }
 
     function maskMobile(val) {
-      const raw = val.replace(/D/g, '').slice(0, 10);
-      return raw.length ? raw : (val || '-');
+      const raw = digitsOnly(val).slice(0, 10);
+      return raw || sanitizeText(val) || '-';
     }
 
     function generateQR(text) {
       fields.qrcode.innerHTML = '';
-      qrInstance = new QRCode(fields.qrcode, {
+      new QRCode(fields.qrcode, {
         text: text || 'AgriStackFarmer',
-        width: 44,
-        height: 44,
-        correctLevel: QRCode.CorrectLevel.H
+        width: 46,
+        height: 46,
+        correctLevel: QRCode.CorrectLevel.M
       });
     }
 
     function getLandRows() {
       return [...document.querySelectorAll('.land-entry-row')];
-    }
-
-    function updateLandTable() {
-      fields.landTableBody.innerHTML = '';
-      const rows = getLandRows();
-
-      for (let i = 0; i < MAX_LAND_ROWS; i++) {
-        const tr = document.createElement('tr');
-
-        if (i < rows.length) {
-          const row = rows[i];
-          const cells = [
-            row.querySelector('.l-state')?.value || '-',
-            row.querySelector('.l-dist')?.value || '-',
-            row.querySelector('.l-sub')?.value || '-',
-            row.querySelector('.l-vill')?.value || '-',
-            row.querySelector('.l-khata')?.value || '-',
-            row.querySelector('.l-khasra')?.value || '-',
-            row.querySelector('.l-area')?.value || '-'
-          ];
-
-          tr.innerHTML = cells.map(v => `<td>${escapeHtml(v)}</td>`).join('');
-        } else {
-          tr.innerHTML = '<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td>';
-        }
-
-        fields.landTableBody.appendChild(tr);
-      }
     }
 
     function escapeHtml(str) {
@@ -830,21 +837,43 @@
         .replaceAll("'", '&#39;');
     }
 
+    function updateLandTable() {
+      fields.landTableBody.innerHTML = '';
+      const rows = getLandRows();
+
+      for (let i = 0; i < MAX_LAND_ROWS; i++) {
+        const tr = document.createElement('tr');
+        if (i < rows.length) {
+          const row = rows[i];
+          const cells = [
+            row.querySelector('.l-state')?.value || '-',
+            row.querySelector('.l-dist')?.value || '-',
+            row.querySelector('.l-sub')?.value || '-',
+            row.querySelector('.l-vill')?.value || '-',
+            row.querySelector('.l-khata')?.value || '-',
+            row.querySelector('.l-khasra')?.value || '-',
+            row.querySelector('.l-area')?.value || '-'
+          ];
+          tr.innerHTML = cells.map(v => `<td>${escapeHtml(v)}</td>`).join('');
+        } else {
+          tr.innerHTML = '<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td>';
+        }
+        fields.landTableBody.appendChild(tr);
+      }
+    }
+
     function updateCard() {
       el('lblNameEn').textContent = sanitizeText(fields.nameEn.value) || '-';
       el('lblNameHi').textContent = sanitizeText(fields.nameHi.value) || '-';
       el('lblDob').textContent = sanitizeText(fields.dob.value) || '-';
       el('lblGenAge').textContent = sanitizeText(fields.genderAge.value) || '-';
       el('lblCaste').textContent = sanitizeText(fields.caste.value) || '-';
-      el('lblMobile').textContent = maskMobile(sanitizeText(fields.mobile.value));
-      el('lblAadhar').textContent = maskAadhar(sanitizeText(fields.aadhar.value));
-
-      const farmerID = sanitizeText(fields.fid.value) || '-';
-      el('lblFid').textContent = farmerID;
+      el('lblMobile').textContent = maskMobile(fields.mobile.value);
+      el('lblAadhar').textContent = maskAadhar(fields.aadhar.value);
+      el('lblFid').textContent = sanitizeText(fields.fid.value) || '-';
       el('lblEnrollId').textContent = sanitizeText(fields.enrollId.value) || '-';
       el('lblAddr').textContent = sanitizeText(fields.addr.value) || '-';
-
-      generateQR('AgriStackFarmer:' + farmerID);
+      generateQR('AgriStackFarmer:' + sanitizeText(fields.fid.value));
       updateLandTable();
     }
 
@@ -881,7 +910,6 @@
     function loadPhoto(event) {
       const file = event.target.files?.[0];
       if (!file) return;
-
       if (!file.type.startsWith('image/')) {
         alert('कृपया केवल image file चुनें।');
         event.target.value = '';
@@ -914,7 +942,6 @@
           return false;
         }
       }
-
       return true;
     }
 
@@ -946,7 +973,6 @@
         const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`;
         const response = await fetch(url);
         const data = await response.json();
-
         if (data && data[0] === 'SUCCESS' && data[1]?.[0]?.[1]?.[0]) {
           fields.nameHi.value = data[1][0][1][0];
           updateCard();
@@ -989,15 +1015,11 @@
       el('logoPreview').src = '';
       el('logoPreview').style.display = 'none';
       fields.photoInput.value = '';
-
       bindLandInputs();
       updateCard();
     }
 
-    document.querySelectorAll('input[type="text"]').forEach(input => {
-      input.addEventListener('input', updateCard);
-    });
-
+    document.querySelectorAll('input[type="text"]').forEach(input => input.addEventListener('input', updateCard));
     fields.nameEn.addEventListener('input', handleTransliteration);
     fields.photoInput.addEventListener('change', loadPhoto);
     el('addLandBtn').addEventListener('click', addNewLandRow);
@@ -1011,17 +1033,10 @@
     });
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && fields.paymentModal.style.display === 'flex') {
-        closePaymentModal();
-      }
-
+      if (e.key === 'Escape' && fields.paymentModal.style.display === 'flex') closePaymentModal();
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
         e.preventDefault();
         openPaymentModal();
-      }
-
-      if (e.key === 'PrintScreen') {
-        alert('Screenshot को browser में पूरी तरह block नहीं किया जा सकता। कृपया data privacy का ध्यान रखें।');
       }
     });
 
