@@ -207,59 +207,58 @@
       flex:0 0 auto;
     }
 
-    /* पुराने .card-header, .leaf-left, .leaf-right और .header-icon को हटाकर इसे पेस्ट करें */
-.card-header {
-  background: var(--green);
-  color: #fff;
-  padding: 1mm 2mm;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: .45mm solid var(--gold);
-  min-height: 10mm; /* लोगो के हिसाब से ऊंचाई को सेट किया */
-  gap: 2mm;
-}
+    .card-header {
+      background: var(--green);
+      color: #fff;
+      padding: 1mm 2mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: .45mm solid var(--gold);
+      min-height: 10mm;
+      gap: 2mm;
+    }
 
-.header-title {
-  text-align: center;
-  flex: 1;
-  min-width: 0;
-}
+    .header-title {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
 
-.header-title h3 {
-  margin: 0;
-  font-size: 3.3mm;
-  font-weight: 700;
-  line-height: 1.05;
-}
+    .header-title h3 {
+      margin: 0;
+      font-size: 3.3mm;
+      font-weight: 700;
+      line-height: 1.05;
+    }
 
-.header-title p {
-  margin: .35mm 0 0;
-  font-size: 2.1mm;
-  color: #f0f0f0;
-  line-height: 1;
-}
+    .header-title p {
+      margin: .35mm 0 0;
+      font-size: 2.1mm;
+      color: #f0f0f0;
+      line-height: 1;
+    }
 
-/* दोनों तरफ के लोगो बॉक्स का साइज */
-.header-logo-left, .header-logo-right {
-  width: 7mm;
-  height: 7mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff; /* अगर बैकग्राउंड सफेद नहीं चाहिए तो इसे हटा सकते हैं */
-  border-radius: 50%; /* गोल शेप के लिए, चौकोर चाहिए तो इसे हटा दें */
-  border: .35mm solid var(--gold);
-  overflow: hidden;
-  flex-shrink: 0;
-}
+    .header-logo-left, .header-logo-right {
+      width: 7mm;
+      height: 7mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 50%;
+      border: .35mm solid var(--gold);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-.header-logo-left img, .header-logo-right img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+    .header-logo-left img, .header-logo-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .card-body-front{
       padding:1.8mm 2mm 1.5mm;
       display:flex;
@@ -551,26 +550,30 @@
       #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
     }
 
+    /* प्रिंटिंग के लिए विशेष आधार साइज सेटिंग */
     @media print{
       body{padding:0;background:#fff}
       body *{visibility:hidden}
-      #id-card-print-area,#id-card-print-area *{visibility:visible}
+      #id-card-print-area, #id-card-print-area *{visibility:visible}
       #id-card-print-area{
         position:absolute;
-        left:5mm;
-        top:5mm;
+        left:0;
+        top:0;
+        width:180mm; /* दोनों कार्ड्स को बराबर स्पेस देने के लिए चौड़ाई तय की */
         display:flex;
-        gap:8mm;
+        gap:5mm; /* दोनों कार्ड्स के बीच हल्का गैप */
         flex-wrap:nowrap;
       }
       .id-card{
+        width:85.6mm !important;
+        height:53.98mm !important;
         box-shadow:none;
         border:.35mm solid var(--green);
         -webkit-print-color-adjust:exact;
         print-color-adjust:exact;
       }
       .shop-banner,.container,.payment-modal{display:none!important}
-      @page{size:auto;margin:5mm}
+      @page{size:A4 landscape;margin:10mm}
     }
   </style>
 </head>
@@ -597,7 +600,7 @@
       </div>
       <div class="form-group">
         <label for="nameHi">किसान का नाम (Hindi):</label>
-        <input type="text" id="nameHi" value="किसान का नामी">
+        <input type="text" id="nameHi" value="किसान का नाम">
       </div>
       <div class="form-group">
         <label for="dob">Date of Birth (DOB):</label>
@@ -680,19 +683,19 @@
   <div id="id-card-print-area">
     <div class="id-card">
       <div class="card-header">
-  <div class="header-logo-left">
-    <img src="uplogo.png" alt="Left Logo" onerror="this.parentElement.textContent='🌾'">
-  </div>
-  
-  <div class="header-title">
-    <h3>AgriStack फार्मर आईडी कार्ड</h3>
-    <p>(Farmer ID Card)</p>
-  </div>
+        <div class="header-logo-left">
+          <img src="uplogo.png" alt="Left Logo" onerror="this.parentElement.textContent='🌾'">
+        </div>
+        
+        <div class="header-title">
+          <h3>AgriStack फार्मर आईडी कार्ड</h3>
+          <p>(Farmer ID Card)</p>
+        </div>
 
-  <div class="header-logo-right">
-    <img src="flogo.png" alt="Right Logo" onerror="this.parentElement.textContent='🌾'">
-  </div>
-</div>
+        <div class="header-logo-right">
+          <img src="flogo.png" alt="Right Logo" onerror="this.parentElement.textContent='🌾'">
+        </div>
+      </div>
 
       <div class="card-body-front">
         <div class="photo-box" id="picPreview">Photo</div>
@@ -948,87 +951,4 @@
       setTimeout(() => window.print(), 300);
     }
 
-    async function tryHindiTransliteration() {
-      const text = sanitizeText(fields.nameEn.value);
-      if (!text) {
-        fields.nameHi.value = '';
-        updateCard();
-        return;
-      }
-
-      try {
-        const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`;
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data && data[0] === 'SUCCESS' && data[1]?.[0]?.[1]?.[0]) {
-          fields.nameHi.value = data[1][0][1][0];
-          updateCard();
-        }
-      } catch (err) {
-        console.warn('Transliteration unavailable:', err);
-      }
-    }
-
-    function handleTransliteration() {
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(tryHindiTransliteration, doneTypingInterval);
-    }
-
-    function resetDemoData() {
-      fields.nameEn.value = 'Farmer Name';
-      fields.nameHi.value = 'रामनरेश चौधरी';
-      fields.dob.value = '01/01/2000';
-      fields.genderAge.value = 'Male / 00';
-      fields.caste.value = 'NA';
-      fields.mobile.value = '**********';
-      fields.aadhar.value = '**** **** ****';
-      fields.fid.value = '***********';
-      fields.enrollId.value = '**_***_****_******_******';
-      fields.addr.value = 'yadu paran, ward no. **, Village, Block, State-Pin';
-
-      fields.landInputsContainer.innerHTML = `
-        <div class="land-entry-row">
-          <input type="text" class="l-state" value="Bihar" placeholder="State">
-          <input type="text" class="l-dist" value="Samastipur" placeholder="District">
-          <input type="text" class="l-sub" value="Kalyanpur" placeholder="Sub-Dist">
-          <input type="text" class="l-vill" value="Yadu Paran" placeholder="Village">
-          <input type="text" class="l-khata" value="45" placeholder="Khata No">
-          <input type="text" class="l-khasra" value="112" placeholder="Khasra">
-          <input type="text" class="l-area" value="0.4500" placeholder="Area">
-        </div>
-      `;
-
-      fields.picPreview.textContent = 'Photo';
-      el('logoPreview').src = '';
-      el('logoPreview').style.display = 'none';
-      fields.photoInput.value = '';
-      bindLandInputs();
-      updateCard();
-    }
-
-    document.querySelectorAll('input[type="text"]').forEach(input => input.addEventListener('input', updateCard));
-    fields.nameEn.addEventListener('input', handleTransliteration);
-    fields.photoInput.addEventListener('change', loadPhoto);
-    el('addLandBtn').addEventListener('click', addNewLandRow);
-    el('printBtn').addEventListener('click', openPaymentModal);
-    el('cancelModalBtn').addEventListener('click', closePaymentModal);
-    el('confirmPayBtn').addEventListener('click', actionPrint);
-    el('resetBtn').addEventListener('click', resetDemoData);
-
-    fields.paymentModal.addEventListener('click', (e) => {
-      if (e.target === fields.paymentModal) closePaymentModal();
-    });
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && fields.paymentModal.style.display === 'flex') closePaymentModal();
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
-        e.preventDefault();
-        openPaymentModal();
-      }
-    });
-
-    bindLandInputs();
-    updateCard();
-  </script>
-</body>
-</html>
+    async function try
