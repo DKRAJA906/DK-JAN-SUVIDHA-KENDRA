@@ -60,7 +60,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* सुरक्षा: टेक्स्ट सिलेक्शन रोकना */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -160,7 +159,9 @@
         .btn-submit:hover { background-color: #062c14; }
         .btn-add-land:hover { background-color: #1b5e20; }
 
-        /* CARD STYLES */
+        /* ==================================================== */
+        /*  UPDATED CARD STYLES (FOR PERFECT AADHAAR SIZE FIT)  */
+        /* ==================================================== */
         #id-card-print-area {
             display: flex;
             justify-content: center;
@@ -172,95 +173,108 @@
             width: 85.6mm;
             height: 53.98mm;
             border: 1px solid #0b4622;
-            border-radius: 8px;
+            border-radius: 6px;
             background: #ffffff;
             position: relative;
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
             overflow: hidden;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .card-header {
             background-color: #0b4622;
             color: #ffffff;
-            padding: 6px 10px;
+            padding: 3px 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #e2a114;
+            border-bottom: 1.5px solid #e2a114;
         }
-        .header-title { text-align: center; flex: 1; margin-right: 10px; }
-        .header-title h3 { margin: 0; font-size: 15px; font-weight: bold; }
-        .header-title p { margin: 0; font-size: 11px; color: #f0f0f0; }
+        .header-title { text-align: center; flex: 1; }
+        .header-title h3 { margin: 0; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; }
+        .header-title p { margin: 0; font-size: 8px; color: #f0f0f0; }
+        .header-icon { font-size: 16px; background: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2a114; flex-shrink: 0; }
 
         .card-body-front {
-            padding: 10px;
+            padding: 6px 8px;
             display: flex;
             position: relative;
-            height: 140px;
+            flex-grow: 1;
+            align-items: flex-start;
+            gap: 8px;
         }
         .photo-box {
-            width: 80px;
-            height: 100px;
+            width: 52px;
+            height: 64px;
             border: 1px solid #0b4622;
             background: #f9f9f9;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 8px;
             color: #888;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .info-box { flex: 1; padding-left: 12px; font-size: 10px; color: #111; line-height: 1.4; }
-        .farmer-name-en { font-size: 14px; font-weight: bold; color: #0b4622; margin: 0; }
-        .farmer-name-hi { font-size: 12px; font-weight: bold; margin: 0 0 4px 0; color: #444; }
+        .info-box { flex: 1; font-size: 7.5px; color: #111; line-height: 1.2; }
+        .farmer-name-en { font-size: 10px; font-weight: bold; color: #0b4622; margin: 0; }
+        .farmer-name-hi { font-size: 9px; font-weight: bold; margin: 0 0 2px 0; color: #444; }
         
-        .info-table { width: 100%; }
-        .info-table td { padding: 1px 0; }
-        .info-label { font-weight: bold; color: #555; width: 90px; }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 0.5px 0; vertical-align: top; }
+        .info-label { font-weight: bold; color: #555; width: 68px; }
         
         .qr-box {
-            position: absolute;
-            right: 12px;
-            top: 22px;
-            width: 65px;
-            height: 65px;
+            width: 46px;
+            height: 46px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
-        .qr-box img { width: 100%; height: 100%; }
+        .qr-box img { width: 100% !important; height: 100% !important; }
 
         .farmer-id-ribbon {
-            position: absolute;
-            bottom: 22px;
-            left: 0;
             width: 100%;
             background-color: #0b4622;
             color: #ffffff;
             text-align: center;
-            font-size: 15px;
+            font-size: 10.5px;
             font-weight: bold;
-            padding: 5px 0;
+            padding: 2px 0;
         }
         .farmer-id-ribbon span { color: #8ce99a; }
         
-        .leaf-left { position: absolute; bottom: 45px; left: 8px; font-size: 28px; }
-        .leaf-right { position: absolute; bottom: 45px; right: 8px; font-size: 28px; }
+        .leaf-left { position: absolute; bottom: 20px; left: 4px; font-size: 16px; opacity: 0.8; z-index: 1; }
+        .leaf-right { position: absolute; bottom: 20px; right: 4px; font-size: 16px; opacity: 0.8; z-index: 1; }
         
-        .card-footer-text { position: absolute; bottom: 0; width: 100%; background: #072e16; color: #fff; text-align: center; font-size: 8px; padding: 4px 0; }
+        .card-footer-text { width: 100%; background: #072e16; color: #fff; text-align: center; font-size: 5.5px; padding: 2px 0; flex-shrink: 0; }
 
         /* BACK SIDE STYLES */
-        .enrollment-header { background-color: #0b4622; color: white; text-align: center; padding: 4px; font-size: 11px; font-weight: bold; }
-        .enrollment-id { color: #8ce99a; font-size: 11px; }
-        .back-body { padding: 8px; font-size: 9px; }
-        .address-text { font-weight: bold; margin-bottom: 5px; color: #333; }
-        .land-title { font-weight: bold; color: #0b4622; margin: 4px 0; font-size: 10px; }
+        .enrollment-header { background-color: #0b4622; color: white; text-align: center; padding: 3px; font-size: 9px; font-weight: bold; border-bottom: 1px solid #e2a114; }
+        .enrollment-id { color: #8ce99a; font-size: 9px; font-weight: bold; }
+        .back-body { padding: 5px 8px; font-size: 7.5px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; position: relative; }
+        .address-text { font-weight: bold; margin-bottom: 3px; color: #333; line-height: 1.1; }
+        .land-title { font-weight: bold; color: #0b4622; margin: 2px 0; font-size: 8px; }
         
-        .land-table { width: 100%; border-collapse: collapse; font-size: 7.5px; text-align: center; }
-        .land-table th { background-color: #f2f2f2; color: #0b4622; font-weight: bold; border: 1px solid #dddddd; padding: 3px 1px; }
-        .land-table td { border: 1px solid #dddddd; padding: 4px 1px; height: 15px; }
+        .land-table { width: 100%; border-collapse: collapse; font-size: 6.5px; text-align: center; margin-bottom: 2px; }
+        .land-table th { background-color: #f2f2f2; color: #0b4622; font-weight: bold; border: 0.5px solid #dddddd; padding: 2px 1px; }
+        .land-table td { border: 0.5px solid #dddddd; padding: 2px 1px; height: 10px; }
+
+        .disclaimer-text { 
+            font-size: 5.2px; 
+            color: #666; 
+            text-align: justify; 
+            line-height: 1.1; 
+            margin-top: auto; 
+            padding-bottom: 4px;
+        }
 
         /* NEW PAYMENT MODAL STYLES */
         .payment-modal {
@@ -438,13 +452,14 @@
 
 <div id="id-card-print-area">
     
+    <!-- FRONT SIDE -->
     <div class="id-card">
         <div class="card-header">
             <div class="header-title">
                 <h3>AgriStack फार्मर आईडी कार्ड</h3>
                 <p>(Farmer ID Card)</p>
             </div>
-            <div style="font-size: 24px; background: white; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2a114;">👨‍🌾</div>
+            <div class="header-icon">👨‍🌾</div>
         </div>
         
         <div class="card-body-front">
@@ -458,7 +473,7 @@
                     <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 98</td></tr>
                     <tr><td class="info-label">Caste Category:</td><td id="lblCaste">General</td></tr>
                     <tr><td class="info-label">Mobile No:</td><td id="lblMobile">7070393730</td></tr>
-                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">[Aadhaar Redacted]</td></tr>
+                    <tr><td class="info-label">Aadhar No:</td><td id="lblAadhar">**** **** ****</td></tr>
                 </table>
             </div>
             
@@ -475,6 +490,7 @@
         </div>
     </div>
 
+    <!-- BACK SIDE -->
     <div class="id-card">
         <div class="enrollment-header">
             Farmer Enrollment Id<br>
@@ -502,7 +518,7 @@
                 </tbody>
             </table>
             
-            <div style="position: absolute; bottom: 20px; width: 92%; font-size: 6.5px; color: #666; text-align: justify; line-height: 1.1;">
+            <div class="disclaimer-text">
                 * This Card is For Personal Use Only. This is not a government issued identity. All land records displayed here are extracted from the integrated state land database.
             </div>
         </div>
@@ -518,10 +534,10 @@
     let typingTimer;
     const doneTypingInterval = 400;
 
-    // ऑफ़लाइन QR कोड इंजन की सेटिंग
+    // QR कोड का साइज कार्ड के हिसाब से 46px सेट किया
     var qrcode = new QRCode(document.getElementById("qrcode"), {
-        width: 65,
-        height: 65,
+        width: 46,
+        height: 46,
         correctLevel : QRCode.CorrectLevel.H
     });
 
@@ -631,9 +647,6 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    /* === पेमेंट और सुरक्षा की थ्री-लेयर सेटिंग्स === */
-
-    // पॉप-अप विंडो कंट्रोल करने के फंक्शन्स
     function openPaymentModal() {
         document.getElementById('myPaymentModal').style.display = 'flex';
     }
@@ -649,22 +662,18 @@
         }, 300);
     }
 
-    // सुरक्षा लेयर 2: कीबोर्ड शॉर्टकट लॉक करना (PrintScreen, Ctrl+P, डेवलपर टूल्स)
     document.addEventListener('keydown', function(e) {
-        // कीबोर्ड का स्क्रीनशॉट बटन लॉक करना
         if (e.key === 'PrintScreen' || e.keyCode === 44) {
             e.preventDefault();
             alert('सुरक्षा कारणों से इस पेज का स्क्रीनशॉट नहीं लिया जा सकता!');
-            navigator.clipboard.writeText(""); // क्लिपबोर्ड डेटा डिलीट करना
+            navigator.clipboard.writeText("");
         }
         
-        // Ctrl+P (शॉर्टकट से सीधे प्रिंट करना रोकना)
         if (e.ctrlKey && (e.key === 'p' || e.keyCode === 80)) {
             e.preventDefault();
             alert('कृपया कार्ड प्रिंट करने के लिए नीचे दिए गए मुख्य प्रिंट बटन का उपयोग करें।');
         }
 
-        // F12, Ctrl+Shift+I, Ctrl+Shift+J (कोड इंस्पेक्ट करना रोकना)
         if (e.keyCode === 123 || 
             (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
             (e.ctrlKey && e.keyCode === 85)) {
@@ -673,7 +682,6 @@
         }
     });
 
-    // सुरक्षा लेयर 3: टेक्स्ट या इमेज कॉपी करने पर अलर्ट और क्लिपबोर्ड खाली रखना
     document.addEventListener('copy', function(e) {
         e.preventDefault();
         alert('इस पोर्टल से डेटा कॉपी करना प्रतिबंधित है!');
