@@ -1,683 +1,318 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DK Jan Suvidha Kendra</title>
-    <!-- Stylish Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <style>
-        /* Theme Settings */
-        :root {
-            --bg-color: #808A80;
-            --surface-color: #1E1E1E;
-            --primary-color: #BB86FC;
-            --text-color: #FFFFFF;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        header {
-            background: linear-gradient(to bottom,#BD1B08,#B5B5B5,#039609);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-
-        h1 { 
-            margin: 0; 
-            color: #ffffff;
-            font-family: 'Poppins', sans-serif;
-            font-size: 42px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 3px 3px 0px #000000;
-        }
-        @media only screen and (max-width:600px) 
-        { h1 {
-            font-size:24px;}
-        }
-
-        header p {
-            color: #f0f0f0;
-            font-size: 16px;
-            margin-top: 10px;
-            font-weight: 500;
-            background-color: rgba(0,0,0,0.2);
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-        
-        p { color: #e0e0e0; }
-
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        #datetime-display {
-            position: fixed;
-            top: 10px;
-            right: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-            font-size: 10px;
-            z-index: 1000;
-        }
-
-        /* App Download Box */
-        .download-box {
-            background: linear-gradient(45deg, #3700b3, #6200ea);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
-        }
-        @media only screen and (max-width: 600px) {
-  .download-box {
-    padding: 15px;       /* 25px से घटाकर 15px किया (बॉक्स पतला होगा) */
-    margin-bottom: 20px; /* नीचे का गैप कम किया */
-    width: 90%;          /* मोबाइल स्क्रीन पर थोड़ा छोटा दिखे */
-    margin-left: auto;   /* अपने आप बीच (Center) में आ जाएगा */
-    margin-right: auto;
-  }
-
-  /* बॉक्स के अंदर लिखे टेक्स्ट को भी छोटा करें */
-  .download-box h2, .download-box h3 {
-    font-size: 18px;     /* हेडिंग छोटी की */
-    margin-bottom: 5px;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DK Jan Suvidha Kendra - Instant Aadhaar A4 Print Portal</title>
   
-  .download-box p {
-    font-size: 13px;     /* पैराग्राफ छोटा किया */
-  }
-}
-        .btn {
-            background-color: #ffffff;
-            color: #6200ea;
-            padding: 15px 30px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            font-size: 18px;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        .btn:hover { background-color: #f0f0f0; }
-        /* मेन कंटेनर */
-.sarkari-container {
-    display: flex;
-    flex-direction: column; /* मोबाइल के लिए एक के नीचे एक */
-    gap: 15px; /* बॉक्स के बीच का गैप */
-    margin: 20px 10px; /* ऊपर-नीचे 20px, दाएं-बाएं 10px का गैप */
-}
+  <!-- PDF.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
-/* हर बॉक्स का डिज़ाइन */
-.info-box {
-    border: 1px solid #ffb6c1; /* पिंक बॉर्डर */
-    background-color: white;
-    /* अगर आप कोनों को थोड़ा गोल चाहते हैं तो नीचे वाली लाइन रखें, वरना हटा दें */
-    border-radius: 5px; 
-    overflow: hidden; /* कोनों को साफ रखने के लिए */
-}
+  <style>
+    :root {
+      --bg-color: #f3f4f6;
+      --panel-bg: #ffffff;
+      --primary-blue: #0f529a;
+      --card-w: 85.6mm;
+      --card-h: 53.98mm;
+    }
 
-/* लाल हेडर */
-.header-red {
-    background-color: #2765F5; /* गहरा लाल */
-    color: white;
-    padding: 8px;
-    font-weight: bold;
-    text-align: center;
-    font-size: 16px;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      padding: 20px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-/* लिस्ट */
-.info-list {
-    list-style-type: none; /* बुलेट डॉट्स हटा दिए हैं ताकि साफ दिखे */
-    padding: 10px;
-    margin: 0;
-}
+    .control-panel {
+      background: var(--panel-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 25px;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
 
-.info-list li {
-    margin-bottom: 8px;
-    border-bottom: 1px solid #eee; /* हर लिंक के नीचे हल्की लाइन */
-    padding-bottom: 4px;
-}
+    .shop-header {
+      background: linear-gradient(135deg, #0f529a 0%, #0a396c 100%);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
 
-.info-list li:last-child {
-    border-bottom: none;
-}
+    .shop-header h1 { font-size: 24px; letter-spacing: 1px; }
+    .shop-header p { font-size: 13px; color: #e0e0e0; margin-top: 5px; }
 
-/* लिंक्स */
-.info-list li a {
-    text-decoration: none;
-    color: #0000EE; /* नीला रंग */
-    font-size: 14px;
-    display: block; /* पूरा एरिया क्लिक हो सके */
-}
-        .info-list li a:hover {
-    color: red;
-}
+    .upload-box {
+      border: 2px dashed var(--primary-blue);
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-/* View More बटन */
-.view-more {
-    text-align: right;
-    padding: 5px 10px;
-    background-color: #f9f9f9;
-}
-.view-more a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    font-size: 12px;
-}
+    .upload-box label {
+      display: block;
+      font-weight: bold;
+      color: var(--primary-blue);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
 
-        /* Services Grid - Yahan change kiya hai taaki buttons sahi dikhein */
-        .services-grid {
-            display: grid;
-            /* 160px size set kiya hai taaki button chhote hon */
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
+    .input-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-        /* Card CSS */
-        .card {
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            min-height: 100px; /* Height kam ki hai */
-            display: flex;     /* Content center karne ke liye */
-            flex-direction: column;
-            justify-content: center;
-        }
+    input[type="file"], input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
 
-        .card:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
-            filter: brightness(1.1);
-            z-index: 10;
-        }
+    input[type="password"] { width: 200px; }
 
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
+    .btn-print {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-        .card:hover::after { left: 100%; }
+    .btn-print:hover { background: #1b5e20; }
 
-        .card h3 { 
-            color: #fff; 
-            font-size: 16px; /* Font size kam kiya */
-            font-weight: bold; 
-            margin-bottom: 5px; 
-            text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+    .preview-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #555;
+      width: 100%;
+      max-width: 210mm;
+      text-align: left;
+    }
 
-        .card p {
-            color: #fff;
-            font-size: 11px; /* Font size kam kiya */
-            opacity: 0.95;
-            line-height: 1.3;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            margin: 0;
-        }
+    #a4-page-sheet {
+      background: white;
+      width: 210mm;
+      height: 297mm;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+      padding: 15mm 12mm;
+      position: relative;
+    }
 
-        /* Color Classes */
-        .rang-aadhaar { background: linear-gradient(135deg, #FF512F, #DD2476); }
-        .rang-pan { background: linear-gradient(135deg, #f12711, #f5af19); }
-        .rang-bijli { background: linear-gradient(135deg, #f12711, #f5af19) !important; }
-        .rang-kisan { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        .rang-scholar { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
-        .rang-print { background: linear-gradient(135deg, #CB356B, #BD3F32); }
-        .rang-bg { background: linear-gradient(135deg, #4b6cb7, #182848); } /* New Blue Color */
-        .rang-khatauni { background: linear-gradient(135deg, #F7020F, #3620D9); }
-        .rang-epfo { background: linear-gradient(135deg, #79E713, #F0290A); }
-        .rang-voter { background: linear-gradient(135deg, #0AF0E4, #F109CE); }
-        .rang-pension { background: linear-gradient(135deg, #F18909, #1201F9); }
-        .rang-pdf { background: linear-gradient(135deg, #F00A5E, #75F505); }
-        .rang-udyam { background: linear-gradient(135deg, #CA52FA, #0EECE5); }
-        .rang-photo { background: linear-gradient(135deg, #75F505, #CB356B); }
-        .rang-pdfeditor { background: linear-gradient(135deg, #8E2DE2, #CB356B); }
-        .rang-id { background: linear-gradient(135deg, #F00A5E, #4A00E0); }
-        .rang-age { background: linear-gradient(135deg, #0EECE5, #1201F9); }
-        .rang-youtubemp3 { background: linear-gradient(135deg, #F0290A, #79E713); }
-        .rang-cvmaker { background: linear-gradient(135deg, #F0290A, #79E713); }
-        .header-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    position: relative;
-}
+    .cards-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 6mm;
+      justify-content: flex-start;
+    }
 
-.header-text h1 {
-    margin: 0;
-}
+    .aadhaar-card-render {
+      width: var(--card-w);
+      height: var(--card-h);
+      border: 0.2mm solid #ccc;
+      border-radius: 2.5mm;
+      overflow: hidden;
+      background: #fff;
+    }
 
-.header-text p {
-    margin: 5px 0 0 0;
-}
+    .pdf-canvas-render {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-.profile-pic {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid white;
-    flex-shrink: 0;
-}
+    .status-msg {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #d32f2f;
+    }
 
-
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: var(--surface-color);
-            margin-top: 40px;
-            font-size: 14px;
-            color: #777;
-        }
-    </style>
+    @media print {
+      body { background: white; padding: 0; margin: 0; }
+      .control-panel, .preview-title { display: none !important; }
+      #a4-page-sheet {
+        box-shadow: none !important;
+        padding: 15mm 12mm !important;
+        margin: 0 !important;
+        border: none !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        display: block !important;
+      }
+      .cards-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 6mm !important;
+      }
+      .aadhaar-card-render {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      @page { size: A4 portrait; margin: 0; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <div id="datetime-display"></div>
-        <div class="header-wrapper">
-    <img src="DK.png" alt="profile photo" class="profile-pic">
-    <div class="header-text">
-        <h1>DK Jan Suvidha Kendra</h1>
-        <p>Aapki Seva Mein Hamesha Tatpar</p>
-    </div>
-</div>
-    </header>
-
-    <div style="background-color: #ff0000; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
-        <marquee behavior="scroll" direction="left" scrollamount="10" style="font-size: 18px; font-weight: bold;">
-            📢 डीके जन सुविधा केंद्र आपका हार्दिक स्वागत एवं अभिनन्दन करता है।
-        </marquee>
+  <div class="control-panel">
+    <div class="shop-header">
+      <h1>DK JAN SUVIDHA KENDRA</h1>
+      <p>Instant Digital Aadhaar Auto-Crop Print Portal (A4 Layout)</p>
     </div>
 
-    <div style="background-color: #0000ff; color: #ffffff; padding: 12px; margin: 10px auto; width: 95%; max-width: 1000px; border-radius: 8px; border: 2px solid #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
-        <marquee behavior="scroll" direction="left" scrollamount="10" style="font-size: 18px; font-weight: bold;">
-            📰  हमारे यहां नई फॉर्मर रजिस्ट्री एवं संशोधन की सुविधा उपलब्ध है
-        </marquee>
+    <div class="upload-box">
+      <label>🔒 ओरिजिनल आधार पीडीएफ चुनें और पासवर्ड डालें:</label>
+      <div class="input-group">
+        <input type="file" id="pdfFile" accept=".pdf" />
+        <input type="password" id="pdfPassword" placeholder="PDF पासवर्ड दर्ज करें" />
+        <button class="btn-print" id="printActionBtn">क्विक प्रिंट (Print)</button>
+      </div>
+      <div id="statusOutput" class="status-msg" style="color: #2e7d32; margin-top: 12px;">कृपया पीडीएफ और पासवर्ड दर्ज करें...</div>
     </div>
+  </div>
 
-    <div class="container">
-        <!-- Download App Section -->
-        <div class="download-box">
-            <h2>📱 Hamara Official App Download Karein</h2>
-            <p>Sabhi sarkari suvidhaon ka labh apne phone par uthayein Ye 100% safe hai.</p>
-            <a href="https://github.com/DKRAJA906/DK-JAN-SUVIDHA-KENDRA/releases/download/5.12/DK.JAN.SUVIDHA.apk" class="btn">Download Android App</a>
-        </div>
-        <!-- Dk Result Style Section START -->
-<div class="sarkari-container">
-    <!-- Important Links -->
-    <div class="info-box">
-        <div class="header-red">Important Links</div>
-        <ul class="info-list">
-            <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/link-aadhaar-status"target="_blank">Adhar pan link status</a></li>
-            <li><a href="https://upresults.upmsp.edu.in/"target="_blank">2026 की हाईस्कूल एवं इंटरमीडिएट परीक्षा का परिणाम</a></li>
-            <li><a href="https://consumer.uppcl.org/wss/pay_bill_home"target="_blank">बिजली का बिल देखें</a></li>
-            <li><a href="https://myaadhaar.uidai.gov.in/check-aadhaar-validity/en"target="_blank">आधार कार्ड में मोबाइल नंबर चेक करे </a></li>
-            <li><a href="https://mocrefund.crcs.gov.in/depositor/#/depositor/register"target="_blank">SAHARA REFUND PORTAL </a></li>
-            <li><a href="https://echallan.parivahan.gov.in/index/accused-challan"target="_blank">ऑनलाइन चालान चेक करे </a></li>
-            <li><a href="https://sbm.gov.in/sbm_dbt/secure/login.aspx"target="_blank">शौचालय आवेदन </a></li>
-            <li><a href="https://upfr.agristack.gov.in/farmer-registry-up/#/"target="_blank">किसान पंजीकरण</a></li>
-            <li><a href="https://cctnsup.gov.in/citizenportal/Login.aspx"target="_blank">चरित्र प्रमाणपत्र अनुरोध</a></li>
-            <li><a href="https://bor.up.nic.in/"target="_blank">राजस्व परिषद उत्तर प्रदेश</a></li>
-            <li><a href="https://miuponline.in/"target="_blank">free Boaring</a></li>
-            <li><a href="https://cmsvy.upsdc.gov.in/applicationforms.php"target="_blank">मुख्यमंत्री सामूहिक विवाह योजना, समाज कल्याण विभाग, उत्तर प्रदेश</a></li>
-            <li><a href="https://rccms.up.gov.in/Varasat/userlogin"target="_blank">उत्तराधिकार / वरासत ऑनलाइन आवेदन लॉग इन</a></li>
-            <li><a href="https://www.npci.org.in/"target="_blank">Aadhar Seeding</a></li>
-            <li><a href="https://student.nielit.gov.in/"target="_blank">N.I.E.L.I.T CCC O LEVEL</a></li>
-            <li><a href="https://mnregaweb2.dord.gov.in/netnrega/homestciti.aspx?state_code=31&state_name=UTTAR%20PRADESH&lflag=eng&labels=labels"target="_blank">मनरेगा</a></li>
-            <li><a href="https://beneficiary.nha.gov.in/"target="_blank">आयुष्मान कार्ड</a></li>
-            <li><a href="https://vahan.parivahan.gov.in/vahanservice/vahan/ui/usermgmt/login.xhtml?faces-redirect=true"target="_blank">Transport Department, Government of Uttar Pradesh, Raibareilly</a></li>
-            <li><a href="https://nfsa.up.gov.in/Food/citizen/Default.aspx"target="_blank">राष्ट्रीय खाद्य सुरक्षा अधिनियम(NFSA) की पात्रता सूची</a></li>
-            <li><a href="https://sspy-up.gov.in/HindiPages/oldage_h.aspx"target="_blank">राष्ट्रीय वृद्धावस्था पेंशन ,निराश्रित महिला पेंशन ,दिव्यांग एवं कुष्ठावस्था पेंशन</a></li>
-            <li><a href="rashan.html"target="_blank">Rashan card</a></li>
-            <li><a href="https://igotkarmayogi.gov.in/#/"target="_blank">iGOT Karmayogi</a></li>
-            <li><a href="https://ehrms.upsdc.gov.in/"target="_blank">Manav Sampada, Uttar Pradesh</a></li>
-            <li><a href="https://fastdl.app/en2"target="_blank">Instagram video Downloader</a></li>
-            <li><a href="https://app.ytdown.to/en27/"target="_blank">YOUTUBE Video Download</a></li>
-            <li><a href="farmeridcard.html"target="_blank">Farmer Id Card</a></li>
-            <li><a href="adharprint.html"target="_blank">Adhar Card Print</a></li>
-            
-        </ul>
-        <div class="view-more"><a href="#">View More »</a></div>
+  <div class="preview-title">A4 पेपर प्रिंट प्रीव्यू (अगल-बगल परफेक्ट फिटिंग):</div>
+
+  <div id="a4-page-sheet">
+    <div class="cards-wrapper">
+      <!-- फ्रंट साइड कार्ड -->
+      <div class="aadhaar-card-render">
+        <canvas id="frontCanvas" class="pdf-canvas-render"></canvas>
+      </div>
+      <!-- बैक साइड कार्ड -->
+      <div class="aadhaar-card-render">
+        <canvas id="backCanvas" class="pdf-canvas-render"></canvas>
+      </div>
     </div>
+  </div>
 
-</div>
-<!-- Dk Result Style Section END -->
+  <!-- बैकग्राउंड प्रोसेसिंग के लिए छिपा हुआ कैनवास -->
+  <canvas id="hiddenFullCanvas" style="display: none;"></canvas>
 
-        <h2 style="font-weight: bold; color: green;">Main Services</h2>
-        
-        <!-- Yahan se Services Grid Shuru -->
-        <div class="services-grid">
-            
-            <!-- 1. Aadhaar -->
-            <a href="https://myaadhaar.uidai.gov.in/en_IN" target="_blank" style="text-decoration: none;">
-                <div class="card rang-aadhaar">
-                    <h3>🆔 Aadhaar Services</h3>
-                    <p>New Enrollment, Update, Print & Correction.</p>
-                </div>
-            </a>
-            
-            
-            <!-- 3. PAN Card -->
-            <a href="https://www.pan.utiitsl.com/newA.html" target="_blank" style="text-decoration: none;">
-                <div class="card rang-pan">
-                    <h3>💳 PAN Card</h3>
-                    <p>Naya PAN Card banwayein ya correction karwayein.</p>
-                </div>
-            </a>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-            <!-- 4. Bijli Bill -->
-            <a href="https://www.uppcl.org" target="_blank" style="text-decoration: none;">
-                <div class="card rang-bijli">
-                    <h3>⚡ Bijli Bill</h3>
-                    <p>Bill jama karein aur naya connection apply karein.</p>
-                </div>
-            </a>
+    const fileInput = document.getElementById('pdfFile');
+    const passwordInput = document.getElementById('pdfPassword');
+    const statusOutput = document.getElementById('statusOutput');
+    const printActionBtn = document.getElementById('printActionBtn');
 
-            <!-- 5. PM Kisan -->
-            <a href="https://pmkisan.gov.in" target="_blank" style="text-decoration: none;">
-                <div class="card rang-kisan">
-                    <h3>🚜 PM Kisan</h3>
-                    <p>KYC, Registration aur Status check karein.</p>
-                </div>
-            </a>
+    let pdfDataBuffer = null;
 
-            <!-- 6. Scholarship -->
-            <a href="https://scholarship.up.gov.in" target="_blank" style="text-decoration: none;">
-                <div class="card rang-scholar">
-                    <h3>🎓 Scholarship</h3>
-                    <p>School/College scholarship aur naukri ke form.</p>
-                </div>
-            </a>
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-            <!-- 7. Aadhaar Seeding -->
-            <a href="https://www.npci.org.in/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-print">
-                    <h3>🏦 Aadhaar Seeding</h3>
-                    <p>Link Aadhaar with any bank account.</p>
-                </div>
-            </a>
-            
-            <!-- 8. BG Remove -->
-            <a href="https://www.remove.bg/" target="_blank" style="text-decoration: none;">
-                <div class="card rang-bg">
-                    <h3>🧑‍💼 BG REMOVE</h3>
-                    <p>Kisi bhi photo ka background remove karein.</p>
-                </div>
-            </a>
-            
-            <!-- 10. Photo Resize -->
-            <a href="https://www.reduceimages.com/"target="_blank" style="text-decoration: none;">
-                <div class="card rang-photo">
-                    <h3>🧖 Photo Resize</h3>
-                    <p>Any photo resize one click.</p>
-                </div>
-            </a>
-            <!-- 11. Khatauni nakal -->
-            <a href="https://upbhulekh.gov.in/#/home"target="_blank" style="text-decoration: none;">
-                <div class="card rang-khatauni">
-                    <h3>🧾 Khatauni nakal</h3>
-                    <p>Up ke sabhi jilo ka khatauni.</p>
-                </div>
-            </a>
-            <!-- 12. Epfo -->
-            <a href="https://www.epfindia.gov.in/site_en/index.php"target="_blank" style="text-decoration: none;">
-                <div class="card rang-epfo">
-                    <h3>💵 Epfo</h3>
-                    <p>Pf related service.</p>
-                </div>
-            </a>
-            <!-- 14. Voter Card -->
-            <a href="https://voters.eci.gov.in/"target="_blank" style="text-decoration: none;">
-                <div class="card rang-voter">
-                    <h3>🎫 Voter Card</h3>
-                    <p>Voter card related service.</p>
-                </div>
-            </a>
-            <!-- 15. Pension Portal UP -->
-            <a href="https://sspy-up.gov.in/HindiPages/index_h.aspx"target="_blank" style="text-decoration: none;">
-                <div class="card rang-pension">
-                    <h3>💰 Pension Portal up</h3>
-                    <p>Pension related service.</p>
-                </div>
-            </a>
-            <!-- 16. Pdf Master -->
-            <a href="https://www.ilovepdf.com/jpg_to_pdf"target="_blank" style="text-decoration: none;">
-                <div class="card rang-pdf">
-                    <h3>🎟️ Pdf Master</h3>
-                    <p>A2Z pdf work.</p>
-                </div>
-            </a>
-            <!-- 17. Udyam Adhar -->
-            <a href="https://udyamregistration.gov.in/Government-India/Ministry-MSME-registration.htm"target="_blank" style="text-decoration: none;">
-                <div class="card rang-udyam">
-                    <h3>🪪 Udyam Adhar</h3>
-                    <p>udyamregistration.</p>
-                </div>
-            </a>
-             <!-- 17. PDFEDITOR -->
-            <a href="pdf-editor.html"target="_blank"style="text-decoration: none;">
-                <div class="card rang-pdfeditor">
-                    <h3> Data Base Entry</h3>
-                    <p>Personal Data.</p>
-                </div>
-            </a>
-            <!-- 17. Id card Print -->
-            <a href="idcardprint.html"target="_blank"style="text-decoration: none;">
-                <div class="card rang-id">
-                    <h3>ID card print</h3>
-                    <p>Id card Print.</p>
-                </div>
-            </a>
-            <!-- 17. Age Calculatior -->
-            <a href="age.html"target="_blank"style="text-decoration: none;">
-                <div class="card rang-age">
-                    <h3>Age Calculator</h3>
-                    <p>Age Calculator.</p>
-                </div>
-            </a>
-            <!-- 17. Youtube Mp3 Downloader -->
-            <a href="https://freightpass.ca/"target="_blank"style="text-decoration: none;">
-                <div class="card rang-youtubemp3">
-                    <h3>Youtube Mp3 Downloader</h3>
-                    <p>Link Paste kariye.</p>
-                </div>
-                <!-- 17. CV Maker -->
-            <a href="https://www.kbmhelps.com/p/free-resume-maker-with-pdf-download.html"target="_blank"style="text-decoration: none;">
-                <div class="card rang-cvmaker">
-                    <h3>CV MAKER</h3>
-                    <p>ALL type cv</p>
-                </div>
-            </a>
-        </div> <!-- Services Grid Khatam -->
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        pdfDataBuffer = new Uint8Array(evt.target.result);
+        statusOutput.style.color = '#333';
+        statusOutput.textContent = "पीडीएफ लोड हो गई है। कृपया पासवर्ड डालें।";
+        processAadhaarPdf();
+      };
+      reader.readAsArrayBuffer(file);
+    });
 
-        <!-- Buttons Container (4 Buttons) -->
-<div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-    
-    <!-- 1. About Us -->
-    <a href="#aboutUs" onclick="document.getElementById('aboutUs').style.display='flex'; return false;" 
-       style="color: #03DAC6; text-decoration: none; font-weight: bold; border: 1px solid #03DAC6; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
-       ℹ️ About
-    </a>
+    passwordInput.addEventListener('input', function() {
+      if (pdfDataBuffer) processAadhaarPdf();
+    });
 
-    <!-- 2. Contact Us (New) -->
-    <a href="#contactUs" onclick="document.getElementById('contactUs').style.display='flex'; return false;" 
-       style="color: #4CAF50; text-decoration: none; font-weight: bold; border: 1px solid #4CAF50; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
-       📞 Contact
-    </a>
+    async function processAadhaarPdf() {
+      if (!pdfDataBuffer) return;
+      
+      const password = passwordInput.value.trim();
+      statusOutput.style.color = '#0f529a';
+      statusOutput.textContent = "पीडीएफ को डिक्रिप्ट किया जा रहा है...";
 
-    <!-- 3. Privacy Policy -->
-    <a href="#privacyPolicy" onclick="document.getElementById('privacyPolicy').style.display='flex'; return false;" 
-       style="color: #BB86FC; text-decoration: none; font-weight: bold; border: 1px solid #BB86FC; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
-       🔒 Privacy
-    </a>
-
-    <!-- 4. Disclaimer -->
-    <a href="#disclaimerBox" onclick="document.getElementById('disclaimerBox').style.display='flex'; return false;" 
-       style="color: #ff9800; text-decoration: none; font-weight: bold; border: 1px solid #ff9800; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
-       ⚠️ Disclaimer
-    </a>
-
-</div>
-
-<!-- === POPUP BOXES === -->
-
-<!-- 1. About Us Box -->
-<div id="aboutUs" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #03DAC6; color: #fff;">
-        <h3 style="color: #03DAC6; border-bottom: 1px solid #444; padding-bottom: 10px;">ℹ️ About Us</h3>
-        <p style="margin-top: 15px;">DK जन सुविधा केंद्र, में आपका स्वागत है। हम सभी प्रकार की सरकारी और ऑनलाइन सेवाएं प्रदान करते हैं।Add: Rani Kheda Chauraha Bachhrawan Dist raebareli UP India</p>
-        <button onclick="document.getElementById('aboutUs').style.display='none'" style="background: #03DAC6; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
-    </div>
-</div>
-
-<!-- 2. Contact Us Box (New) -->
-<div id="contactUs" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #4CAF50; color: #fff;">
-        <h3 style="color: #4CAF50; border-bottom: 1px solid #444; padding-bottom: 10px;">📞 संपर्क करें (Contact Us)</h3>
-        <p style="margin-top: 15px; line-height: 1.8;">
-            <strong>📧 ईमेल:</strong> dkjansuvidha@gmail.com
-        </p>
-        <button onclick="document.getElementById('contactUs').style.display='none'" style="background: #4CAF50; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
-    </div>
-</div>
-
-<!-- 3. Privacy Policy Box -->
-<div id="privacyPolicy" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #BB86FC; color: #fff;">
-        <h3 style="color: #BB86FC; border-bottom: 1px solid #444; padding-bottom: 10px;">🔒 Privacy Policy</h3>
-        <p style="margin-top: 15px;">हम आपकी गोपनीयता का पूर्ण सम्मान करते हैं। आपका सभी व्यक्तिगत डेटा—जैसे नाम, ईमेल, फोन नंबर या कोई भी जानकारी—हमारे सुरक्षित सर्वरों पर एन्क्रिप्टेड रूप में संग्रहीत रहता है। 
-            हम उन्नत सुरक्षा उपायों जैसे SSL एन्क्रिप्शन, फायरवॉल और नियमित ऑडिट का उपयोग करते हैं, ताकि आपके डेटा को हैकिंग या अनधिकृत पहुँच से पूरी तरह सुरक्षित रखा जा सके। 
-            हम आपके डेटा को किसी तीसरे पक्ष—चाहे वह विज्ञापनदाता हों, पार्टनर या कोई सरकारी एजेंसी—के साथ कभी साझा नहीं करते,
-            सिवाय कानूनी आवश्यकता पड़ने पर। आपकी जानकारी केवल आपकी सेवाओं को बेहतर बनाने और हमारे ऐप/वेबसाइट के सुचारू संचालन के लिए उपयोग की जाती है। आप किसी भी समय अपनी जानकारी देख सकते हैं, 
-            संपादित कर सकते हैं या डिलीट करवा सकते हैं। अधिक जानकारी के लिए हमारी पूरी गोपनीयता नीति पढ़ें।।</p>
-        <button onclick="document.getElementById('privacyPolicy').style.display='none'" style="background: #BB86FC; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">Close</button>
-    </div>
-</div>
-
-<!-- 4. Disclaimer Box -->
-<div id="disclaimerBox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: #1E1E1E; padding: 25px; width: 90%; max-width: 400px; border-radius: 10px; border: 2px solid #ff9800; color: #fff;">
-        <h3 style="color: #ff9800; border-bottom: 1px solid #444; padding-bottom: 10px;">⚠️ Disclaimer</h3>
-        <p style="margin-top: 15px;">यह एक निजी जन सुविधा केंद्र की वेबसाइट है, जो किसी भी सरकारी विभाग, योजना या पोर्टल से प्रत्यक्ष रूप से संबद्ध नहीं है। 
-            हम केवल नागरिकों को विभिन्न ऑनलाइन सेवाओं और सरकारी योजनाओं की जानकारी सरल भाषा में उपलब्ध कराने का प्रयास करते हैं।
-            वेबसाइट पर प्रदर्शित सभी जानकारियाँ सावधानीपूर्वक संकलित की जाती हैं, फिर भी किसी प्रकार की अशुद्धि, त्रुटि या देरी के लिए हम जिम्मेदार नहीं होंगे।
-            उपयोगकर्ता को सलाह दी जाती है कि किसी भी सरकारी सेवा से संबंधित अंतिम और सटीक जानकारी के लिए संबंधित विभाग की आधिकारिक वेबसाइट या कार्यालय से संपर्क करें। 
-            इस वेबसाइट का उद्देश्य केवल जन सुविधा और जागरूकता बढ़ाना है, न कि किसी सरकारी संस्था का प्रतिनिधित्व करना।</p>
-        <button onclick="document.getElementById('disclaimerBox').style.display='none'" style="background: #ff9800; color: black; border: none; padding: 8px 20px; margin-top: 15px; border-radius: 5px; cursor: pointer;">I Understand</button>
-    </div>
-</div>
-
-    <footer>
-    <p>&copy; 2025 DK Jan Suvidha Kendra. All Rights Reserved.</p>
-    <p>Developed by DK</p>
-
-    <!-- Visitor Counter Display -->
-    <div id="visitor-count" style="font-weight: bold; color: blue;">Loading...</div>
-</footer>
-
-<!-- Visitor Counter Script (इसे footer के बाहर रखें) -->
-<script>
-    const uniqueId = "dk_jan_suvidha_2025"; 
-    
-    fetch("https://kounter.vercel.app/counter/" + uniqueId)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('visitor-count').innerText = data.counts;
-        })
-        .catch(err => {
-            console.error("Counter Error:", err);
-            document.getElementById('visitor-count').innerText = "50260";
+      try {
+        const loadingTask = pdfjsLib.getDocument({
+          data: pdfDataBuffer,
+          password: password
         });
-</script>
 
-    <script>
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
-                hour: '2-digit', minute: '2-digit', second: '2-digit' 
-            };
-            const dateString = now.toLocaleDateString('hi-IN', options);
-            document.getElementById('datetime-display').innerText = dateString;
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1); 
+        
+        statusOutput.style.color = '#2e7d32';
+        statusOutput.textContent = "🎉 सफलता! कार्ड्स को एकदम सटीक क्रॉप कर दिया गया है।";
+
+        // बेहतर क्लेरिटी के लिए 4.0 हाई स्केल रेंडरिंग
+        const renderScale = 4.0; 
+        const viewport = page.getViewport({ scale: renderScale });
+
+        // छिपे हुए कैनवास पर पूरा पेज रेंडर करना
+        const hiddenCanvas = document.getElementById('hiddenFullCanvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d');
+        hiddenCanvas.width = viewport.width;
+        hiddenCanvas.height = viewport.height;
+
+        const renderContext = { canvasContext: hiddenCtx, viewport: viewport };
+        await page.render(renderContext).promise;
+
+        // दिखने वाले कैनवास की सेटिंग्स
+        const frontCanvas = document.getElementById('frontCanvas');
+        const frontCtx = frontCanvas.getContext('2d');
+        const backCanvas = document.getElementById('backCanvas');
+        const backCtx = backCanvas.getContext('2d');
+
+        // स्टैंडर्ड आईडी कार्ड रेशियो सेट करना
+        frontCanvas.width = 1011;
+        frontCanvas.height = 638;
+        backCanvas.width = 1011;
+        backCanvas.height = 638;
+
+        // ई-आधार पीडीएफ में नीचे की पट्टी को परफेक्ट काटने की डाइमेंशन्स
+        const fullW = hiddenCanvas.width;
+        const fullH = hiddenCanvas.height;
+
+        const cropW = fullW * 0.49;  // आधा हिस्सा फ्रंट, आधा बैक
+        const cropH = fullH * 0.285; // नीचे का कार्ड एरिया हाइट
+        const cropY = fullH - cropH; // बिल्कुल नीचे से शुरुआत
+
+        const srcFrontX = 0;
+        const srcBackX = fullW * 0.51; // बीच के गैप के बाद बैक साइड शुरू
+
+        // सटीक क्रॉपिंग लॉजिक (बिना किसी खिंचाव के)
+        frontCtx.drawImage(hiddenCanvas, srcFrontX, cropY, cropW, cropH, 0, 0, frontCanvas.width, frontCanvas.height);
+        backCtx.drawImage(hiddenCanvas, srcBackX, cropY, cropW, cropH, 0, 0, backCanvas.width, backCanvas.height);
+
+      } catch (error) {
+        statusOutput.style.color = '#d32f2f';
+        if (error.name === 'PasswordException') {
+          statusOutput.textContent = "❌ गलत पासवर्ड! कृपया ध्यान दें कि पासवर्ड कैपिटल अक्षरों में होना चाहिए।";
+        } else {
+          statusOutput.textContent = "❌ एरर: फाइल को खोलने में समस्या आई। कृपया सही डिजिटल फाइल का उपयोग करें।";
+          console.error(error);
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-    </script>
-        <script type="module">
-  // 1. Firebase के जरूरी फंक्शन इम्पोर्ट करें
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getDatabase, ref, onValue, runTransaction } 
-    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+      }
+    }
 
-  // 2. अपनी Firebase Config यहाँ पेस्ट करें (Firebase Console -> Project Settings से मिलेगा)
-  const firebaseConfig = {
-  apiKey: "AIzaSyAAH2zdwtCJJwS-bb2AXDCx012yHUVYXtk",
-  authDomain: "dk-jan-suvidha-website.firebaseapp.com",
-  databaseURL: "https://dk-jan-suvidha-website-default-rtdb.firebaseio.com",
-  projectId: "dk-jan-suvidha-website",
-  storageBucket: "dk-jan-suvidha-website.firebasestorage.app",
-  messagingSenderId: "46152038424",
-  appId: "1:46152038424:web:400d7652cb432a0400eb6d",
-  measurementId: "G-WSEGR1GBR2"
-};
-
-  // 3. ऐप शुरू करें
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // 4. डेटाबेस में 'visitors' नोड का रेफरेंस लें
-  const visitRef = ref(db, 'visitors');
-
-  // 5. पेज लोड होते ही काउंट बढ़ाएं (Transaction का यूज़ करें ताकि रेस कंडीशन न हो)
-  // यह sessionStorage चेक करता है ताकि एक ही सेशन में बार-बार रिफ्रेश करने पर काउंट न बढ़े
-  if (!sessionStorage.getItem("visited")) {
-      runTransaction(visitRef, (currentCount) => {
-        return (currentCount || 0) + 1;
-      }).then(() => {
-          sessionStorage.setItem("visited", "true");
-      });
-  }
-
-  // 6. रियल-टाइम अपडेट दिखाएं
-  onValue(visitRef, (snapshot) => {
-    const data = snapshot.val();
-    document.getElementById("visitor-count").innerText = `Total Visits: ${data || 0}`;
-  });
-        </script>
+    printActionBtn.addEventListener('click', function() {
+      if (!pdfDataBuffer) {
+        alert("कृपया पहले आधार पीडीएफ फाइल सेलेक्ट करें!");
+        return;
+      }
+      window.print();
+    });
+  </script>
 </body>
 </html>
