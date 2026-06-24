@@ -550,7 +550,6 @@
       #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
     }
 
-    /* प्रिंटिंग के लिए विशेष आधार साइज सेटिंग */
     @media print{
       body{padding:0;background:#fff}
       body *{visibility:hidden}
@@ -559,9 +558,9 @@
         position:absolute;
         left:0;
         top:0;
-        width:180mm; /* दोनों कार्ड्स को बराबर स्पेस देने के लिए चौड़ाई तय की */
+        width:180mm;
         display:flex;
-        gap:5mm; /* दोनों कार्ड्स के बीच हल्का गैप */
+        gap:5mm;
         flex-wrap:nowrap;
       }
       .id-card{
@@ -803,12 +802,14 @@
 
     function generateQR(text) {
       fields.qrcode.innerHTML = '';
-      new QRCode(fields.qrcode, {
-        text: text || 'AgriStackFarmer',
-        width: 52,
-        height: 52,
-        correctLevel: QRCode.CorrectLevel.M
-      });
+      if(typeof QRCode !== 'undefined') {
+        new QRCode(fields.qrcode, {
+          text: text || 'AgriStackFarmer',
+          width: 52,
+          height: 52,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
     }
 
     function getLandRows() {
@@ -951,4 +952,88 @@
       setTimeout(() => window.print(), 300);
     }
 
-    async function try
+    async function tryHindiTransliteration() {
+      const text = sanitizeText(fields.nameEn.value);
+      if (!text) {
+        fields.nameHi.value = '';
+        updateCard();
+        return;
+      }
+
+      try {
+        const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data[0] === 'SUCCESS' && data[1]?.[0]?.[1]?.[0]) {
+          fields.nameHi.value = data[1][0][1][0];
+          updateCard();
+        }
+      } catch (err) {
+        console.warn('Transliteration unavailable:', err);
+      }
+    }
+
+    function handleTransliteration() {
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(tryHindiTransliteration, doneTypingInterval);
+    }
+
+    function resetDemoData() {
+      fields.nameEn.value = 'Farmer Name';
+      fields.nameHi.value = 'रामनरेश चौधरी';
+      fields.dob.value = '01/01/2000';
+      fields.genderAge.value = 'Male / 00';
+      fields.caste.value = 'NA';
+      fields.mobile.value = '**********';
+      fields.aadhar.value = '**** **** ****';
+      fields.fid.value = '***********';
+      fields.enrollId.value = '**_***_****_******_******';
+      fields.addr.value = 'yadu paran, ward no. **, Village, Block, State-Pin';
+
+      fields.landInputsContainer.innerHTML = `
+        <div class="land-entry-row">
+          <input type="text" class="l-state" value="Bihar" placeholder="State">
+          <input type="text" class="l-dist" value="Samastipur" placeholder="District">
+          <input type="text" class="l-sub" value="Kalyanpur" placeholder="Sub-Dist">
+          <input type="text" class="l-vill" value="Yadu Paran" placeholder="Village">
+          <input type="text" class="l-khata" value="45" placeholder="Khata No">
+          <input type="text" class="l-khasra" value="112" placeholder="Khasra">
+          <input type="text" class="l-area" value="0.4500" placeholder="Area">
+        </div>
+      `;
+
+      fields.picPreview.textContent = 'Photo';
+      el('logoPreview').src = '';
+      el('logoPreview').style.display = 'none';
+      fields.photoInput.value = '';
+      bindLandInputs();
+      updateCard();
+    }
+
+    // यहाँ सारे इवेंट्स को दोबारा अच्छे से बांधा गया है
+    document.querySelectorAll('input[type="text"]').forEach(input => input.addEventListener('input', updateCard));
+    fields.nameEn.addEventListener('input', handleTransliteration);
+    fields.photoInput.addEventListener('change', loadPhoto);
+    el('addLandBtn').addEventListener('click', addNewLandRow);
+    el('printBtn').addEventListener('click', openPaymentModal);
+    el('cancelModalBtn').addEventListener('click', closePaymentModal);
+    el('confirmPayBtn').addEventListener('click', actionPrint);
+    el('resetBtn').addEventListener('click', resetDemoData);
+
+    fields.paymentModal.addEventListener('click', (e) => {
+      if (e.target === fields.paymentModal) closePaymentModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && fields.paymentModal.style.display === 'flex') closePaymentModal();
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        openPaymentModal();
+      }
+    });
+
+    bindLandInputs();
+    updateCard();
+  </script>
+</body>
+</html>
