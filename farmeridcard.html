@@ -550,29 +550,32 @@
       #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
     }
 
+    /* बदला हुआ प्रिंट सेक्शन: A4 Portrait (खड़ा पेज) पर दोनों साइड अगल-बगल आएंगे */
     @media print{
       body{padding:0;background:#fff}
       body *{visibility:hidden}
       #id-card-print-area, #id-card-print-area *{visibility:visible}
       #id-card-print-area{
         position:absolute;
-        left:0;
-        top:0;
-        width:180mm;
-        display:flex;
-        gap:5mm;
+        left:12mm;          /* बाईं तरफ से पर्याप्त मार्जिन ताकि पेज में फिट रहे */
+        top:20mm;           /* ऊपर से मार्जिन */
+        width:180mm;        /* चौड़ाई बढ़ाई ताकि दोनों कार्ड अगल-बगल समा सकें */
+        display:flex !important;
+        flex-direction:row !important; /* दोनों कार्ड्स को अगल-बगल (Side-by-Side) रखने के लिए */
+        gap:5mm;            /* दोनों साइड्स के बीच की दूरी */
         flex-wrap:nowrap;
       }
       .id-card{
         width:85.6mm !important;
         height:53.98mm !important;
+        box-shrink:0;
         box-shadow:none;
         border:.35mm solid var(--green);
         -webkit-print-color-adjust:exact;
         print-color-adjust:exact;
       }
       .shop-banner,.container,.payment-modal{display:none!important}
-      @page{size:A4 landscape;margin:10mm}
+      @page{size:A4 portrait;margin:0;} /* डिफ़ॉल्ट पोर्ट्रेट (खड़ा) मोड सेट कर दिया */
     }
   </style>
 </head>
@@ -601,7 +604,7 @@
         <label for="nameHi">किसान का नाम (Hindi):</label>
         <input type="text" id="nameHi" value="किसान का नाम">
       </div>
-      <div class="form-group">
+      <div class="dob">
         <label for="dob">Date of Birth (DOB):</label>
         <input type="text" id="dob" value="01/01/2000" placeholder="DD/MM/YYYY">
       </div>
@@ -1010,7 +1013,6 @@
       updateCard();
     }
 
-    // यहाँ सारे इवेंट्स को दोबारा अच्छे से बांधा गया है
     document.querySelectorAll('input[type="text"]').forEach(input => input.addEventListener('input', updateCard));
     fields.nameEn.addEventListener('input', handleTransliteration);
     fields.photoInput.addEventListener('change', loadPhoto);
