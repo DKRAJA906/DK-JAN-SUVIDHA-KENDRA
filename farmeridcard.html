@@ -160,23 +160,23 @@
         .btn-add-land:hover { background-color: #1b5e20; }
 
         /* ==================================================== */
-        /*  UPDATED CARD STYLES (FOR PERFECT AADHAAR SIZE FIT)  */
+        /*  FIXED AADHAAR SIZE FIT (85.6mm x 53.98mm STRICT)   */
         /* ==================================================== */
         #id-card-print-area {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
             flex-wrap: wrap;
             margin-top: 10px;
         }
         .id-card {
             width: 85.6mm;
             height: 53.98mm;
-            border: 1px solid #0b4622;
-            border-radius: 6px;
+            border: 0.8px solid #0b4622;
+            border-radius: 5px;
             background: #ffffff;
             position: relative;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             overflow: hidden;
             box-sizing: border-box;
             display: flex;
@@ -187,56 +187,62 @@
         .card-header {
             background-color: #0b4622;
             color: #ffffff;
-            padding: 3px 8px;
+            padding: 2px 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1.5px solid #e2a114;
+            border-bottom: 1.2px solid #e2a114;
+            height: 25px;
+            box-sizing: border-box;
         }
         .header-title { text-align: center; flex: 1; }
-        .header-title h3 { margin: 0; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; }
-        .header-title p { margin: 0; font-size: 8px; color: #f0f0f0; }
-        .header-icon { font-size: 16px; background: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2a114; flex-shrink: 0; }
+        .header-title h3 { margin: 0; font-size: 9.5px; font-weight: bold; letter-spacing: 0.3px; line-height: 1; }
+        .header-title p { margin: 0; font-size: 7px; color: #f0f0f0; line-height: 1; }
+        .header-icon { font-size: 12px; background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 0.8px solid #e2a114; flex-shrink: 0; }
 
         .card-body-front {
-            padding: 6px 8px;
+            padding: 4px 6px;
             display: flex;
             position: relative;
             flex-grow: 1;
             align-items: flex-start;
-            gap: 8px;
+            gap: 6px;
+            height: calc(100% - 47px); /* Header + Ribbon + Footer स्पेस छोड़कर */
+            box-sizing: border-box;
         }
         .photo-box {
-            width: 60px;
-            height: 68px;
-            border: 2px solid #0b4622;
+            width: 46px;
+            height: 56px;
+            border: 1px solid #0b4622;
             background: #f9f9f9;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8px;
+            font-size: 7px;
             color: #888;
             flex-shrink: 0;
-            margin-top: 4px;
+            margin-top: 1px;
+            border-radius: 2px;
         }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .info-box { flex: 1; font-size: 11px; font-weight: bold; color: #111; line-height: 1.2; }
-        .farmer-name-en { font-size: 14px; font-weight: bold; color: #0b4622; margin: 0; }
-        .farmer-name-hi { font-size: 11px; font-weight: bold; margin: 0 0 2px 0; color: #444; }
+        /* डेटा का साइज थोड़ा बढ़ा दिया और लाइन-हाइट को परफेक्ट फिट किया */
+        .info-box { flex: 1; font-size: 8px; font-weight: bold; color: #111; line-height: 1.15; }
+        .farmer-name-en { font-size: 10.5px; font-weight: bold; color: #0b4622; margin: 0; line-height: 1.1; }
+        .farmer-name-hi { font-size: 9.5px; font-weight: bold; margin: 0 0 1px 0; color: #444; line-height: 1.1; }
         
         .info-table { width: 100%; border-collapse: collapse; }
-        .info-table td { padding: 0.5px 0; vertical-align: top; }
-        .info-label { font-weight: bold; color: #555; width: 68px; }
+        .info-table td { padding: 0.2px 0; vertical-align: top; }
+        .info-label { font-weight: bold; color: #555; width: 55px; }
         
         .qr-box {
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            margin-top: 35px;
+            margin-top: 12px;
         }
         .qr-box img { width: 100% !important; height: 100% !important; }
 
@@ -245,35 +251,38 @@
             background-color: #0b4622;
             color: #ffffff;
             text-align: center;
-            font-size: 10.5px;
+            font-size: 9px;
             font-weight: bold;
-            padding: 2px 0;
+            padding: 1.5px 0;
+            height: 14px;
+            box-sizing: border-box;
         }
         .farmer-id-ribbon span { color: #8ce99a; }
         
-        .leaf-left { position: absolute; bottom: 20px; left: 4px; font-size: 22px; opacity: 0.8; z-index: 1; }
-        .leaf-right { position: absolute; bottom: 20px; right: 4px; font-size: 22px; opacity: 0.8; z-index: 1; }
+        /* पत्तियों को छोटा किया ताकि डेटा पर न चढ़ें */
+        .leaf-left { position: absolute; bottom: 16px; left: 2px; font-size: 14px; opacity: 0.4; z-index: 1; pointer-events: none; }
+        .leaf-right { position: absolute; bottom: 16px; right: 2px; font-size: 14px; opacity: 0.4; z-index: 1; pointer-events: none; }
         
-        .card-footer-text { width: 100%; background: #072e16; color: #fff; text-align: center; font-size: 5.5px; padding: 2px 0; flex-shrink: 0; }
+        .card-footer-text { width: 100%; background: #072e16; color: #fff; text-align: center; font-size: 5px; padding: 1.5px 0; flex-shrink: 0; height: 10px; box-sizing: border-box; }
 
         /* BACK SIDE STYLES */
-        .enrollment-header { background-color: #0b4622; color: white; text-align: center; padding: 3px; font-size: 9px; font-weight: bold; border-bottom: 1px solid #e2a114; }
-        .enrollment-id { color: #8ce99a; font-size: 9px; font-weight: bold; }
-        .back-body { padding: 5px 8px; font-size: 7.5px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; position: relative; }
-        .address-text { font-weight: bold; margin-bottom: 3px; color: #333; line-height: 1.1; }
-        .land-title { font-weight: bold; color: #0b4622; margin: 2px 0; font-size: 8px; }
+        .enrollment-header { background-color: #0b4622; color: white; text-align: center; padding: 2px; font-size: 7.5px; font-weight: bold; border-bottom: 1px solid #e2a114; line-height: 1.1; }
+        .enrollment-id { color: #8ce99a; font-size: 7.5px; font-weight: bold; }
+        .back-body { padding: 4px 6px; font-size: 7px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; position: relative; height: calc(100% - 35px); box-sizing: border-box; }
+        .address-text { font-weight: bold; margin-bottom: 2px; color: #333; line-height: 1.1; font-size: 6.8px; }
+        .land-title { font-weight: bold; color: #0b4622; margin: 1px 0; font-size: 7.5px; }
         
-        .land-table { width: 100%; border-collapse: collapse; font-size: 6.5px; text-align: center; margin-bottom: 2px; }
-        .land-table th { background-color: #f2f2f2; color: #0b4622; font-weight: bold; border: 0.5px solid #dddddd; padding: 2px 1px; }
-        .land-table td { border: 0.5px solid #dddddd; padding: 2px 1px; height: 10px; }
+        .land-table { width: 100%; border-collapse: collapse; font-size: 5.8px; text-align: center; margin-bottom: 1px; }
+        .land-table th { background-color: #f2f2f2; color: #0b4622; font-weight: bold; border: 0.4px solid #dddddd; padding: 1px 0.5px; }
+        .land-table td { border: 0.4px solid #dddddd; padding: 1px 0.5px; height: 8px; }
 
         .disclaimer-text { 
-            font-size: 5.2px; 
+            font-size: 4.8px; 
             color: #666; 
             text-align: justify; 
-            line-height: 1.1; 
+            line-height: 1; 
             margin-top: auto; 
-            padding-bottom: 4px;
+            padding-bottom: 2px;
         }
 
         /* NEW PAYMENT MODAL STYLES */
@@ -340,8 +349,8 @@
         @media print {
             body * { visibility: hidden; }
             #id-card-print-area, #id-card-print-area * { visibility: visible; }
-            #id-card-print-area { position: absolute; left: 0; top: 0; display: flex; gap: 20px; }
-            .id-card { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #id-card-print-area { position: absolute; left: 5mm; top: 5mm; display: flex; gap: 10mm; }
+            .id-card { box-shadow: none; border: 0.5px solid #0b4622; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .shop-banner, .container, button, .btn-add-land, .payment-modal, .payment-box { display: none !important; }
         }
     </style>
@@ -534,10 +543,10 @@
     let typingTimer;
     const doneTypingInterval = 400;
 
-    // QR कोड का साइज कार्ड के हिसाब से 46px सेट किया
+    // QR कोड का साइज कार्ड के हिसाब से 42px सेट किया
     var qrcode = new QRCode(document.getElementById("qrcode"), {
-        width: 46,
-        height: 46,
+        width: 42,
+        height: 42,
         correctLevel : QRCode.CorrectLevel.H
     });
 
