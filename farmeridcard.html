@@ -943,7 +943,7 @@
       reader.readAsDataURL(file);
     }
 
-    // PDF Parsing और Auto-fill का लॉजिक
+    // PDF Parsing और Auto-fill का नया लॉजिक
     fields.pdfInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -961,63 +961,60 @@
             text += textContent.items.map(item => item.str).join(" ") + "\n";
           }
 
-          // फॉर्म में डाटा भरना शुरू करें (Regex द्वारा छानकर)
-          
-          // 1. Farmer Name (English)
-          const nameEnMatch = text.match(/Farmer\s*Name\s*(?:\(in\s*English\))?[:\-]\s*([A-Za-z ]+)/i) || text.match(/Name\s*[:\-]\s*([A-Za-z ]+)/i);
+          const cleanText = text.replace(/\s+/g, ' ');
+
+          // 1. Name English
+          const nameEnMatch = cleanText.match(/(?:Farmer\s*Name|Name|Beneficiary\s*Name|Applicant\s*Name)\s*(?:\(in\s*English\))?[:\-\s]+([A-Za-z\s]+?)(?=(?:Birth|DOB|Gender|Father|Mother|Mobile|Age|Address|Aadhar|$))/i);
           if (nameEnMatch) fields.nameEn.value = nameEnMatch[1].trim();
 
-          // 2. Farmer Name (Hindi)
-          const nameHiMatch = text.match(/किसान\s*का\s*नाम\s*[:\-]\s*([^\n|A-Za-z]+)/) || text.match(/नाम\s*[:\-]\s*([^\n|A-Za-z]+)/);
+          // 2. Name Hindi
+          const nameHiMatch = cleanText.match(/(?:किसान\s*का\s*नाम|कृषक\s*का\s*नाम|लाभार्थी\s*का\s*नाम|नाम)[:\-\s]+([^\sA-Za-z0-9\-_]+)/);
           if (nameHiMatch) fields.nameHi.value = nameHiMatch[1].trim();
 
           // 3. DOB
-          const dobMatch = text.match(/(?:DOB|Date\s*of\s*Birth)[:\-]\s*([0-9\/.\-]+)/i);
+          const dobMatch = cleanText.match(/(?:DOB|Date\s*of\s*Birth|जन्मतिथि|जन्म\s*तिथि)[:\-\s]+([0-9]{2}[\/\-][0-9]{2}[\/\-][0-9]{4})/i);
           if (dobMatch) fields.dob.value = dobMatch[1].trim();
 
           // 4. Gender / Age
-          const genderMatch = text.match(/(?:Gender|लिंग)[:\-]\s*([A-Za-z]+)/i);
-          const ageMatch = text.match(/(?:Age|उम्र)[:\-]\s*([0-9]+)/i);
-          if (genderMatch && ageMatch) {
-            fields.genderAge.value = `${genderMatch[1].trim()} / ${ageMatch[1].trim()}`;
-          } else if (genderMatch) {
-            fields.genderAge.value = `${genderMatch[1].trim()} / 00`;
-          }
+          const genderMatch = cleanText.match(/(?:Gender|Sex|लिंग)[:\-\s]+(Male|Female|M|F|पुरुष|महिला)/i);
+          const ageMatch = cleanText.match(/(?:Age|उम्र|आयु)[:\-\s]+([0-9]+)/i);
+          let genStr = genderMatch ? (genderMatch[1].toLowerCase().startsWith('m') || genderMatch[1].includes('पु') ? 'Male' : 'Female') : 'Male';
+          let ageStr = ageMatch ? ageMatch[1].trim() : '00';
+          fields.genderAge.value = `${genStr} / ${ageStr}`;
 
           // 5. Caste
-          const casteMatch = text.match(/(?:Caste|Category|वर्ग|जाति)[:\-]\s*([A-Za-z0-9]+)/i);
+          const casteMatch = cleanText.match(/(?:Caste|Category|वर्ग|जाति)[:\-\s]+([A-Za-z0-9वीएसीओबीडी\s]+)/i);
           if (casteMatch) fields.caste.value = casteMatch[1].trim();
 
           // 6. Mobile
-          const mobileMatch = text.match(/(?:Mobile|Phone|मोबाइल)[:\-]\s*([0-9]{10})/i);
+          const mobileMatch = cleanText.match(/(?:Mobile|Phone|मोबाइल|दूरभाष)[:\-\s]+([0-9]{10})/i) || cleanText.match(/\b([0-9]{10})\b/);
           if (mobileMatch) fields.mobile.value = mobileMatch[1].trim();
 
           // 7. Aadhar
-          const aadharMatch = text.match(/(?:Aadhar|Aadhaar|आधार)(?:\s*No)?[:\-]\s*([0-9\s*]{12,14})/i);
+          const aadharMatch = cleanText.match(/(?:Aadhar|Aadhaar|आधार)(?:\s*No|संख्या)?[:\-\s]+([0-9X\s\*]{12,14})/i) || cleanText.match(/\b([0-9X\*]{4}[-\s]?[0-9X\*]{4}[-\s]?[0-9]{4})\b/i);
           if (aadharMatch) fields.aadhar.value = aadharMatch[1].trim();
 
           // 8. Farmer ID
-          const fidMatch = text.match(/(?:Farmer\s*ID|आईडी|पहचान)[:\-]\s*([A-Z0-9\s]+)/i);
+          const fidMatch = cleanText.match(/(?:Farmer\s*ID|किसान\s*आईडी|पहचान\s*संख्या)[:\-\s]+([A-Z0-9\-_:\s]+?)(?=(?:\s|[A-Za-z]{3,}|\d{10}|$))/i);
           if (fidMatch) fields.fid.value = fidMatch[1].trim();
 
           // 9. Enrollment ID
-          const enrollMatch = text.match(/(?:Enrollment|रजिस्ट्रेशन|ID)[:\-]\s*([A-Za-z0-9_\-]+)/i);
+          const enrollMatch = cleanText.match(/(?:Enrollment|Registration|रजिस्ट्रेशन|पंजीकरण)(?:\s*ID|No|संख्या)?[:\-\s]+([A-Za-z0-9_\-]+)/i);
           if (enrollMatch) fields.enrollId.value = enrollMatch[1].trim();
 
           // 10. Address
-          const addrMatch = text.match(/(?:Address|पता)[:\-]\s*([^\n\r]+)/i);
+          const addrMatch = cleanText.match(/(?:Address|Full\s*Address|पता)[:\-\s]+([^:]+?)(?=(?:Farmer\s*ID|Land|Mobile|State|District|$))/i);
           if (addrMatch) fields.addr.value = addrMatch[1].trim();
 
-          // 11. Land Ownership (ज़मीन का ब्यौरा)
-          // पीडीएफ में मौजूद स्टेट, डिस्ट्रिक्ट, खाता, खसरा और एरिया निकालना
-          const stateMatch = text.match(/(?:State|राज्य)[:\-]\s*([A-Za-z]+)/i);
-          const distMatch = text.match(/(?:District|जिला)[:\-]\s*([A-Za-z]+)/i);
-          const khataMatch = text.match(/(?:Khata|खाता\s*नंबर)[:\-]\s*([0-9]+)/i);
-          const khasraMatch = text.match(/(?:Khasra|खेसरा|प्लॉट)[:\-]\s*([0-9]+)/i);
-          const areaMatch = text.match(/(?:Area|रकबा|क्षेत्रफल)[:\-]\s*([0-9.]+)/i);
+          // 11. Land Ownership
+          const stateMatch = cleanText.match(/(?:State|राज्य)[:\-\s]+([A-Za-z\s]+)/i);
+          const distMatch = cleanText.match(/(?:District|जिला)[:\-\s]+([A-Za-z\s]+)/i);
+          const khataMatch = cleanText.match(/(?:Khata|खाता)(?:\s*No|संख्या)?[:\-\s]+([0-9]+)/i);
+          const khasraMatch = cleanText.match(/(?:Khasra|Khesra|Plat|Plot|खसरा|गाटा)[:\-\s]+([0-9\/]+)/i);
+          const areaMatch = cleanText.match(/(?:Area|रकबा|क्षेत्रफल)[:\-\s]+([0-9.]+)/i);
 
-          if (khataMatch || khasraMatch) {
-            fields.landInputsContainer.innerHTML = ''; // पुराना डेमो रो साफ़ करें
+          if (khataMatch || khasraMatch || distMatch) {
+            fields.landInputsContainer.innerHTML = ''; 
             const newRow = document.createElement('div');
             newRow.className = 'land-entry-row';
             newRow.innerHTML = `
@@ -1033,9 +1030,8 @@
             bindLandInputs(newRow);
           }
 
-          // फॉर्म भरने के बाद कार्ड रेंडर करें
           updateCard();
-          alert("🎉 पीडीएफ से डाटा सफ़लतापूर्वक उठा लिया गया है! कृपया एक बार मिलान कर लें।");
+          alert("🎉 पीडीएफ से डाटा सफलतापूर्वक निकाल कर फॉर्म में भर दिया गया है!");
 
         } catch (err) {
           alert("⚠️ पीडीएफ पढ़ने में असमर्थ। कृपया सुनिश्चित करें कि यह एक वैलिड डिजिटल पीडीएफ है।");
