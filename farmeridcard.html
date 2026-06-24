@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DK Jan Suvidha Kendra - AgriStack Farmer ID Card Portal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
   <style>
     :root{
@@ -92,6 +93,15 @@
       border-radius:8px;
       margin-bottom:16px;
       font-size:13px;
+    }
+
+    .pdf-upload-box {
+      background: #eef5fc;
+      border: 2px dashed var(--blue1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
     .form-grid{
@@ -550,19 +560,19 @@
       #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
     }
 
-    /* बदला हुआ प्रिंट सेक्शन: A4 Portrait (खड़ा पेज) पर दोनों साइड अगल-बगल आएंगे */
+    /* A4 Portrait प्रिंट मोड (दोनों कार्ड्स अगल-बगल) */
     @media print{
       body{padding:0;background:#fff}
       body *{visibility:hidden}
       #id-card-print-area, #id-card-print-area *{visibility:visible}
       #id-card-print-area{
         position:absolute;
-        left:12mm;          /* बाईं तरफ से पर्याप्त मार्जिन ताकि पेज में फिट रहे */
-        top:20mm;           /* ऊपर से मार्जिन */
-        width:180mm;        /* चौड़ाई बढ़ाई ताकि दोनों कार्ड अगल-बगल समा सकें */
+        left:12mm;
+        top:20mm;
+        width:180mm;
         display:flex !important;
-        flex-direction:row !important; /* दोनों कार्ड्स को अगल-बगल (Side-by-Side) रखने के लिए */
-        gap:5mm;            /* दोनों साइड्स के बीच की दूरी */
+        flex-direction:row !important;
+        gap:5mm;
         flex-wrap:nowrap;
       }
       .id-card{
@@ -575,7 +585,7 @@
         print-color-adjust:exact;
       }
       .shop-banner,.container,.payment-modal{display:none!important}
-      @page{size:A4 portrait;margin:0;} /* डिफ़ॉल्ट पोर्ट्रेट (खड़ा) मोड सेट कर दिया */
+      @page{size:A4 portrait;margin:0;}
     }
   </style>
 </head>
@@ -595,6 +605,14 @@
       डीके जन सुविधा केंद्र आपका स्वागत करता है
     </div>
 
+    <div class="pdf-upload-box">
+      <label for="pdfInput" style="display:block; font-weight:bold; color:var(--blue1); margin-bottom:8px; font-size:15px;">
+        🚀 पीडीएफ से ऑटो-फिल करें (Upload Farmer Registration/ID PDF):
+      </label>
+      <input type="file" id="pdfInput" accept=".pdf" style="width:100%; max-width:400px; padding:8px; cursor:pointer;" />
+      <p style="margin:5px 0 0; font-size:12px; color:#555;">डिजिटल पीडीएफ फाइल से सारा डाटा अपने आप फॉर्म में आ जाएगा।</p>
+    </div>
+
     <div class="form-grid">
       <div class="form-group">
         <label for="nameEn">Farmer Name (English):</label>
@@ -604,7 +622,7 @@
         <label for="nameHi">किसान का नाम (Hindi):</label>
         <input type="text" id="nameHi" value="किसान का नाम">
       </div>
-      <div class="dob">
+      <div class="form-group">
         <label for="dob">Date of Birth (DOB):</label>
         <input type="text" id="dob" value="01/01/2000" placeholder="DD/MM/YYYY">
       </div>
@@ -760,6 +778,9 @@
   </div>
 
   <script>
+    // PDF Worker Setup
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
     const MAX_LAND_ROWS = 4;
     const doneTypingInterval = 500;
     let typingTimer = null;
@@ -781,7 +802,8 @@
       qrcode: el('qrcode'),
       landInputsContainer: el('landInputsContainer'),
       landTableBody: el('landTableBody'),
-      paymentModal: el('myPaymentModal')
+      paymentModal: el('myPaymentModal'),
+      pdfInput: el('pdfInput')
     };
 
     function sanitizeText(value) {
@@ -921,6 +943,108 @@
       reader.readAsDataURL(file);
     }
 
+    // PDF Parsing और Auto-fill का लॉजिक
+    fields.pdfInput.addEventListener('change', async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(evt) {
+        const typedarray = new Uint8Array(evt.target.result);
+        try {
+          const pdf = await pdfjsLib.getDocument(typedarray).promise;
+          let text = "";
+          
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            text += textContent.items.map(item => item.str).join(" ") + "\n";
+          }
+
+          // फॉर्म में डाटा भरना शुरू करें (Regex द्वारा छानकर)
+          
+          // 1. Farmer Name (English)
+          const nameEnMatch = text.match(/Farmer\s*Name\s*(?:\(in\s*English\))?[:\-]\s*([A-Za-z ]+)/i) || text.match(/Name\s*[:\-]\s*([A-Za-z ]+)/i);
+          if (nameEnMatch) fields.nameEn.value = nameEnMatch[1].trim();
+
+          // 2. Farmer Name (Hindi)
+          const nameHiMatch = text.match(/किसान\s*का\s*नाम\s*[:\-]\s*([^\n|A-Za-z]+)/) || text.match(/नाम\s*[:\-]\s*([^\n|A-Za-z]+)/);
+          if (nameHiMatch) fields.nameHi.value = nameHiMatch[1].trim();
+
+          // 3. DOB
+          const dobMatch = text.match(/(?:DOB|Date\s*of\s*Birth)[:\-]\s*([0-9\/.\-]+)/i);
+          if (dobMatch) fields.dob.value = dobMatch[1].trim();
+
+          // 4. Gender / Age
+          const genderMatch = text.match(/(?:Gender|लिंग)[:\-]\s*([A-Za-z]+)/i);
+          const ageMatch = text.match(/(?:Age|उम्र)[:\-]\s*([0-9]+)/i);
+          if (genderMatch && ageMatch) {
+            fields.genderAge.value = `${genderMatch[1].trim()} / ${ageMatch[1].trim()}`;
+          } else if (genderMatch) {
+            fields.genderAge.value = `${genderMatch[1].trim()} / 00`;
+          }
+
+          // 5. Caste
+          const casteMatch = text.match(/(?:Caste|Category|वर्ग|जाति)[:\-]\s*([A-Za-z0-9]+)/i);
+          if (casteMatch) fields.caste.value = casteMatch[1].trim();
+
+          // 6. Mobile
+          const mobileMatch = text.match(/(?:Mobile|Phone|मोबाइल)[:\-]\s*([0-9]{10})/i);
+          if (mobileMatch) fields.mobile.value = mobileMatch[1].trim();
+
+          // 7. Aadhar
+          const aadharMatch = text.match(/(?:Aadhar|Aadhaar|आधार)(?:\s*No)?[:\-]\s*([0-9\s*]{12,14})/i);
+          if (aadharMatch) fields.aadhar.value = aadharMatch[1].trim();
+
+          // 8. Farmer ID
+          const fidMatch = text.match(/(?:Farmer\s*ID|आईडी|पहचान)[:\-]\s*([A-Z0-9\s]+)/i);
+          if (fidMatch) fields.fid.value = fidMatch[1].trim();
+
+          // 9. Enrollment ID
+          const enrollMatch = text.match(/(?:Enrollment|रजिस्ट्रेशन|ID)[:\-]\s*([A-Za-z0-9_\-]+)/i);
+          if (enrollMatch) fields.enrollId.value = enrollMatch[1].trim();
+
+          // 10. Address
+          const addrMatch = text.match(/(?:Address|पता)[:\-]\s*([^\n\r]+)/i);
+          if (addrMatch) fields.addr.value = addrMatch[1].trim();
+
+          // 11. Land Ownership (ज़मीन का ब्यौरा)
+          // पीडीएफ में मौजूद स्टेट, डिस्ट्रिक्ट, खाता, खसरा और एरिया निकालना
+          const stateMatch = text.match(/(?:State|राज्य)[:\-]\s*([A-Za-z]+)/i);
+          const distMatch = text.match(/(?:District|जिला)[:\-]\s*([A-Za-z]+)/i);
+          const khataMatch = text.match(/(?:Khata|खाता\s*नंबर)[:\-]\s*([0-9]+)/i);
+          const khasraMatch = text.match(/(?:Khasra|खेसरा|प्लॉट)[:\-]\s*([0-9]+)/i);
+          const areaMatch = text.match(/(?:Area|रकबा|क्षेत्रफल)[:\-]\s*([0-9.]+)/i);
+
+          if (khataMatch || khasraMatch) {
+            fields.landInputsContainer.innerHTML = ''; // पुराना डेमो रो साफ़ करें
+            const newRow = document.createElement('div');
+            newRow.className = 'land-entry-row';
+            newRow.innerHTML = `
+              <input type="text" class="l-state" value="${stateMatch ? stateMatch[1].trim() : 'Uttar Pradesh'}">
+              <input type="text" class="l-dist" value="${distMatch ? distMatch[1].trim() : ''}">
+              <input type="text" class="l-sub" value="">
+              <input type="text" class="l-vill" value="">
+              <input type="text" class="l-khata" value="${khataMatch ? khataMatch[1].trim() : ''}">
+              <input type="text" class="l-khasra" value="${khasraMatch ? khasraMatch[1].trim() : ''}">
+              <input type="text" class="l-area" value="${areaMatch ? areaMatch[1].trim() : ''}">
+            `;
+            fields.landInputsContainer.appendChild(newRow);
+            bindLandInputs(newRow);
+          }
+
+          // फॉर्म भरने के बाद कार्ड रेंडर करें
+          updateCard();
+          alert("🎉 पीडीएफ से डाटा सफ़लतापूर्वक उठा लिया गया है! कृपया एक बार मिलान कर लें।");
+
+        } catch (err) {
+          alert("⚠️ पीडीएफ पढ़ने में असमर्थ। कृपया सुनिश्चित करें कि यह एक वैलिड डिजिटल पीडीएफ है।");
+          console.error(err);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
     function validateBeforePrint() {
       const required = [
         { field: fields.nameEn, label: 'Farmer Name (English)' },
@@ -992,6 +1116,7 @@
       fields.fid.value = '***********';
       fields.enrollId.value = '**_***_****_******_******';
       fields.addr.value = 'yadu paran, ward no. **, Village, Block, State-Pin';
+      fields.pdfInput.value = '';
 
       fields.landInputsContainer.innerHTML = `
         <div class="land-entry-row">
