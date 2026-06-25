@@ -808,10 +808,15 @@
     };
 
     function sanitizeText(value) { return String(value || '').trim(); }
-    function maskAadhar(val) { const raw = String(val||'').replace(/\D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
-    function maskMobile(val) { return String(val||'').replace(/\D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
+    function maskAadhar(val) { const raw = String(val||'').replace(/D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(d{4})(d{4})(d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
+    function maskMobile(val) { return String(val||'').replace(/D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
 
-    // कार्ड अपडेट करने का फंक्शन
+    function bindLandInputs(scope=document) {
+      scope.querySelectorAll('.land-entry-row input').forEach(input => {
+        input.addEventListener('input', updateCard);
+      });
+    }
+
     function updateCard() {
       el('lblNameEn').textContent = sanitizeText(fields.nameEn.value) || '-';
       el('lblNameHi').textContent = sanitizeText(fields.nameHi.value) || '-';
@@ -859,13 +864,10 @@
       });
     }
 
-    // --- इंग्लिश से हिंदी ऑटो ट्रांसलेशन (Google API) ---
     let typingTimer;
     fields.nameEn.addEventListener('input', function() {
       clearTimeout(typingTimer);
       const text = this.value;
-      
-      // इंग्लिश वाला तुरंत अपडेट करें
       updateCard();
 
       if(!text.trim()) {
@@ -874,7 +876,6 @@
         return;
       }
 
-      // टाइपिंग रोकने के आधा सेकंड बाद हिंदी कन्वर्ट करेगा
       typingTimer = setTimeout(async () => {
         try {
           const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
@@ -882,7 +883,7 @@
           if(data[0] === 'SUCCESS') {
             let hindiText = '';
             data[1].forEach(chunk => {
-                hindiText += chunk[1][0]; // सबसे सही हिंदी शब्द उठाएगा
+              hindiText += chunk[1][0];
             });
             fields.nameHi.value = hindiText;
             updateCard();
@@ -892,9 +893,7 @@
         }
       }, 500); 
     });
-    // ----------------------------------------------------
 
-    // नया लैंड रिकॉर्ड जोड़ने का बटन
     el('addLandBtn').addEventListener('click', function() {
       const container = fields.landInputsContainer;
       const rowCount = container.querySelectorAll('.land-entry-row').length;
@@ -916,13 +915,10 @@
         <input type="text" class="l-area" value="" placeholder="Area">
       `;
       container.appendChild(newRow);
-
-      newRow.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateCard);
-      });
+      bindLandInputs(newRow);
+      updateCard();
     });
 
-    // फोटो अपलोड
     fields.photoInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -936,7 +932,6 @@
       }
     });
 
-    // प्रिंट और पेमेंट बटन
     el('printBtn').addEventListener('click', function() {
       fields.paymentModal.style.display = 'flex';
     });
@@ -950,7 +945,6 @@
       fields.paymentModal.style.display = 'none';
     });
 
-    // फॉर्म रीसेट
     el('resetBtn').addEventListener('click', function() {
       document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
       fields.photoInput.value = '';
@@ -967,11 +961,10 @@
           <input type="text" class="l-area" value="" placeholder="Area">
         </div>
       `;
-      fields.landInputsContainer.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCard));
+      bindLandInputs();
       updateCard();
     });
 
-    // PDF ऑटो फिल
     fields.pdfInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -983,11 +976,12 @@
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-          text += content.items.map(item => item.str).join(" ") + "\n";
+          text += content.items.map(item => item.str).join(" ") + "
+";
         }
-        const clean = text.replace(/\s+/g, ' ');
+        const clean = text.replace(/s+/g, ' ');
         
-        const fatherMatch = clean.match(/(?:Father's\sName|Father\sName|पिता\sका\sनाम|पिता का नाम)[\s:-]+([^,.]+)/i);
+        const fatherMatch = clean.match(/(?:Father'ssName|FathersName|पिताsकाsनाम|पिता का नाम)[s:-]+([^,.]+)/i);
         if(fatherMatch) fields.fatherName.value = fatherMatch[1].trim();
         
         updateCard();
@@ -996,11 +990,12 @@
     });
 
     document.querySelectorAll('input').forEach(i => {
-      // nameEn के लिए अलग से इवेंट लगा है, बाकी सब पर नॉर्मल
       if(i.id !== 'nameEn') {
         i.addEventListener('input', updateCard);
       }
     });
+
+    bindLandInputs();
     updateCard();
   </script>
 </body>
