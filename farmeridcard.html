@@ -703,84 +703,6 @@
     </div>
   </div>
 
-  <div id="id-card-print-area">
-    <div class="id-card">
-      <div class="card-header">
-        <div class="header-logo-left">
-          <img src="uplogo.png" alt="Left Logo" onerror="this.parentElement.textContent='🌾'">
-        </div>
-        
-        <div class="header-title">
-          <h3>AgriStack फार्मर आईडी कार्ड</h3>
-          <p>(Farmer ID Card)</p>
-        </div>
-
-        <div class="header-logo-right">
-          <img src="flogo.png" alt="Right Logo" onerror="this.parentElement.textContent='🌾'">
-        </div>
-      </div>
-
-      <div class="card-body-front">
-        <div class="photo-box" id="picPreview">Photo</div>
-
-        <div class="info-box">
-          <p class="farmer-name-en" id="lblNameEn">Farmer Name</p>
-          <p class="farmer-name-hi" id="lblNameHi">किसान का नाम</p>
-
-          <table class="info-table">
-            <tr><td class="info-label">Father:</td><td id="lblFatherName">Father Name</td></tr>
-            <tr><td class="info-label">DOB:</td><td id="lblDob">01/01/2000</td></tr>
-            <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 00</td></tr>
-            <tr><td class="info-label">Caste:</td><td id="lblCaste">NA</td></tr>
-            <tr><td class="info-label">Mobile:</td><td id="lblMobile">**********</td></tr>
-            <tr><td class="info-label">Aadhaar:</td><td id="lblAadhar">**** **** ****</td></tr>
-          </table>
-        </div>
-
-        <div class="qr-box" id="qrcode"></div>
-      </div>
-
-      <div class="farmer-id-ribbon">Farmer ID : <span id="lblFid">***********</span></div>
-      <div class="card-footer-text">Department of Agriculture and Farmers Welfare • Government of India</div>
-    </div>
-
-    <div class="id-card">
-      <div class="enrollment-header">
-        Farmer Enrollment Id<br>
-        <span class="enrollment-id" id="lblEnrollId">**_***_****_******_******</span>
-      </div>
-
-      <div class="back-body">
-        <div class="address-text">
-          Address: <span id="lblAddr" style="font-weight:normal;">yadu paran, ward no. **, Village, Block, State-Pin</span>
-        </div>
-
-        <div class="land-title">Land Ownership Details</div>
-
-        <table class="land-table">
-          <thead>
-            <tr>
-              <th>State</th>
-              <th>District</th>
-              <th>Sub-Dist</th>
-              <th>Village</th>
-              <th>Khata</th>
-              <th>Khasra</th>
-              <th>Area</th>
-            </tr>
-          </thead>
-          <tbody id="landTableBody"></tbody>
-        </table>
-
-        <div class="disclaimer-text">
-          * This card is for personal facilitation use only. This is not a government-issued identity. Land details shown here are based on user-provided or integrated record data.
-        </div>
-      </div>
-
-      <div class="card-footer-text">Digital AgriStack Services • Powered by Land Records Databank</div>
-    </div>
-  </div>
-
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
@@ -808,15 +730,10 @@
     };
 
     function sanitizeText(value) { return String(value || '').trim(); }
-    function maskAadhar(val) { const raw = String(val||'').replace(/D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(d{4})(d{4})(d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
-    function maskMobile(val) { return String(val||'').replace(/D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
+    function maskAadhar(val) { const raw = String(val||'').replace(/\D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
+    function maskMobile(val) { return String(val||'').replace(/\D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
 
-    function bindLandInputs(scope=document) {
-      scope.querySelectorAll('.land-entry-row input').forEach(input => {
-        input.addEventListener('input', updateCard);
-      });
-    }
-
+    // कार्ड अपडेट करने का फंक्शन
     function updateCard() {
       el('lblNameEn').textContent = sanitizeText(fields.nameEn.value) || '-';
       el('lblNameHi').textContent = sanitizeText(fields.nameHi.value) || '-';
@@ -839,6 +756,7 @@
       tbody.innerHTML = '';
       const rows = fields.landInputsContainer.querySelectorAll('.land-entry-row');
       
+      // खाली रो भी कार्ड पर दिखेगी (कंडीशन हटा दी गई है)
       rows.forEach(row => {
         const state = row.querySelector('.l-state').value;
         const dist = row.querySelector('.l-dist').value;
@@ -848,26 +766,27 @@
         const khasra = row.querySelector('.l-khasra').value;
         const area = row.querySelector('.l-area').value;
 
-        if(state || dist || sub || vill || khata || khasra || area) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${sanitizeText(state)}</td>
-            <td>${sanitizeText(dist)}</td>
-            <td>${sanitizeText(sub)}</td>
-            <td>${sanitizeText(vill)}</td>
-            <td>${sanitizeText(khata)}</td>
-            <td>${sanitizeText(khasra)}</td>
-            <td>${sanitizeText(area)}</td>
-          `;
-          tbody.appendChild(tr);
-        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${sanitizeText(state)}</td>
+          <td>${sanitizeText(dist)}</td>
+          <td>${sanitizeText(sub)}</td>
+          <td>${sanitizeText(vill)}</td>
+          <td>${sanitizeText(khata)}</td>
+          <td>${sanitizeText(khasra)}</td>
+          <td>${sanitizeText(area)}</td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
+    // --- इंग्लिश से हिंदी ऑटो ट्रांसलेशन (Google API) ---
     let typingTimer;
     fields.nameEn.addEventListener('input', function() {
       clearTimeout(typingTimer);
       const text = this.value;
+      
+      // इंग्लिश वाला तुरंत अपडेट करें
       updateCard();
 
       if(!text.trim()) {
@@ -876,6 +795,7 @@
         return;
       }
 
+      // टाइपिंग रोकने के आधा सेकंड बाद हिंदी कन्वर्ट करेगा
       typingTimer = setTimeout(async () => {
         try {
           const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
@@ -883,7 +803,7 @@
           if(data[0] === 'SUCCESS') {
             let hindiText = '';
             data[1].forEach(chunk => {
-              hindiText += chunk[1][0];
+                hindiText += chunk[1][0]; // सबसे सही हिंदी शब्द उठाएगा
             });
             fields.nameHi.value = hindiText;
             updateCard();
@@ -893,7 +813,12 @@
         }
       }, 500); 
     });
+    // ----------------------------------------------------
 
+    // पूरे लैंड कंटेनर पर इवेंट लगा दिया ताकि नई रो पर भी काम करे
+    fields.landInputsContainer.addEventListener('input', updateCard);
+
+    // नया लैंड रिकॉर्ड जोड़ने का बटन
     el('addLandBtn').addEventListener('click', function() {
       const container = fields.landInputsContainer;
       const rowCount = container.querySelectorAll('.land-entry-row').length;
@@ -915,10 +840,12 @@
         <input type="text" class="l-area" value="" placeholder="Area">
       `;
       container.appendChild(newRow);
-      bindLandInputs(newRow);
-      updateCard();
+
+      // बटन दबाते ही कार्ड को तुरंत अपडेट करें
+      updateCard(); 
     });
 
+    // फोटो अपलोड
     fields.photoInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -932,6 +859,7 @@
       }
     });
 
+    // प्रिंट और पेमेंट बटन
     el('printBtn').addEventListener('click', function() {
       fields.paymentModal.style.display = 'flex';
     });
@@ -945,6 +873,7 @@
       fields.paymentModal.style.display = 'none';
     });
 
+    // फॉर्म रीसेट
     el('resetBtn').addEventListener('click', function() {
       document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
       fields.photoInput.value = '';
@@ -961,10 +890,10 @@
           <input type="text" class="l-area" value="" placeholder="Area">
         </div>
       `;
-      bindLandInputs();
       updateCard();
     });
 
+    // PDF ऑटो फिल
     fields.pdfInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -976,12 +905,11 @@
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-          text += content.items.map(item => item.str).join(" ") + "
-";
+          text += content.items.map(item => item.str).join(" ") + "\n";
         }
-        const clean = text.replace(/s+/g, ' ');
+        const clean = text.replace(/\s+/g, ' ');
         
-        const fatherMatch = clean.match(/(?:Father'ssName|FathersName|पिताsकाsनाम|पिता का नाम)[s:-]+([^,.]+)/i);
+        const fatherMatch = clean.match(/(?:Father's\sName|Father\sName|पिता\sका\sनाम|पिता का नाम)[\s:-]+([^,.]+)/i);
         if(fatherMatch) fields.fatherName.value = fatherMatch[1].trim();
         
         updateCard();
@@ -990,12 +918,11 @@
     });
 
     document.querySelectorAll('input').forEach(i => {
+      // nameEn के लिए अलग से इवेंट लगा है, बाकी सब पर नॉर्मल
       if(i.id !== 'nameEn') {
         i.addEventListener('input', updateCard);
       }
     });
-
-    bindLandInputs();
     updateCard();
   </script>
 </body>
