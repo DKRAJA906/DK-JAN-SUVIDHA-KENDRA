@@ -615,7 +615,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label for="nameEn">Farmer Name (English):</label>
-        <input type="text" id="nameEn" value="Farmer Name">
+        <input type="text" id="nameEn" value="Farmer Name" placeholder="Type in English (Auto converts to Hindi)">
       </div>
       <div class="form-group">
         <label for="nameHi">किसान का नाम (Hindi):</label>
@@ -811,7 +811,7 @@
     function maskAadhar(val) { const raw = String(val||'').replace(/\D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
     function maskMobile(val) { return String(val||'').replace(/\D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
 
-    // कार्ड और टेबल को अपडेट करने वाला फंक्शन
+    // कार्ड अपडेट करने का फंक्शन
     function updateCard() {
       el('lblNameEn').textContent = sanitizeText(fields.nameEn.value) || '-';
       el('lblNameHi').textContent = sanitizeText(fields.nameHi.value) || '-';
@@ -830,7 +830,6 @@
         new QRCode(fields.qrcode, { text: 'AgriStackFarmer:' + (fields.fid.value || ''), width: 52, height: 52 });
       }
 
-      // कार्ड के पीछे की लैंड टेबल अपडेट करना
       const tbody = fields.landTableBody;
       tbody.innerHTML = '';
       const rows = fields.landInputsContainer.querySelectorAll('.land-entry-row');
@@ -844,7 +843,6 @@
         const khasra = row.querySelector('.l-khasra').value;
         const area = row.querySelector('.l-area').value;
 
-        // अगर किसी भी बॉक्स में कुछ लिखा है, तो उसे टेबल में दिखाएं
         if(state || dist || sub || vill || khata || khasra || area) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
@@ -861,7 +859,42 @@
       });
     }
 
-    // नया लैंड रिकॉर्ड जोड़ने वाला बटन (Add Land Details)
+    // --- इंग्लिश से हिंदी ऑटो ट्रांसलेशन (Google API) ---
+    let typingTimer;
+    fields.nameEn.addEventListener('input', function() {
+      clearTimeout(typingTimer);
+      const text = this.value;
+      
+      // इंग्लिश वाला तुरंत अपडेट करें
+      updateCard();
+
+      if(!text.trim()) {
+        fields.nameHi.value = '';
+        updateCard();
+        return;
+      }
+
+      // टाइपिंग रोकने के आधा सेकंड बाद हिंदी कन्वर्ट करेगा
+      typingTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
+          const data = await response.json();
+          if(data[0] === 'SUCCESS') {
+            let hindiText = '';
+            data[1].forEach(chunk => {
+                hindiText += chunk[1][0]; // सबसे सही हिंदी शब्द उठाएगा
+            });
+            fields.nameHi.value = hindiText;
+            updateCard();
+          }
+        } catch (error) {
+          console.error("हिंदी ट्रांसलेशन फेल हुआ:", error);
+        }
+      }, 500); 
+    });
+    // ----------------------------------------------------
+
+    // नया लैंड रिकॉर्ड जोड़ने का बटन
     el('addLandBtn').addEventListener('click', function() {
       const container = fields.landInputsContainer;
       const rowCount = container.querySelectorAll('.land-entry-row').length;
@@ -884,13 +917,12 @@
       `;
       container.appendChild(newRow);
 
-      // नए इनपुट बॉक्स में कुछ टाइप करने पर भी कार्ड तुरंत अपडेट हो
       newRow.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', updateCard);
       });
     });
 
-    // फोटो अपलोड करने का लॉजिक
+    // फोटो अपलोड
     fields.photoInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -904,23 +936,21 @@
       }
     });
 
-    // प्रिंट बटन - इससे पेमेंट मोडल खुलेगा
+    // प्रिंट और पेमेंट बटन
     el('printBtn').addEventListener('click', function() {
       fields.paymentModal.style.display = 'flex';
     });
 
-    // पेमेंट कन्फर्म बटन - पेमेंट हो जाने पर मोडल बंद होगा और प्रिंट चालू होगा
     el('confirmPayBtn').addEventListener('click', function() {
       fields.paymentModal.style.display = 'none';
       window.print();
     });
 
-    // कैंसिल बटन - मोडल बंद करने के लिए
     el('cancelModalBtn').addEventListener('click', function() {
       fields.paymentModal.style.display = 'none';
     });
 
-    // रीसेट बटन - सारे फॉर्म क्लियर करने के लिए
+    // फॉर्म रीसेट
     el('resetBtn').addEventListener('click', function() {
       document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
       fields.photoInput.value = '';
@@ -937,12 +967,11 @@
           <input type="text" class="l-area" value="" placeholder="Area">
         </div>
       `;
-      // नए रीसेट बॉक्स पर भी इवेंट लिसनर लगाना
       fields.landInputsContainer.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCard));
       updateCard();
     });
 
-    // PDF ऑटो फिल का पुराना लॉजिक
+    // PDF ऑटो फिल
     fields.pdfInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -966,8 +995,12 @@
       reader.readAsArrayBuffer(file);
     });
 
-    // शुरू में सभी इनपुट बॉक्स पर लिसनर लगाना
-    document.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCard));
+    document.querySelectorAll('input').forEach(i => {
+      // nameEn के लिए अलग से इवेंट लगा है, बाकी सब पर नॉर्मल
+      if(i.id !== 'nameEn') {
+        i.addEventListener('input', updateCard);
+      }
+    });
     updateCard();
   </script>
 </body>
