@@ -49,18 +49,21 @@
         }
         .btn-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 25px;
         }
         .btn {
-            display: inline-block;
-            padding: 15px;
-            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px; /* लोगो और टेक्स्ट के बीच की दूरी */
+            padding: 12px 15px;
+            font-size: 1.2rem;
             font-weight: bold;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -68,7 +71,16 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-        /* कंपनियों के ब्रांड कलर */
+        /* लोगो इमेज की स्टाइल */
+        .btn img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%; /* लोगो को गोल आकार देने के लिए */
+            background-color: white; /* पीछे सफेद बैकग्राउंड ताकि लोगो साफ दिखे */
+            object-fit: scale-down;
+            padding: 2px;
+        }
+        /* कंपनियों के ब्रांड कलर्स */
         .airtel { background-color: #ed1c24; }
         .jio { background-color: #0f3cc9; }
         .vi { background-color: #e21d26; }
@@ -77,24 +89,43 @@
 </head>
 <body>
 
+    <!-- टॉप हेडर सेक्शन -->
     <header>
         <h1>डीके जन सुविधा केंद्र</h1>
         <p>आय, जाति, निवास, पैन कार्ड आदि ऑनलाइन सभी सर्विस उपलब्धी हैं।</p>
     </header>
 
+    <!-- मुख्य कंटेंट सेक्शन -->
     <div class="container">
         <div class="service-box">
-            <h2>मोबाइल रिचार्ज (जीरो स्अतिरिक्त कॉस्ट)</h2>
+            <h2>मोबाइल रिचार्ज (जीरो कॉस्ट)</h2>
             <p>रिचार्ज करने के लिए नीचे दिए गए अपनी कंपनी के बटन पर क्लिक करें:</p>
             
+            <!-- रिचार्ज बटन कॉलम/ग्रिड जिसमें लोगो शामिल हैं -->
             <div class="btn-grid">
-                <a href="https://www.airtel.in/prepaid-recharge" target="_blank" class="btn airtel">Airtel</a>
+                <!-- Airtel -->
+                <a href="https://www.airtel.in/prepaid-recharge" target="_blank" class="btn airtel">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Airtel_logo-01.png" alt="Airtel">
+                    Airtel
+                </a>
                 
-                <a href="https://www.jio.com/selfcare/recharge/mobility/" target="_blank" class="btn jio">Jio</a>
+                <!-- Jio -->
+                <a href="https://www.jio.com/selfcare/recharge/mobility/" target="_blank" class="btn jio">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Reliance_Jio_Logo_%28October_2015%29.svg/960px-Reliance_Jio_Logo_%28October_2015%29.svg.png" alt="Jio">
+                    Jio
+                </a>
                 
-                <a href="https://www.myvi.in/prepaid/online-mobile-recharge" target="_blank" class="btn vi">Vi</a>
+                <!-- VI -->
+                <a href="https://www.myvi.in/prepaid/online-mobile-recharge" target="_blank" class="btn vi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Vodafone_Idea_logo.svg/1280px-Vodafone_Idea_logo.svg.png" alt="Vi">
+                    Vi
+                </a>
                 
-                <a href="https://portal2.bsnl.in/myportal/quickrecharge.do" target="_blank" class="btn bsnl">BSNL</a>
+                <!-- BSNL -->
+                <a href="https://portal2.bsnl.in/myportal/quickrecharge.do" target="_blank" class="btn bsnl">
+                    <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/bsnl-logo-icon.svg" alt="BSNL">
+                    BSNL
+                </a>
             </div>
         </div>
     </div>
