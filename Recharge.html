@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>डीके जन सुविधा केंद्र</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+        header {
+            background-color: #0056b3;
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e0f0ff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .service-box {
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9fff9;
+        }
+        .service-box h2 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        /* कंपनियों के ब्रांड कलर */
+        .airtel { background-color: #ed1c24; }
+        .jio { background-color: #0f3cc9; }
+        .vi { background-color: #e21d26; }
+        .bsnl { background-color: #00529b; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>डीके जन सुविधा केंद्र</h1>
+        <p>आय, जाति, निवास, पैन कार्ड आदि ऑनलाइन सभी सर्विस की जाती हैं।</p>
+    </header>
+
+    <div class="container">
+        <div class="service-box">
+            <h2>मोबाइल रिचार्ज (जीरो स्टॉक कॉस्ट)</h2>
+            <p>रिचार्ज करने के लिए नीचे दिए गए अपनी कंपनी के बटन पर क्लिक करें:</p>
+            
+            <div class="btn-grid">
+                <a href="https://www.airtel.in/prepaid-recharge" target="_blank" class="btn airtel">Airtel</a>
+                
+                <a href="https://www.jio.com/selfcare/recharge/mobility/" target="_blank" class="btn jio">Jio</a>
+                
+                <a href="https://www.myvi.in/prepaid/online-mobile-recharge" target="_blank" class="btn vi">Vi</a>
+                
+                <a href="https://portal2.bsnl.in/myportal/quickrecharge.do" target="_blank" class="btn bsnl">BSNL</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
