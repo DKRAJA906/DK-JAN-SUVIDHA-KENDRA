@@ -8,7 +8,7 @@ app = Flask(__name__, template_folder='.')
 @app.route('/')
 def index():
     # यह फ्रंटएंड (HTML) को लोड करेगा
-    return render_template('adhar.html')
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
