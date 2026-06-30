@@ -1,4 +1,0 @@
-Flask
-PyMuPDF
-Pillow
-gunicorn
