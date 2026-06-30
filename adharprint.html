@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DK Digital Hub - Smart Card Cropper</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f7f6; padding: 50px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #5E35B1; }
+        input[type="file"] { margin: 20px 0; }
+        button { background-color: #5E35B1; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #7E57C2; }
+        #resultContainer { margin-top: 30px; display: none; }
+        img { max-width: 100%; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 10px;}
+        .print-btn { background-color: #00E676; color: black; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Smart PDF to Card Cropper</h2>
+        <p>यहाँ अपनी पीडीएफ फाइल अपलोड करें</p>
+        
+        <form id="uploadForm">
+            <input type="file" id="pdfFile" accept="application/pdf" required>
+            <br>
+            <button type="submit">Crop Card & Process</button>
+        </form>
+
+        <div id="resultContainer">
+            <h3>आपका तैयार कार्ड:</h3>
+            <img id="outputImage" src="" alt="Cropped Card">
+            <br>
+            <button class="print-btn" onclick="printCard()">Print Card</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('pdfFile');
+            if (fileInput.files.length === 0) return;
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            // बैकएंड को फाइल भेजना
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                
+                document.getElementById('outputImage').src = imageUrl;
+                document.getElementById('resultContainer').style.display = 'block';
+            } else {
+                alert("Error processing file!");
+            }
+        });
+
+        function printCard() {
+            const printWindow = window.open('', '_blank');
+            const imgSrc = document.getElementById('outputImage').src;
+            printWindow.document.write('<html><head><title>Print Card</title></head><body style="text-align:center;">');
+            // CR80 कार्ड का साइज (85.6mm x 54mm) प्रिंट के लिए सेट किया गया है
+            printWindow.document.write(`<img src="${imgSrc}" style="width: 85.6mm; height: 54mm; object-fit: contain;">`);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
