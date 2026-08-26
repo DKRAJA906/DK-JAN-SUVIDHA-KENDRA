@@ -165,12 +165,19 @@
 /* लिंक्स */
 .info-list li a {
     text-decoration: none;
-    color: #0000EE; /* नीला रंग */
+    color: #0000EE; /* आपका नीला रंग */
     font-size: 14px;
-    display: block; /* पूरा एरिया क्लिक हो सके */
+    display: block; /* पूरा एरिया क्लिक करने के लिए */
+    
+    /* टेक्स्ट को बोल्ड और सुंदर बनाने के लिए जोड़ें */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; /* टेक्स्ट को बोल्ड (गाढ़ा) करेगा */
+    transition: all 0.2s ease-in-out; /* स्मूथ एनिमेशन */
 }
-        .info-list li a:hover {
-    color: red;
+
+.info-list li a:hover {
+    color: red; /* माउस ले जाने पर लाल रंग */
+    transform: translateX(4px); /* थोड़ा सा दाईं तरफ स्लाइड होगा */
 }
 
 /* View More बटन */
