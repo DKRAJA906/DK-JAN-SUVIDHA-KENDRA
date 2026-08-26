@@ -7,6 +7,28 @@
     <!-- Stylish Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
+        .search-box {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.search-box input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #1976d2;
+    border-radius: 25px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: #d32f2f;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
+}
+
         /* Theme Settings */
         :root {
             --bg-color: #808A80;
@@ -350,6 +372,10 @@
     <!-- Important Links -->
     <div class="info-box">
         <div class="header-red">Important Links</div>
+        <!-- सर्च इनपुट बॉक्स -->
+<div class="search-box">
+    <input type="text" id="searchInput" onkeyup="filterLinks()" placeholder="🔍 सेवा का नाम खोजें (उदा. आधार, बिजली बिल)...">
+</div>
         <ul class="info-list">
             <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/link-aadhaar-status"target="_blank">Adhar pan link status</a></li>
             <li><a href="https://upresults.upmsp.edu.in/"target="_blank">2026 की हाईस्कूल एवं इंटरमीडिएट परीक्षा का परिणाम</a></li>
@@ -788,6 +814,24 @@
         document.getElementById('stepMobile').style.display = 'block';
         document.getElementById('stepOTP').style.display = 'none';
     }
+    function filterLinks() {
+    // 1. इनपुट में लिखा गया टेक्स्ट पढ़ें
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    
+    // 2. अपनी लिंक्स के क्लास नाम (जैसे link-item या li) को सेलेक्ट करें
+    let items = document.getElementsByClassName('link-item'); 
+
+    // 3. मैचिंग चेक करके स्क्रीन पर फ़िल्टर करें
+    for (let i = 0; i < items.length; i++) {
+        let text = items[i].innerText.toLowerCase();
+        
+        if (text.includes(input)) {
+            items[i].style.display = ""; // मैच होने पर दिखाएं
+        } else {
+            items[i].style.display = "none"; // मैच न होने पर छुपाएं
+        }
+    }
+}
 </script>
 
 </body>
