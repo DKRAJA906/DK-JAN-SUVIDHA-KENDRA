@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Animated Flower Plant</title>
+
+<title>Realistic Animated Flower</title>
 
 <style>
 * {
@@ -14,225 +15,589 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
+    background:
+        linear-gradient(
+            to bottom,
+            #79c9ed 0%,
+            #c9efff 55%,
+            #e9f7e5 100%
+        );
+
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    background: linear-gradient(to bottom, #9be7ff, #e8faff 65%, #b8e994);
+
+    font-family: Arial, sans-serif;
 }
 
-/* Sun */
+
+/* ---------------- SUN ---------------- */
+
 .sun {
     position: absolute;
-    top: 50px;
-    right: 50px;
-    width: 90px;
-    height: 90px;
+    width: 95px;
+    height: 95px;
+
+    top: 45px;
+    right: 55px;
+
     border-radius: 50%;
-    background: #ffd93d;
-    box-shadow: 0 0 40px #ffd93d;
+
+    background: radial-gradient(
+        circle,
+        #fffbd1 0%,
+        #ffe36b 45%,
+        #ffc928 75%
+    );
+
+    box-shadow:
+        0 0 30px rgba(255,220,80,.7),
+        0 0 80px rgba(255,220,80,.35);
 }
 
-/* Clouds */
+
+/* ---------------- CLOUD ---------------- */
+
 .cloud {
     position: absolute;
-    width: 130px;
+
+    width: 170px;
     height: 45px;
+
     border-radius: 50px;
-    background: white;
-    opacity: .8;
-    animation: moveCloud 18s linear infinite;
+
+    background: rgba(255,255,255,.85);
+
+    filter: blur(.3px);
+
+    animation: cloudMove 30s linear infinite;
 }
 
 .cloud::before,
 .cloud::after {
     content: "";
+
     position: absolute;
-    background: white;
+
+    background: rgba(255,255,255,.9);
+
     border-radius: 50%;
 }
 
 .cloud::before {
-    width: 55px;
-    height: 55px;
-    left: 20px;
-    top: -25px;
+    width: 70px;
+    height: 70px;
+
+    left: 25px;
+    top: -35px;
 }
 
 .cloud::after {
-    width: 70px;
-    height: 70px;
-    right: 15px;
-    top: -35px;
+    width: 85px;
+    height: 85px;
+
+    right: 25px;
+    top: -45px;
 }
 
 .cloud1 {
     top: 100px;
-    left: -160px;
+    left: -200px;
 }
 
 .cloud2 {
-    top: 180px;
-    left: -300px;
-    transform: scale(.7);
-    animation-delay: 7s;
+    top: 190px;
+    left: -400px;
+
+    transform: scale(.65);
+
+    animation-delay: 12s;
 }
 
-@keyframes moveCloud {
-    from { transform: translateX(0); }
-    to { transform: translateX(120vw); }
+@keyframes cloudMove {
+
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(130vw);
+    }
 }
 
-/* Ground */
+
+/* ---------------- GROUND ---------------- */
+
 .ground {
     position: absolute;
+
     bottom: 0;
+    left: 0;
+
     width: 100%;
-    height: 100px;
-    background: #68b04b;
-    border-radius: 50% 50% 0 0;
+    height: 115px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #75ad4c,
+            #4e8c38
+        );
+
+    box-shadow:
+        inset 0 15px 20px rgba(255,255,255,.15);
 }
 
-/* Pot */
+
+/* ---------------- POT ---------------- */
+
 .pot {
     position: relative;
-    z-index: 5;
-    width: 150px;
-    height: 115px;
+
+    z-index: 10;
+
+    width: 165px;
+    height: 125px;
+
     margin-bottom: 25px;
-    background: linear-gradient(90deg, #b85c38, #e47a4d, #a94e31);
-    clip-path: polygon(8% 0, 92% 0, 78% 100%, 22% 100%);
-    border-radius: 0 0 25px 25px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #793d2a 0%,
+            #a95738 18%,
+            #cf704c 45%,
+            #b85b3c 70%,
+            #713523 100%
+        );
+
+    clip-path:
+        polygon(
+            7% 0,
+            93% 0,
+            80% 100%,
+            20% 100%
+        );
+
+    box-shadow:
+        0 18px 25px rgba(0,0,0,.25);
 }
+
+
+/* pot rim */
 
 .pot::before {
+
     content: "";
+
     position: absolute;
-    top: 0;
-    left: -8px;
-    width: 166px;
+
+    top: -4px;
+    left: -7px;
+
+    width: 179px;
     height: 25px;
+
     border-radius: 15px;
-    background: #7d3f29;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #7b3a27,
+            #4c281e
+        );
+
+    box-shadow:
+        inset 0 3px 5px rgba(255,255,255,.15);
 }
 
-/* Plant */
-.plant {
+
+/* soil */
+
+.pot::after {
+
+    content: "";
+
     position: absolute;
-    bottom: 130px;
-    left: 50%;
-    width: 10px;
-    height: 0;
-    transform: translateX(-50%);
-    background: #3b8f35;
-    border-radius: 10px;
-    z-index: 4;
-    animation: growStem 3s ease-out forwards;
+
+    top: 3px;
+    left: 5px;
+
+    width: 155px;
+    height: 17px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #3d2418,
+            #21130e
+        );
 }
+
+
+/* ---------------- PLANT ---------------- */
+
+.plant {
+
+    position: absolute;
+
+    bottom: 135px;
+    left: 50%;
+
+    width: 12px;
+    height: 0;
+
+    transform: translateX(-50%);
+
+    z-index: 5;
+
+    background:
+        linear-gradient(
+            90deg,
+            #245f2b,
+            #579c43,
+            #285f2e
+        );
+
+    border-radius: 50%;
+
+    box-shadow:
+        2px 0 3px rgba(0,0,0,.15);
+
+    animation:
+        growStem 4s cubic-bezier(.25,.8,.25,1)
+        forwards;
+}
+
 
 @keyframes growStem {
+
+    from {
+        height: 0;
+    }
+
     to {
-        height: 270px;
+        height: 285px;
     }
 }
 
-/* Leaves */
+
+/* ---------------- LEAVES ---------------- */
+
 .leaf {
+
     position: absolute;
-    width: 90px;
-    height: 45px;
-    background: #48a942;
-    border-radius: 100% 0 100% 0;
+
+    width: 105px;
+    height: 48px;
+
     opacity: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #79bd55,
+            #3f8d3d 50%,
+            #235c2b
+        );
+
+    border-radius:
+        100% 0 100% 0;
+
+    box-shadow:
+        inset -8px -6px 12px rgba(0,0,0,.18),
+        inset 8px 5px 12px rgba(255,255,255,.12),
+        0 5px 8px rgba(0,0,0,.12);
 }
+
+
+/* leaf vein */
+
+.leaf::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 75px;
+    height: 2px;
+
+    left: 12px;
+    top: 25px;
+
+    background:
+        rgba(27,83,32,.65);
+
+    transform: rotate(-3deg);
+
+    border-radius: 50%;
+}
+
+
+/* small veins */
+
+.leaf::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 45px;
+    height: 25px;
+
+    left: 28px;
+    top: 12px;
+
+    border-top: 1px solid rgba(35,90,38,.45);
+    border-bottom: 1px solid rgba(35,90,38,.35);
+
+    transform: rotate(-20deg);
+}
+
 
 .leaf.left {
-    left: -82px;
-    transform: rotate(-25deg);
-    animation: showLeaf 1s 2s forwards, sway 3s 3s infinite ease-in-out;
+
+    left: -92px;
+    top: 170px;
+
+    transform: rotate(-27deg) scale(.1);
+
+    animation:
+        leafAppear 1.5s 2s forwards,
+        naturalSway 4s 4s infinite ease-in-out;
 }
+
 
 .leaf.right {
-    left: 2px;
-    transform: scaleX(-1) rotate(-25deg);
-    animation: showLeaf 1s 2.4s forwards, sway 3s 3.2s infinite ease-in-out;
+
+    left: 0;
+    top: 115px;
+
+    transform:
+        scaleX(-1)
+        rotate(-25deg)
+        scale(.1);
+
+    animation:
+        leafAppear 1.5s 2.5s forwards,
+        naturalSwayRight 4.5s 4.5s infinite ease-in-out;
 }
 
-@keyframes showLeaf {
+
+@keyframes leafAppear {
+
     to {
         opacity: 1;
+        transform:
+            rotate(-27deg)
+            scale(1);
     }
 }
 
-@keyframes sway {
-    0%,100% { transform: rotate(-25deg); }
-    50% { transform: rotate(-15deg); }
+
+@keyframes naturalSway {
+
+    0%,100% {
+        transform: rotate(-27deg);
+    }
+
+    50% {
+        transform: rotate(-20deg);
+    }
 }
 
-/* Flower */
-.flower {
-    position: absolute;
-    top: -25px;
-    left: 50%;
-    width: 110px;
-    height: 110px;
-    transform: translateX(-50%) scale(0);
-    animation: bloom 2s 3s ease-out forwards;
+
+@keyframes naturalSwayRight {
+
+    0%,100% {
+        transform:
+            scaleX(-1)
+            rotate(-25deg);
+    }
+
+    50% {
+        transform:
+            scaleX(-1)
+            rotate(-18deg);
+    }
 }
+
+
+/* ---------------- FLOWER ---------------- */
+
+.flower {
+
+    position: absolute;
+
+    top: -55px;
+    left: 50%;
+
+    width: 125px;
+    height: 125px;
+
+    transform:
+        translateX(-50%)
+        scale(0);
+
+    animation:
+        bloom 2.5s 3.7s
+        cubic-bezier(.17,.67,.3,1.3)
+        forwards;
+}
+
 
 @keyframes bloom {
+
     0% {
-        transform: translateX(-50%) scale(0);
+        transform:
+            translateX(-50%)
+            scale(.05)
+            rotate(-15deg);
     }
+
     70% {
-        transform: translateX(-50%) scale(1.15);
+        transform:
+            translateX(-50%)
+            scale(1.08)
+            rotate(4deg);
     }
+
     100% {
-        transform: translateX(-50%) scale(1);
+        transform:
+            translateX(-50%)
+            scale(1)
+            rotate(0);
     }
 }
 
-/* Petals */
+
+/* ---------------- PETALS ---------------- */
+
 .petal {
+
     position: absolute;
-    width: 48px;
-    height: 70px;
-    background: #ff5c8a;
-    border-radius: 50% 50% 45% 45%;
-    left: 31px;
-    top: 5px;
-    transform-origin: 50% 90%;
-    box-shadow: 0 0 12px rgba(255, 80, 130, .5);
+
+    left: 38px;
+    top: 10px;
+
+    width: 50px;
+    height: 78px;
+
+    transform-origin:
+        50% 90%;
+
+    border-radius:
+        50% 50% 45% 45%;
+
+    background:
+        radial-gradient(
+            ellipse at 35% 25%,
+            #ffb1c7 0%,
+            #f26b91 38%,
+            #c83d69 78%,
+            #8d294c 100%
+        );
+
+    box-shadow:
+        inset 5px 5px 9px rgba(255,255,255,.25),
+        inset -5px -7px 10px rgba(90,0,30,.2),
+        0 3px 7px rgba(70,0,25,.18);
 }
 
-.p1 { transform: rotate(0deg); }
-.p2 { transform: rotate(72deg); }
-.p3 { transform: rotate(144deg); }
-.p4 { transform: rotate(216deg); }
-.p5 { transform: rotate(288deg); }
 
-/* Flower center */
+/* petals have slightly different angles */
+
+.p1 {
+    transform: rotate(0deg);
+}
+
+.p2 {
+    transform: rotate(72deg);
+}
+
+.p3 {
+    transform: rotate(144deg);
+}
+
+.p4 {
+    transform: rotate(216deg);
+}
+
+.p5 {
+    transform: rotate(288deg);
+}
+
+
+/* ---------------- FLOWER CENTER ---------------- */
+
 .center {
+
     position: absolute;
-    width: 38px;
-    height: 38px;
-    background: #ffd43b;
+
+    left: 43px;
+    top: 45px;
+
+    width: 40px;
+    height: 40px;
+
     border-radius: 50%;
-    left: 36px;
-    top: 36px;
-    z-index: 2;
-    box-shadow: 0 0 15px #ffd43b;
+
+    z-index: 5;
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #ffe98a,
+            #e5a92d 50%,
+            #9a5b16 100%
+        );
+
+    box-shadow:
+        inset 3px 3px 6px rgba(255,255,255,.3),
+        0 2px 7px rgba(70,40,0,.35);
 }
 
-/* Little floating particles */
-.particle {
+
+/* pollen dots */
+
+.center::before {
+
+    content: "••••••";
+
     position: absolute;
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    opacity: .7;
-    animation: float 4s infinite ease-in-out;
+
+    color: #754313;
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+    top: 9px;
+    left: 5px;
+
+    transform: rotate(-15deg);
 }
+
+
+/* ---------------- FLOATING DUST ---------------- */
+
+.particle {
+
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.8);
+
+    animation:
+        floating 5s infinite ease-in-out;
+}
+
 
 .particle:nth-child(1) {
     left: 20%;
@@ -242,59 +607,95 @@ body {
 .particle:nth-child(2) {
     left: 70%;
     bottom: 40%;
-    animation-delay: 1s;
+    animation-delay: 1.5s;
 }
 
 .particle:nth-child(3) {
     left: 35%;
     bottom: 55%;
-    animation-delay: 2s;
+    animation-delay: 3s;
 }
 
-@keyframes float {
+
+@keyframes floating {
+
     0%,100% {
-        transform: translateY(0);
-        opacity: .3;
+        transform:
+            translateY(0)
+            translateX(0);
+
+        opacity: .2;
     }
+
     50% {
-        transform: translateY(-40px);
-        opacity: 1;
+        transform:
+            translateY(-45px)
+            translateX(15px);
+
+        opacity: .8;
     }
 }
+
 </style>
 </head>
 
+
 <body>
 
+
+<!-- Sun -->
+
 <div class="sun"></div>
+
+
+<!-- Clouds -->
 
 <div class="cloud cloud1"></div>
 <div class="cloud cloud2"></div>
 
+
+<!-- Floating particles -->
+
 <div class="particle"></div>
 <div class="particle"></div>
 <div class="particle"></div>
+
+
+<!-- Ground -->
 
 <div class="ground"></div>
 
+
 <!-- Plant -->
+
 <div class="plant">
 
     <div class="leaf left"></div>
+
     <div class="leaf right"></div>
 
+
+    <!-- Flower -->
+
     <div class="flower">
+
         <div class="petal p1"></div>
         <div class="petal p2"></div>
         <div class="petal p3"></div>
         <div class="petal p4"></div>
         <div class="petal p5"></div>
+
         <div class="center"></div>
+
     </div>
 
 </div>
 
+
+<!-- Pot -->
+
 <div class="pot"></div>
+
 
 </body>
 </html>
