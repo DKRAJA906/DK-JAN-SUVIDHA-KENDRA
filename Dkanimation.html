@@ -1,701 +1,279 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Realistic Animated Flower</title>
-
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    background:
-        linear-gradient(
-            to bottom,
-            #79c9ed 0%,
-            #c9efff 55%,
-            #e9f7e5 100%
-        );
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-
-    font-family: Arial, sans-serif;
-}
-
-
-/* ---------------- SUN ---------------- */
-
-.sun {
-    position: absolute;
-    width: 95px;
-    height: 95px;
-
-    top: 45px;
-    right: 55px;
-
-    border-radius: 50%;
-
-    background: radial-gradient(
-        circle,
-        #fffbd1 0%,
-        #ffe36b 45%,
-        #ffc928 75%
-    );
-
-    box-shadow:
-        0 0 30px rgba(255,220,80,.7),
-        0 0 80px rgba(255,220,80,.35);
-}
-
-
-/* ---------------- CLOUD ---------------- */
-
-.cloud {
-    position: absolute;
-
-    width: 170px;
-    height: 45px;
-
-    border-radius: 50px;
-
-    background: rgba(255,255,255,.85);
-
-    filter: blur(.3px);
-
-    animation: cloudMove 30s linear infinite;
-}
-
-.cloud::before,
-.cloud::after {
-    content: "";
-
-    position: absolute;
-
-    background: rgba(255,255,255,.9);
-
-    border-radius: 50%;
-}
-
-.cloud::before {
-    width: 70px;
-    height: 70px;
-
-    left: 25px;
-    top: -35px;
-}
-
-.cloud::after {
-    width: 85px;
-    height: 85px;
-
-    right: 25px;
-    top: -45px;
-}
-
-.cloud1 {
-    top: 100px;
-    left: -200px;
-}
-
-.cloud2 {
-    top: 190px;
-    left: -400px;
-
-    transform: scale(.65);
-
-    animation-delay: 12s;
-}
-
-@keyframes cloudMove {
-
-    from {
-        transform: translateX(0);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --primary:#0b57d0;
+      --secondary:#128c7e;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#dbe3f0;
+      --fee:#fff7e6;
+      --fee-text:#b45309;
+      --shadow:0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius:18px;
     }
-
-    to {
-        transform: translateX(130vw);
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(180deg,#eef4ff 0%, #f9fbff 100%);
+      color:var(--text);
+      line-height:1.6;
     }
-}
-
-
-/* ---------------- GROUND ---------------- */
-
-.ground {
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-
-    width: 100%;
-    height: 115px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #75ad4c,
-            #4e8c38
-        );
-
-    box-shadow:
-        inset 0 15px 20px rgba(255,255,255,.15);
-}
-
-
-/* ---------------- POT ---------------- */
-
-.pot {
-    position: relative;
-
-    z-index: 10;
-
-    width: 165px;
-    height: 125px;
-
-    margin-bottom: 25px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #793d2a 0%,
-            #a95738 18%,
-            #cf704c 45%,
-            #b85b3c 70%,
-            #713523 100%
-        );
-
-    clip-path:
-        polygon(
-            7% 0,
-            93% 0,
-            80% 100%,
-            20% 100%
-        );
-
-    box-shadow:
-        0 18px 25px rgba(0,0,0,.25);
-}
-
-
-/* pot rim */
-
-.pot::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: -4px;
-    left: -7px;
-
-    width: 179px;
-    height: 25px;
-
-    border-radius: 15px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #7b3a27,
-            #4c281e
-        );
-
-    box-shadow:
-        inset 0 3px 5px rgba(255,255,255,.15);
-}
-
-
-/* soil */
-
-.pot::after {
-
-    content: "";
-
-    position: absolute;
-
-    top: 3px;
-    left: 5px;
-
-    width: 155px;
-    height: 17px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            #3d2418,
-            #21130e
-        );
-}
-
-
-/* ---------------- PLANT ---------------- */
-
-.plant {
-
-    position: absolute;
-
-    bottom: 135px;
-    left: 50%;
-
-    width: 12px;
-    height: 0;
-
-    transform: translateX(-50%);
-
-    z-index: 5;
-
-    background:
-        linear-gradient(
-            90deg,
-            #245f2b,
-            #579c43,
-            #285f2e
-        );
-
-    border-radius: 50%;
-
-    box-shadow:
-        2px 0 3px rgba(0,0,0,.15);
-
-    animation:
-        growStem 4s cubic-bezier(.25,.8,.25,1)
-        forwards;
-}
-
-
-@keyframes growStem {
-
-    from {
-        height: 0;
+    .container{max-width:1200px;margin:auto;padding:20px}
+    .hero{
+      background:linear-gradient(135deg,#0b57d0,#1d9bf0);
+      color:#fff;
+      padding:36px 24px;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      margin:20px 0 28px;
     }
-
-    to {
-        height: 285px;
+    .hero h1{font-size:clamp(28px,4vw,44px);margin-bottom:10px}
+    .hero p{max-width:760px;font-size:16px;opacity:.95}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
     }
-}
-
-
-/* ---------------- LEAVES ---------------- */
-
-.leaf {
-
-    position: absolute;
-
-    width: 105px;
-    height: 48px;
-
-    opacity: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            #79bd55,
-            #3f8d3d 50%,
-            #235c2b
-        );
-
-    border-radius:
-        100% 0 100% 0;
-
-    box-shadow:
-        inset -8px -6px 12px rgba(0,0,0,.18),
-        inset 8px 5px 12px rgba(255,255,255,.12),
-        0 5px 8px rgba(0,0,0,.12);
-}
-
-
-/* leaf vein */
-
-.leaf::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 75px;
-    height: 2px;
-
-    left: 12px;
-    top: 25px;
-
-    background:
-        rgba(27,83,32,.65);
-
-    transform: rotate(-3deg);
-
-    border-radius: 50%;
-}
-
-
-/* small veins */
-
-.leaf::before {
-
-    content: "";
-
-    position: absolute;
-
-    width: 45px;
-    height: 25px;
-
-    left: 28px;
-    top: 12px;
-
-    border-top: 1px solid rgba(35,90,38,.45);
-    border-bottom: 1px solid rgba(35,90,38,.35);
-
-    transform: rotate(-20deg);
-}
-
-
-.leaf.left {
-
-    left: -92px;
-    top: 170px;
-
-    transform: rotate(-27deg) scale(.1);
-
-    animation:
-        leafAppear 1.5s 2s forwards,
-        naturalSway 4s 4s infinite ease-in-out;
-}
-
-
-.leaf.right {
-
-    left: 0;
-    top: 115px;
-
-    transform:
-        scaleX(-1)
-        rotate(-25deg)
-        scale(.1);
-
-    animation:
-        leafAppear 1.5s 2.5s forwards,
-        naturalSwayRight 4.5s 4.5s infinite ease-in-out;
-}
-
-
-@keyframes leafAppear {
-
-    to {
-        opacity: 1;
-        transform:
-            rotate(-27deg)
-            scale(1);
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px;
     }
-}
-
-
-@keyframes naturalSway {
-
-    0%,100% {
-        transform: rotate(-27deg);
+    .logo{
+      width:46px;height:46px;border-radius:14px;background:#fff;color:var(--primary);
+      display:grid;place-items:center;font-size:22px;font-weight:700;
     }
-
-    50% {
-        transform: rotate(-20deg);
+    .contact-chip{
+      background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.22);
+      padding:10px 14px;border-radius:999px;font-size:14px;
     }
-}
-
-
-@keyframes naturalSwayRight {
-
-    0%,100% {
-        transform:
-            scaleX(-1)
-            rotate(-25deg);
+    .section-title{font-size:26px;margin:8px 0 18px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+      gap:22px;
     }
-
-    50% {
-        transform:
-            scaleX(-1)
-            rotate(-18deg);
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
-}
-
-
-/* ---------------- FLOWER ---------------- */
-
-.flower {
-
-    position: absolute;
-
-    top: -55px;
-    left: 50%;
-
-    width: 125px;
-    height: 125px;
-
-    transform:
-        translateX(-50%)
-        scale(0);
-
-    animation:
-        bloom 2.5s 3.7s
-        cubic-bezier(.17,.67,.3,1.3)
-        forwards;
-}
-
-
-@keyframes bloom {
-
-    0% {
-        transform:
-            translateX(-50%)
-            scale(.05)
-            rotate(-15deg);
+    .card-head{
+      padding:18px 18px 10px;
+      border-bottom:1px solid #edf2f7;
     }
-
-    70% {
-        transform:
-            translateX(-50%)
-            scale(1.08)
-            rotate(4deg);
+    .service-tag{
+      display:inline-block;
+      background:#e8f0fe;
+      color:var(--primary);
+      font-size:13px;
+      font-weight:600;
+      padding:6px 10px;
+      border-radius:999px;
+      margin-bottom:10px;
     }
-
-    100% {
-        transform:
-            translateX(-50%)
-            scale(1)
-            rotate(0);
+    .card h3{font-size:22px;margin-bottom:8px}
+    .fee-box{
+      margin-top:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:var(--fee);
+      color:var(--fee-text);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:15px;
     }
-}
-
-
-/* ---------------- PETALS ---------------- */
-
-.petal {
-
-    position: absolute;
-
-    left: 38px;
-    top: 10px;
-
-    width: 50px;
-    height: 78px;
-
-    transform-origin:
-        50% 90%;
-
-    border-radius:
-        50% 50% 45% 45%;
-
-    background:
-        radial-gradient(
-            ellipse at 35% 25%,
-            #ffb1c7 0%,
-            #f26b91 38%,
-            #c83d69 78%,
-            #8d294c 100%
-        );
-
-    box-shadow:
-        inset 5px 5px 9px rgba(255,255,255,.25),
-        inset -5px -7px 10px rgba(90,0,30,.2),
-        0 3px 7px rgba(70,0,25,.18);
-}
-
-
-/* petals have slightly different angles */
-
-.p1 {
-    transform: rotate(0deg);
-}
-
-.p2 {
-    transform: rotate(72deg);
-}
-
-.p3 {
-    transform: rotate(144deg);
-}
-
-.p4 {
-    transform: rotate(216deg);
-}
-
-.p5 {
-    transform: rotate(288deg);
-}
-
-
-/* ---------------- FLOWER CENTER ---------------- */
-
-.center {
-
-    position: absolute;
-
-    left: 43px;
-    top: 45px;
-
-    width: 40px;
-    height: 40px;
-
-    border-radius: 50%;
-
-    z-index: 5;
-
-    background:
-        radial-gradient(
-            circle at 35% 30%,
-            #ffe98a,
-            #e5a92d 50%,
-            #9a5b16 100%
-        );
-
-    box-shadow:
-        inset 3px 3px 6px rgba(255,255,255,.3),
-        0 2px 7px rgba(70,40,0,.35);
-}
-
-
-/* pollen dots */
-
-.center::before {
-
-    content: "••••••";
-
-    position: absolute;
-
-    color: #754313;
-
-    font-size: 13px;
-
-    letter-spacing: 2px;
-
-    top: 9px;
-    left: 5px;
-
-    transform: rotate(-15deg);
-}
-
-
-/* ---------------- FLOATING DUST ---------------- */
-
-.particle {
-
-    position: absolute;
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.8);
-
-    animation:
-        floating 5s infinite ease-in-out;
-}
-
-
-.particle:nth-child(1) {
-    left: 20%;
-    bottom: 30%;
-}
-
-.particle:nth-child(2) {
-    left: 70%;
-    bottom: 40%;
-    animation-delay: 1.5s;
-}
-
-.particle:nth-child(3) {
-    left: 35%;
-    bottom: 55%;
-    animation-delay: 3s;
-}
-
-
-@keyframes floating {
-
-    0%,100% {
-        transform:
-            translateY(0)
-            translateX(0);
-
-        opacity: .2;
+    .card-body{padding:18px}
+    .subservice{
+      background:#f8fafc;
+      border:1px dashed #d7e1ee;
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:12px;
     }
-
-    50% {
-        transform:
-            translateY(-45px)
-            translateX(15px);
-
-        opacity: .8;
+    .subservice h4{font-size:17px;margin-bottom:8px;color:#0f172a}
+    .subservice ul{padding-left:18px}
+    .subservice li{margin-bottom:6px;font-size:14px;color:#374151}
+    .whatsapp-btn{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+      background:var(--secondary);
+      color:#fff;
+      font-weight:700;
+      padding:14px 16px;
+      border-radius:14px;
+      transition:.2s ease;
     }
-}
-
-</style>
+    .whatsapp-btn:hover{background:#0d6f64;transform:translateY(-1px)}
+    .footer{
+      margin:30px 0 10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+    @media (max-width:640px){
+      .hero{padding:24px 16px}
+      .section-title{font-size:22px}
+      .card h3{font-size:20px}
+    }
+  </style>
 </head>
-
-
 <body>
+  <div class="container">
+    <section class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">SC</div>
+          <div>Digital Service Catalog</div>
+        </div>
+        <div class="contact-chip">WhatsApp: +91 9876543210</div>
+      </div>
+      <h1>आधार, PAN, Voter ID, Farmer ID सभी सेवाएं एक ही जगह</h1>
+      <p>नीचे हर सेवा के अंदर उपलब्ध काम, लगने वाले दस्तावेज और फीस दी गई है। ग्राहक सीधे WhatsApp बटन दबाकर संपर्क कर सकता है।</p>
+    </section>
 
+    <h2 class="section-title">हमारी प्रमुख सेवाएं</h2>
 
-<!-- Sun -->
+    <section class="grid">
+      <article class="card">
+        <div class="card-head">
+          <span class="service-tag">Voter ID Service</span>
+          <h3>Voter ID Card</h3>
+          <div class="fee-box">सेवा शुल्क: 100 Rs</div>
+        </div>
+        <div class="card-body">
+          <div class="subservice">
+            <h4>New Voter ID</h4>
+            <ul>
+              <li>पासपोर्ट साइज फोटो</li>
+              <li>मोबाइल नंबर</li>
+              <li>आधार कार्ड</li>
+              <li>एड्रेस प्रूफ</li>
+              <li>आयु प्रमाण पत्र</li>
+            </ul>
+          </div>
+          <div class="subservice">
+            <h4>Correction in Voter ID</h4>
+            <ul>
+              <li>पुराना वोटर आईडी कार्ड</li>
+              <li>आधार कार्ड</li>
+              <li>सही जानकारी वाला दस्तावेज</li>
+              <li>मोबाइल नंबर</li>
+            </ul>
+          </div>
+          <a class="whatsapp-btn" href="https://wa.me/919876543210?text=Namaste%2C%20mujhe%20Voter%20ID%20service%20chahiye" target="_blank" rel="noopener noreferrer">WhatsApp पर संपर्क करें</a>
+        </div>
+      </article>
 
-<div class="sun"></div>
+      <article class="card">
+        <div class="card-head">
+          <span class="service-tag">Aadhaar Service</span>
+          <h3>Aadhaar Card</h3>
+          <div class="fee-box">सेवा शुल्क: 100 Rs</div>
+        </div>
+        <div class="card-body">
+          <div class="subservice">
+            <h4>New / Update Service</h4>
+            <ul>
+              <li>आधार नंबर या नामांकन पर्ची</li>
+              <li>मोबाइल नंबर</li>
+              <li>पहचान पत्र</li>
+              <li>पता प्रमाण पत्र</li>
+              <li>जन्म तिथि प्रमाण</li>
+            </ul>
+          </div>
+          <div class="subservice">
+            <h4>Correction in Aadhaar</h4>
+            <ul>
+              <li>पुराना आधार कार्ड</li>
+              <li>नाम/पता/जन्मतिथि का सही दस्तावेज</li>
+              <li>मोबाइल नंबर</li>
+              <li>पासपोर्ट फोटो (जरूरत अनुसार)</li>
+            </ul>
+          </div>
+          <a class="whatsapp-btn" href="https://wa.me/919876543210?text=Namaste%2C%20mujhe%20Aadhaar%20service%20chahiye" target="_blank" rel="noopener noreferrer">WhatsApp पर संपर्क करें</a>
+        </div>
+      </article>
 
+      <article class="card">
+        <div class="card-head">
+          <span class="service-tag">PAN Service</span>
+          <h3>PAN Card</h3>
+          <div class="fee-box">सेवा शुल्क: 100 Rs</div>
+        </div>
+        <div class="card-body">
+          <div class="subservice">
+            <h4>New PAN Card</h4>
+            <ul>
+              <li>आधार कार्ड</li>
+              <li>फोटो</li>
+              <li>सिग्नेचर</li>
+              <li>मोबाइल नंबर</li>
+              <li>ईमेल आईडी</li>
+            </ul>
+          </div>
+          <div class="subservice">
+            <h4>PAN Correction</h4>
+            <ul>
+              <li>पुराना PAN कार्ड</li>
+              <li>आधार कार्ड</li>
+              <li>सही नाम/जन्मतिथि वाला दस्तावेज</li>
+              <li>फोटो और सिग्नेचर</li>
+            </ul>
+          </div>
+          <a class="whatsapp-btn" href="https://wa.me/919876543210?text=Namaste%2C%20mujhe%20PAN%20Card%20service%20chahiye" target="_blank" rel="noopener noreferrer">WhatsApp पर संपर्क करें</a>
+        </div>
+      </article>
 
-<!-- Clouds -->
+      <article class="card">
+        <div class="card-head">
+          <span class="service-tag">Farmer Service</span>
+          <h3>Farmer ID</h3>
+          <div class="fee-box">सेवा शुल्क: 100 Rs</div>
+        </div>
+        <div class="card-body">
+          <div class="subservice">
+            <h4>New Farmer ID</h4>
+            <ul>
+              <li>आधार कार्ड</li>
+              <li>मोबाइल नंबर</li>
+              <li>खसरा / खतौनी</li>
+              <li>बैंक पासबुक</li>
+              <li>फोटो</li>
+            </ul>
+          </div>
+          <div class="subservice">
+            <h4>Correction in Farmer ID</h4>
+            <ul>
+              <li>पुरानी Farmer ID / रजिस्ट्रेशन नंबर</li>
+              <li>आधार कार्ड</li>
+              <li>भूमि संबंधी सही दस्तावेज</li>
+              <li>बैंक विवरण</li>
+            </ul>
+          </div>
+          <a class="whatsapp-btn" href="https://wa.me/919876543210?text=Namaste%2C%20mujhe%20Farmer%20ID%20service%20chahiye" target="_blank" rel="noopener noreferrer">WhatsApp पर संपर्क करें</a>
+        </div>
+      </article>
+    </section>
 
-<div class="cloud cloud1"></div>
-<div class="cloud cloud2"></div>
-
-
-<!-- Floating particles -->
-
-<div class="particle"></div>
-<div class="particle"></div>
-<div class="particle"></div>
-
-
-<!-- Ground -->
-
-<div class="ground"></div>
-
-
-<!-- Plant -->
-
-<div class="plant">
-
-    <div class="leaf left"></div>
-
-    <div class="leaf right"></div>
-
-
-    <!-- Flower -->
-
-    <div class="flower">
-
-        <div class="petal p1"></div>
-        <div class="petal p2"></div>
-        <div class="petal p3"></div>
-        <div class="petal p4"></div>
-        <div class="petal p5"></div>
-
-        <div class="center"></div>
-
-    </div>
-
-</div>
-
-
-<!-- Pot -->
-
-<div class="pot"></div>
-
-
+    <p class="footer">नोट: ऊपर दिया गया मोबाइल नंबर और दस्तावेज़ सूची आप अपनी जरूरत के अनुसार बदल सकते हैं।</p>
+  </div>
 </body>
 </html>
