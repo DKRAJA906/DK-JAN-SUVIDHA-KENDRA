@@ -682,9 +682,8 @@
             <input type="text" class="l-dist" value="Samastipur" placeholder="District">
             <input type="text" class="l-sub" value="Kalyanpur" placeholder="Sub-Dist">
             <input type="text" class="l-vill" value="Yadu Paran" placeholder="Village">
-            <input type="text" class="l-khata" value="45" placeholder="Khata No">
-            <input type="text" class="l-khasra" value="112" placeholder="Khasra">
-            <input type="text" class="l-area" value="0.4500" placeholder="Area">
+            <input type="text" class="l-totalgatano" value="112" placeholder="Total-gata">
+            <input type="text" class="l-totalarea" value="0.4500" placeholder="Total-Area">
           </div>
         </div>
       </div>
@@ -768,9 +767,8 @@
               <th>District</th>
               <th>Sub-Dist</th>
               <th>Village</th>
-              <th>Khata</th>
-              <th>Khasra</th>
-              <th>Area</th>
+              <th>Totalgatano</th>
+              <th>ToatalArea</th>
             </tr>
           </thead>
           <tbody id="landTableBody"></tbody>
@@ -843,9 +841,8 @@
           const dist = row.querySelector('.l-dist').value;
           const sub = row.querySelector('.l-sub').value;
           const vill = row.querySelector('.l-vill').value;
-          const khata = row.querySelector('.l-khata').value;
-          const khasra = row.querySelector('.l-khasra').value;
-          const area = row.querySelector('.l-area').value;
+          const khasra = row.querySelector('.l-toatalgatano').value;
+          const area = row.querySelector('.l-toatalarea').value;
 
           const tr = document.createElement('tr');
           tr.innerHTML = `
@@ -853,9 +850,8 @@
             <td>${sanitizeText(dist)}</td>
             <td>${sanitizeText(sub)}</td>
             <td>${sanitizeText(vill)}</td>
-            <td>${sanitizeText(khata)}</td>
-            <td>${sanitizeText(khasra)}</td>
-            <td>${sanitizeText(area)}</td>
+            <td>${sanitizeText(toatalgatano)}</td>
+            <td>${sanitizeText(toatalarea)}</td>
           `;
           tbody.appendChild(tr);
         });
@@ -912,9 +908,8 @@
         <input type="text" class="l-dist" value="" placeholder="District">
         <input type="text" class="l-sub" value="" placeholder="Sub-Dist">
         <input type="text" class="l-vill" value="" placeholder="Village">
-        <input type="text" class="l-khata" value="" placeholder="Khata No">
-        <input type="text" class="l-khasra" value="" placeholder="Khasra">
-        <input type="text" class="l-area" value="" placeholder="Area">
+        <input type="text" class="l-toatalgatano" value="" placeholder="Total-Gata">
+        <input type="text" class="l-totalarea" value="" placeholder="Total-Area">
       `;
       container.appendChild(newRow);
 
@@ -966,9 +961,8 @@
           <input type="text" class="l-dist" value="" placeholder="District">
           <input type="text" class="l-sub" value="" placeholder="Sub-Dist">
           <input type="text" class="l-vill" value="" placeholder="Village">
-          <input type="text" class="l-khata" value="" placeholder="Khata No">
-          <input type="text" class="l-khasra" value="" placeholder="Khasra">
-          <input type="text" class="l-area" value="" placeholder="Area">
+          <input type="text" class="l-totalgatano" value="" placeholder="Toatal-Gata">
+          <input type="text" class="l-totalarea" value="" placeholder="Total-Area">
         </div>
       `;
       fields.landInputsContainer.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCard));
