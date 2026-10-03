@@ -29,35 +29,46 @@
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
         }
 
-        /* Top Row */
+        /* ऊपर Receipt No. | Heading | Date */
         .top-info {
             display: grid;
-            grid-template-columns: 260px 1fr 260px;
+            grid-template-columns: 130px 1fr 130px;
             align-items: start;
-            gap: 20px;
+            gap: 12px;
             margin-bottom: 5px;
         }
 
+        /* Receipt और Date के छोटे box */
         .receipt-box,
         .date-box {
             border: 1px solid #d8d8d8;
-            min-height: 70px;
+            min-height: 58px;
         }
 
         .box-title {
             background: #f7f7f7;
-            padding: 8px 12px;
-            font-size: 15px;
+            padding: 6px 7px;
+            font-size: 11px;
             font-weight: bold;
             border-bottom: 1px solid #dddddd;
+            white-space: nowrap;
         }
 
         .box-value {
-            padding: 12px;
-            font-size: 16px;
+            padding: 8px 7px;
+            font-size: 12px;
             color: #333;
         }
 
+        .date-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 12px;
+            background: transparent;
+        }
+
+        /* Heading */
         .heading {
             text-align: center;
         }
@@ -86,7 +97,7 @@
             margin: 8px 0 25px;
         }
 
-        /* Customer Section */
+        /* Customer Details */
         .customer-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -201,7 +212,7 @@
             cursor: pointer;
         }
 
-        /* Total */
+        /* Total Amount */
         .total-box {
             text-align: right;
             border-top: 1px solid #ddd;
@@ -233,7 +244,7 @@
             color: #222;
         }
 
-        /* Buttons */
+        /* Print और WhatsApp Buttons */
         .actions {
             display: flex;
             justify-content: center;
@@ -263,31 +274,76 @@
             opacity: 0.9;
         }
 
-        /* Mobile */
+        /* Mobile View */
         @media screen and (max-width: 700px) {
             body {
                 padding: 8px;
             }
 
             .invoice-card {
-                padding: 15px;
+                padding: 15px 10px;
             }
 
+            /* Receipt और Date छोटे ही रहेंगे */
             .top-info {
-                grid-template-columns: 1fr;
+                grid-template-columns: 105px 1fr 105px;
+                gap: 5px;
             }
 
-            .heading {
-                order: -1;
+            .receipt-box,
+            .date-box {
+                min-height: 52px;
+            }
+
+            .box-title {
+                font-size: 8px;
+                padding: 5px 3px;
+            }
+
+            .box-value {
+                font-size: 10px;
+                padding: 6px 3px;
+            }
+
+            .date-box input {
+                font-size: 9px;
             }
 
             .heading h1 {
-                font-size: 23px;
+                font-size: 15px;
+                margin: 5px 0;
+                letter-spacing: 0;
+            }
+
+            .heading p {
+                font-size: 9px;
+                line-height: 1.3;
+            }
+
+            .csc-id {
+                font-size: 9px;
+                margin-top: 7px;
+            }
+
+            .blue-line {
+                margin: 8px 0 15px;
             }
 
             .customer-info {
                 grid-template-columns: 1fr;
                 padding: 12px;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input {
+                min-height: 42px;
+                padding: 9px;
+                font-size: 14px;
             }
 
             .service-controls {
@@ -298,24 +354,54 @@
                 min-width: 100%;
             }
 
-            table {
-                font-size: 13px;
+            .btn-add {
+                width: 100%;
             }
 
             th,
             td {
                 padding: 10px 5px;
-                font-size: 13px;
+                font-size: 12px;
+            }
+
+            th:first-child,
+            td:first-child {
+                width: 45px;
             }
 
             th:nth-child(3),
             td:nth-child(3) {
-                width: 100px;
+                width: 85px;
+            }
+
+            th:last-child,
+            td:last-child {
+                width: 38px;
             }
 
             .amount-input {
-                width: 75px;
-                font-size: 13px;
+                width: 70px;
+                padding: 6px 3px;
+                font-size: 12px;
+            }
+
+            .action-btn {
+                padding: 5px 7px;
+                font-size: 11px;
+            }
+
+            .total-box {
+                padding: 18px 5px;
+                margin-bottom: 20px;
+            }
+
+            .total-box h2 {
+                font-size: 17px;
+            }
+
+            .footer {
+                font-size: 12px;
+                line-height: 1.6;
             }
 
             .actions {
@@ -348,15 +434,15 @@
 
             .service-controls,
             .actions,
-            .action-btn {
+            .action-btn,
+            th:last-child,
+            td:last-child {
                 display: none !important;
             }
 
-            .invoice-card {
-                border: none;
-            }
-
-            .heading h1 {
+            .heading h1,
+            .csc-id,
+            .total-box span {
                 color: #2864b5 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -368,24 +454,21 @@
                 print-color-adjust: exact;
             }
 
-            .total-box span {
-                color: #2864b5 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            input {
+            .date-box input,
+            .form-group input {
                 border: none !important;
-                padding-left: 0 !important;
                 background: transparent !important;
+                padding-left: 0 !important;
             }
 
             .customer-info {
                 padding: 15px;
             }
 
-            .form-group input::placeholder {
-                color: transparent;
+            .amount-input {
+                border: none !important;
+                background: transparent !important;
+                width: 100% !important;
             }
         }
     </style>
@@ -395,7 +478,7 @@
 
     <div class="invoice-card" id="invoice">
 
-        <!-- Header Row -->
+        <!-- Top Header -->
         <div class="top-info">
 
             <div class="receipt-box">
@@ -406,9 +489,7 @@
             <div class="heading">
                 <h1>DK JAN SUVIDHA KENDRA</h1>
                 <p>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</p>
-                <div class="csc-id">
-                    CSC ID: 533667160012
-                </div>
+                <div class="csc-id">CSC ID: 533667160012</div>
             </div>
 
             <div class="date-box">
@@ -422,7 +503,7 @@
 
         <div class="blue-line"></div>
 
-        <!-- Customer Information -->
+        <!-- Customer Details -->
         <div class="customer-info">
 
             <div class="form-group">
@@ -431,6 +512,7 @@
                     type="text"
                     id="custName"
                     placeholder="नाम दर्ज करें"
+                    autocomplete="name"
                 >
             </div>
 
@@ -441,12 +523,14 @@
                     id="custPhone"
                     placeholder="मोबाइल नंबर"
                     maxlength="10"
+                    inputmode="numeric"
+                    autocomplete="tel"
                 >
             </div>
 
         </div>
 
-        <!-- Services -->
+        <!-- Service Selection -->
         <div class="service-section">
 
             <div class="service-controls">
@@ -484,23 +568,23 @@
                     </option>
                 </select>
 
-                <button class="btn-add" onclick="addService()">
+                <button class="btn-add" type="button" onclick="addService()">
                     + जोड़ें (Add)
                 </button>
             </div>
 
+            <!-- Bill Table -->
             <table>
                 <thead>
                     <tr>
-                        <th>क्रमांक (S.No)</th>
+                        <th>क्रमांक<br>(S.No)</th>
                         <th>सेवा का विवरण (Service Details)</th>
-                        <th>शुल्क (Amount ₹)</th>
-                        <th class="no-print">हटाएं</th>
+                        <th>शुल्क<br>(Amount ₹)</th>
+                        <th>हटाएं</th>
                     </tr>
                 </thead>
 
-                <tbody id="billTableBody">
-                </tbody>
+                <tbody id="billTableBody"></tbody>
             </table>
 
         </div>
@@ -532,13 +616,21 @@
             </p>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Buttons -->
         <div class="actions">
-            <button class="btn-action btn-print" onclick="window.print()">
+            <button
+                class="btn-action btn-print"
+                type="button"
+                onclick="window.print()"
+            >
                 🖨️ प्रिंट करें (Print Bill)
             </button>
 
-            <button class="btn-action btn-share" onclick="shareBill()">
+            <button
+                class="btn-action btn-share"
+                type="button"
+                onclick="shareBill()"
+            >
                 📱 व्हाट्सएप पर भेजें (Share)
             </button>
         </div>
@@ -548,10 +640,8 @@
     <script>
         let billItems = [];
 
-        // आज की तारीख सेट करना
         document.getElementById("billDate").valueAsDate = new Date();
 
-        // Receipt Number Generate
         document.getElementById("billNo").innerText =
             "DK-" + Math.floor(100000 + Math.random() * 900000);
 
@@ -565,9 +655,7 @@
             }
 
             let serviceName = selectedOption.value;
-            let price = parseFloat(
-                selectedOption.getAttribute("data-price")
-            );
+            let price = parseFloat(selectedOption.getAttribute("data-price"));
 
             if (serviceName === "Custom Service") {
                 const customName = prompt(
@@ -578,15 +666,16 @@
                     "शुल्क दर्ज करें (Enter Amount in ₹):"
                 );
 
-                if (!customName || !customPrice) {
+                if (!customName || customPrice === null || customPrice === "") {
                     return;
                 }
 
-                serviceName = customName;
+                serviceName = customName.trim();
                 price = parseFloat(customPrice);
 
-                if (isNaN(price)) {
-                    price = 0;
+                if (isNaN(price) || price < 0) {
+                    alert("कृपया सही राशि दर्ज करें!");
+                    return;
                 }
             }
 
@@ -637,9 +726,10 @@
                         >
                     </td>
 
-                    <td class="no-print">
+                    <td>
                         <button
                             class="action-btn"
+                            type="button"
                             onclick="removeService(${index})"
                         >
                             ✕
@@ -654,10 +744,9 @@
         }
 
         function calculateTotal() {
-            const total = billItems.reduce(
-                (sum, item) => sum + Number(item.price || 0),
-                0
-            );
+            const total = billItems.reduce((sum, item) => {
+                return sum + Number(item.price || 0);
+            }, 0);
 
             document.getElementById("grandTotal").innerText =
                 total.toFixed(0);
@@ -671,7 +760,7 @@
 
         function shareBill() {
             const name =
-                document.getElementById("custName").value || "ग्राहक";
+                document.getElementById("custName").value.trim() || "ग्राहक";
 
             const phone =
                 document.getElementById("custPhone").value.trim();
@@ -690,13 +779,13 @@
                 return;
             }
 
-            let servicesText = billItems
-                .map((item, index) =>
-                    `${index + 1}. ${item.name}: ₹${item.price}`
-                )
+            const servicesText = billItems
+                .map((item, index) => {
+                    return `${index + 1}. ${item.name}: ₹${item.price}`;
+                })
                 .join("\n");
 
-            let message =
+            const message =
 `*DK JAN SUVIDHA KENDRA*
 ----------------------------
 *रसीद संख्या:* ${billNo}
