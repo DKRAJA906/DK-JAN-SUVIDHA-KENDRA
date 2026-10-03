@@ -38,7 +38,6 @@
             margin-bottom: 5px;
         }
 
-        /* Receipt और Date के छोटे box */
         .receipt-box,
         .date-box {
             border: 1px solid #d8d8d8;
@@ -112,7 +111,6 @@
             flex-direction: column;
         }
 
-        /* यह class Address वाले input को दोनों column में फैलाती है */
         .full-width {
             grid-column: 1 / -1;
         }
@@ -223,7 +221,7 @@
             border-top: 1px solid #ddd;
             padding: 25px 10px;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .total-box h2 {
@@ -233,6 +231,37 @@
 
         .total-box span {
             color: #2864b5;
+        }
+
+        /* Payment QR Code */
+        .payment-qr {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin: 0 0 25px;
+            padding: 10px 0;
+        }
+
+        .payment-qr-text {
+            text-align: right;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .payment-qr-text strong {
+            font-size: 16px;
+            color: #2864b5;
+        }
+
+        .payment-qr img {
+            width: 105px;
+            height: 105px;
+            object-fit: contain;
+            border: 1px solid #dddddd;
+            padding: 4px;
+            background: #ffffff;
         }
 
         /* Footer */
@@ -400,11 +429,30 @@
 
             .total-box {
                 padding: 18px 5px;
-                margin-bottom: 20px;
+                margin-bottom: 10px;
             }
 
             .total-box h2 {
                 font-size: 17px;
+            }
+
+            /* Mobile Payment QR */
+            .payment-qr {
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
+            .payment-qr-text {
+                font-size: 12px;
+            }
+
+            .payment-qr-text strong {
+                font-size: 14px;
+            }
+
+            .payment-qr img {
+                width: 90px;
+                height: 90px;
             }
 
             .footer {
@@ -450,7 +498,8 @@
 
             .heading h1,
             .csc-id,
-            .total-box span {
+            .total-box span,
+            .payment-qr-text strong {
                 color: #2864b5 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -478,6 +527,11 @@
                 background: transparent !important;
                 width: 100% !important;
             }
+
+            .payment-qr img {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -497,6 +551,7 @@
             <div class="heading">
                 <h1>DK JAN SUVIDHA KENDRA</h1>
                 <p>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</p>
+                <div class="csc-id">CSC ID: 533667160012</div>
             </div>
 
             <div class="date-box">
@@ -535,7 +590,6 @@
                 >
             </div>
 
-            <!-- नया Address Field -->
             <div class="form-group full-width">
                 <label>ग्राहक का पता (Customer Address)</label>
                 <input
@@ -580,18 +634,6 @@
                     <option value="Money Transfer / Banking" data-price="30">
                         Money Transfer / Banking - ₹30
                     </option>
-                    
-                    <option value="Scholarship Apply" data-price="30">
-                        Scholarship Apply - ₹150
-                    </option>
-                    
-                    <option value="Udyam Registration" data-price="30">
-                        Udyam Registration - ₹200
-                    </option>
-
-                    <option value="online form filling" data-price="30">
-                        online form filling - ₹100
-                    </option>
 
                     <option value="Custom Service" data-price="0">
                         अन्य सेवा (Custom Service)
@@ -603,6 +645,7 @@
                 </button>
             </div>
 
+            <!-- Bill Table -->
             <table>
                 <thead>
                     <tr>
@@ -624,6 +667,21 @@
                 कुल राशि (Total Amount):
                 <span>₹<span id="grandTotal">0</span></span>
             </h2>
+        </div>
+
+        <!-- Payment QR Code -->
+        <div class="payment-qr">
+            <div class="payment-qr-text">
+                <strong>Scan & Pay</strong><br>
+                UPI / QR Payment स्वीकार है
+            </div>
+
+            <!-- यहां अपनी QR Image का नाम या URL डालें -->
+            <img
+                src="qr.png"
+                alt="UPI Payment QR Code"
+                id="paymentQr"
+            >
         </div>
 
         <!-- Footer -->
