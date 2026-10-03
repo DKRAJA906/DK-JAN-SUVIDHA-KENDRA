@@ -230,34 +230,34 @@
             color: #2864b5;
         }
 
-        /* Payment QR Code */
+        /* Payment QR Code - अब Left Side में */
         .payment-qr {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
-            gap: 12px;
+            gap: 18px;
             margin: 0 0 25px;
             padding: 10px 0;
         }
 
         .payment-qr-text {
-            text-align: right;
-            font-size: 14px;
-            line-height: 1.5;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.7;
             color: #333;
         }
 
         .payment-qr-text strong {
-            font-size: 16px;
+            font-size: 20px;
             color: #2864b5;
         }
 
         .payment-qr img {
-            width: 180px;
-            height: 180px;
+            width: 250px;
+            height: 250px;
             object-fit: contain;
             border: 1px solid #dddddd;
-            padding: 4px;
+            padding: 5px;
             background: #ffffff;
         }
 
@@ -315,7 +315,7 @@
             opacity: 0.9;
         }
 
-        /* Bill photo बनाते समय छिपने वाले elements */
+        /* Bill PNG photo बनाते समय छिपने वाले हिस्से */
         .capture-mode .service-controls,
         .capture-mode .actions,
         .capture-mode th:last-child,
@@ -431,7 +431,7 @@
             }
 
             th:nth-child(3),
-            td:nth-child(3) {
+            td:nth-child(3 {
                 width: 85px;
             }
 
@@ -460,22 +460,26 @@
                 font-size: 17px;
             }
 
+            /* Mobile QR अब Left Side में */
             .payment-qr {
-                justify-content: center;
+                justify-content: flex-start;
+                gap: 12px;
                 margin-bottom: 20px;
             }
 
             .payment-qr-text {
-                font-size: 12px;
+                text-align: left;
+                font-size: 13px;
+                line-height: 1.5;
             }
 
             .payment-qr-text strong {
-                font-size: 14px;
+                font-size: 16px;
             }
 
             .payment-qr img {
-                width: 140px;
-                height: 140px;
+                width: 180px;
+                height: 180px;
             }
 
             .footer {
@@ -687,17 +691,18 @@
             </h2>
         </div>
 
+        <!-- QR अब Left Side में -->
         <div class="payment-qr">
-            <div class="payment-qr-text">
-                <strong>Scan & Pay</strong><br>
-                UPI / QR Payment स्वीकार है
-            </div>
-
             <img
                 src="qr.png"
                 alt="UPI Payment QR Code"
                 id="paymentQr"
             >
+
+            <div class="payment-qr-text">
+                <strong>Scan & Pay</strong><br>
+                UPI / QR Payment स्वीकार है
+            </div>
         </div>
 
         <div class="footer">
@@ -874,20 +879,12 @@
             const invoice = document.getElementById("invoice");
             const shareButton = document.querySelector(".btn-share");
             const billNo = document.getElementById("billNo").innerText;
-
             const oldButtonText = shareButton.innerHTML;
 
             try {
                 shareButton.disabled = true;
                 shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
 
-                /*
-                    इस class से photo में:
-                    - Add service section
-                    - Print / Share buttons
-                    - हटाएं column
-                    नहीं आएंगे।
-                */
                 invoice.classList.add("capture-mode");
 
                 await new Promise((resolve) => setTimeout(resolve, 250));
@@ -935,8 +932,8 @@
                     await navigator.share(shareData);
                 } else {
                     const imageUrl = URL.createObjectURL(imageBlob);
-
                     const link = document.createElement("a");
+
                     link.href = imageUrl;
                     link.download = fileName;
 
