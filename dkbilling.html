@@ -745,299 +745,370 @@
 
     </div>
 
-    <script>
-        let billItems = [];
-        /* Google Sheet Billing API */
-const GOOGLE_SHEET_API_URL =
-    "https://script.google.com/macros/s/AKfycbxEM3WrCdS1tRFeuGVvSx5y94wnpS9n6ssRFhKt2lb8wJd6S91aOE4Zn7b5NNHHytr_/exec";
-        const GOOGLE_SHEET_SECRET = "DK_JAN_SUVIDHA_2026_BILL_PRIVATE_dk1995k2002";
+   <script>
+    let billItems = [];
 
-        document.getElementById("billDate").valueAsDate = new Date();
+    /* =========================
+       Google Sheet Billing API
+       ========================= */
 
-        document.getElementById("billNo").innerText =
-            "DK-" + Math.floor(100000 + Math.random() * 900000);
+    const GOOGLE_SHEET_API_URL =
+        "https://script.google.com/macros/s/AKfycbxEM3WrCdS1tRFeuGVvSx5y94wnpS9n6ssRFhKt2lb8wJd6S91aOE4Zn7b5NNHHytr_AKfycbxEM3WrCdS1tRFeuGVvSx5y94wnpS9n6ssRFhKt2lb8wJd6S91aOE4Zn7b5NNHHytr_";
 
-        function addService() {
-            const select = document.getElementById("serviceSelect");
-            const selectedOption = select.options[select.selectedIndex];
+    /*
+      यहां अपनी नई Secret Key डालें।
 
-            if (!select.value) {
-                alert("कृपया पहले कोई सेवा चुनें!");
+      यह Google Apps Script वाली SECRET_KEY के बिल्कुल same होनी चाहिए।
+
+      उदाहरण:
+      const GOOGLE_SHEET_SECRET =
+          "DK_JAN_SUVIDHA_2026_BILL_KRITIKA_dk1995k2002";
+    */
+    const GOOGLE_SHEET_SECRET =
+        "DK_JAN_SUVIDHA_2026_BILL_KRITIKA_dk1995k2002";
+
+
+    /* =========================
+       Bill Number और Date
+       ========================= */
+
+    document.getElementById("billDate").valueAsDate = new Date();
+
+    document.getElementById("billNo").innerText =
+        "DK-" + Math.floor(100000 + Math.random() * 900000);
+
+
+    /* =========================
+       Service Add / Remove
+       ========================= */
+
+    function addService() {
+        const select = document.getElementById("serviceSelect");
+        const selectedOption = select.options[select.selectedIndex];
+
+        if (!select.value) {
+            alert("कृपया पहले कोई सेवा चुनें!");
+            return;
+        }
+
+        let serviceName = selectedOption.value;
+        let price = parseFloat(selectedOption.getAttribute("data-price"));
+
+        if (serviceName === "Custom Service") {
+            const customName = prompt(
+                "सेवा का नाम दर्ज करें (Enter Service Name):"
+            );
+
+            const customPrice = prompt(
+                "शुल्क दर्ज करें (Enter Amount in ₹):"
+            );
+
+            if (
+                !customName ||
+                customPrice === null ||
+                customPrice === ""
+            ) {
                 return;
             }
 
-            let serviceName = selectedOption.value;
-            let price = parseFloat(selectedOption.getAttribute("data-price"));
-
-            if (serviceName === "Custom Service") {
-                const customName = prompt(
-                    "सेवा का नाम दर्ज करें (Enter Service Name):"
-                );
-
-                const customPrice = prompt(
-                    "शुल्क दर्ज करें (Enter Amount in ₹):"
-                );
-
-                if (!customName || customPrice === null || customPrice === "") {
-                    return;
-                }
-
-                serviceName = customName.trim();
-                price = parseFloat(customPrice);
-
-                if (isNaN(price) || price < 0) {
-                    alert("कृपया सही राशि दर्ज करें!");
-                    return;
-                }
-            }
-
-            billItems.push({
-                name: serviceName,
-                price: price
-            });
-
-            renderTable();
-            select.selectedIndex = 0;
-        }
-
-        function removeService(index) {
-            billItems.splice(index, 1);
-            renderTable();
-        }
-
-        function updatePrice(index, newPrice) {
-            let price = parseFloat(newPrice);
+            serviceName = customName.trim();
+            price = parseFloat(customPrice);
 
             if (isNaN(price) || price < 0) {
-                price = 0;
+                alert("कृपया सही राशि दर्ज करें!");
+                return;
             }
-
-            billItems[index].price = price;
-            calculateTotal();
         }
 
-        function renderTable() {
-            const tbody = document.getElementById("billTableBody");
-            tbody.innerHTML = "";
-
-            billItems.forEach((item, index) => {
-                const row = document.createElement("tr");
-
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${escapeHtml(item.name)}</td>
-                    <td>
-                        <input
-                            class="amount-input"
-                            type="number"
-                            min="0"
-                            value="${item.price}"
-                            onchange="updatePrice(${index}, this.value)"
-                        >
-                    </td>
-                    <td>
-                        <button
-                            class="action-btn"
-                            type="button"
-                            onclick="removeService(${index})"
-                        >
-                            ✕
-                        </button>
-                    </td>
-                `;
-
-                tbody.appendChild(row);
-            });
-
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            const total = billItems.reduce((sum, item) => {
-                return sum + Number(item.price || 0);
-            }, 0);
-
-            document.getElementById("grandTotal").innerText =
-                total.toFixed(0);
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement("div");
-            div.innerText = text;
-            return div.innerHTML;
-        }
-        async function saveBillToGoogleSheet() {
-    const billNo = document.getElementById("billNo").innerText.trim();
-    const billDate = document.getElementById("billDate").value;
-
-    const customerName =
-        document.getElementById("custName").value.trim();
-
-    const customerPhone =
-        document.getElementById("custPhone").value.trim();
-
-    const customerAddress =
-        document.getElementById("custAddress").value.trim();
-
-    const totalAmount = billItems.reduce((sum, item) => {
-        return sum + Number(item.price || 0);
-    }, 0);
-
-    const billData = {
-        secret: GOOGLE_SHEET_SECRET,
-        billNo: billNo,
-        billDate: billDate,
-        customerName: customerName,
-        customerPhone: customerPhone,
-        customerAddress: customerAddress,
-        items: billItems.map((item) => {
-            return {
-                name: item.name,
-                price: Number(item.price || 0)
-            };
-        }),
-        totalAmount: totalAmount
-    };
-
-    try {
-        /*
-          mode: "no-cors" जरूरी है क्योंकि website GitHub Pages/
-          दूसरे domain पर है और Apps Script अलग domain पर।
-          
-          इस mode में response पढ़ा नहीं जा सकता, लेकिन POST data
-          Google Apps Script तक पहुंच जाएगा।
-        */
-        await fetch(GOOGLE_SHEET_API_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify(billData)
+        billItems.push({
+            name: serviceName,
+            price: price
         });
 
-        return true;
-
-    } catch (error) {
-        console.error("Google Sheet save error:", error);
-
-        alert(
-            "Bill Google Sheet में save नहीं हो पाया। Internet connection और Web App URL check करें।"
-        );
-
-        return false;
-    }
-}
-
-        async function shareBillImage() {
-            if (billItems.length === 0) {
-                alert("कृपया बिल में कम से कम एक सेवा जोड़ें!");
-                return;
-            }
-
-            if (typeof html2canvas === "undefined") {
-                alert(
-                    "Bill image बनाने वाली library load नहीं हुई। Internet connection check करके page reload करें।"
-                );
-                return;
-            }
-
-            const invoice = document.getElementById("invoice");
-            const shareButton = document.querySelector(".btn-share");
-            const billNo = document.getElementById("billNo").innerText;
-            const oldButtonText = shareButton.innerHTML;
-
-            try {
-    shareButton.disabled = true;
-    shareButton.innerHTML = "⏳ Bill save हो रहा है...";
-
-    const saved = await saveBillToGoogleSheet();
-
-    if (!saved) {
-        return;
+        renderTable();
+        select.selectedIndex = 0;
     }
 
-    shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
+    function removeService(index) {
+        billItems.splice(index, 1);
+        renderTable();
+    }
 
-    invoice.classList.add("capture-mode");
+    function updatePrice(index, newPrice) {
+        let price = parseFloat(newPrice);
 
-                await new Promise((resolve) => setTimeout(resolve, 250));
-
-                const canvas = await html2canvas(invoice, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: false,
-                    backgroundColor: "#ffffff",
-                    scrollX: 0,
-                    scrollY: -window.scrollY,
-                    windowWidth: invoice.scrollWidth,
-                    windowHeight: invoice.scrollHeight
-                });
-
-                invoice.classList.remove("capture-mode");
-
-                const imageBlob = await new Promise((resolve) => {
-                    canvas.toBlob(resolve, "image/png", 1);
-                });
-
-                if (!imageBlob) {
-                    throw new Error("PNG image तैयार नहीं हुई।");
-                }
-
-                const fileName = `${billNo}-DK-Jan-Suvidha-Bill.png`;
-
-                const billImageFile = new File(
-                    [imageBlob],
-                    fileName,
-                    { type: "image/png" }
-                );
-
-                const shareData = {
-                    title: `DK Jan Suvidha Kendra - ${billNo}`,
-                    text: `DK Jan Suvidha Kendra का बिल (${billNo})`,
-                    files: [billImageFile]
-                };
-
-                if (
-                    navigator.share &&
-                    navigator.canShare &&
-                    navigator.canShare({ files: [billImageFile] })
-                ) {
-                    await navigator.share(shareData);
-                } else {
-                    const imageUrl = URL.createObjectURL(imageBlob);
-                    const link = document.createElement("a");
-
-                    link.href = imageUrl;
-                    link.download = fileName;
-
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-
-                    setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
-
-                    alert(
-                        "इस browser में direct photo sharing support नहीं है। Bill PNG download हो गई है। अब WhatsApp में photo attach करके भेज दें।"
-                    );
-                }
-            } catch (error) {
-                console.error(error);
-
-                invoice.classList.remove("capture-mode");
-
-                if (error.name !== "AbortError") {
-                    alert(
-                        "Bill की PNG फोटो बनाते समय समस्या आई। कृपया QR image path, internet और browser check करके फिर कोशिश करें।"
-                    );
-                }
-            } finally {
-                invoice.classList.remove("capture-mode");
-                shareButton.disabled = false;
-                shareButton.innerHTML = oldButtonText;
-            }
+        if (isNaN(price) || price < 0) {
+            price = 0;
         }
-    </script>
 
+        billItems[index].price = price;
+        calculateTotal();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById("billTableBody");
+        tbody.innerHTML = "";
+
+        billItems.forEach((item, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+
+                <td>${escapeHtml(item.name)}</td>
+
+                <td>
+                    <input
+                        class="amount-input"
+                        type="number"
+                        min="0"
+                        value="${item.price}"
+                        onchange="updatePrice(${index}, this.value)"
+                    >
+                </td>
+
+                <td>
+                    <button
+                        class="action-btn"
+                        type="button"
+                        onclick="removeService(${index})"
+                    >
+                        ✕
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        const total = billItems.reduce((sum, item) => {
+            return sum + Number(item.price || 0);
+        }, 0);
+
+        document.getElementById("grandTotal").innerText =
+            total.toFixed(0);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.innerText = text;
+        return div.innerHTML;
+    }
+
+
+    /* =========================
+       Google Sheet में Bill Save
+       ========================= */
+
+    async function saveBillToGoogleSheet() {
+        const billNo = document.getElementById("billNo").innerText.trim();
+
+        const billDate =
+            document.getElementById("billDate").value;
+
+        const customerName =
+            document.getElementById("custName").value.trim();
+
+        const customerPhone =
+            document.getElementById("custPhone").value.trim();
+
+        const customerAddress =
+            document.getElementById("custAddress").value.trim();
+
+        const totalAmount = billItems.reduce((sum, item) => {
+            return sum + Number(item.price || 0);
+        }, 0);
+
+        const billData = {
+            secret: GOOGLE_SHEET_SECRET,
+            billNo: billNo,
+            billDate: billDate,
+            customerName: customerName,
+            customerPhone: customerPhone,
+            customerAddress: customerAddress,
+
+            items: billItems.map((item) => ({
+                name: item.name,
+                price: Number(item.price || 0)
+            })),
+
+            totalAmount: totalAmount
+        };
+
+        try {
+            /*
+              Google Apps Script अलग domain पर है।
+              इसलिए no-cors mode use हो रहा है।
+
+              इसमें response read नहीं किया जा सकता,
+              लेकिन POST request Google Sheet तक पहुंच जाती है।
+            */
+            await fetch(GOOGLE_SHEET_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                cache: "no-store",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(billData)
+            });
+
+            /*
+              Sheet में row save होने के लिए छोटा इंतजार।
+            */
+            await new Promise((resolve) => setTimeout(resolve, 800));
+
+            return true;
+
+        } catch (error) {
+            console.error("Google Sheet save error:", error);
+
+            alert(
+                "Bill Google Sheet तक नहीं भेजा जा सका। Internet connection और Web App URL check करें।"
+            );
+
+            return false;
+        }
+    }
+
+
+    /* =========================
+       PNG Bill बनाकर Share करना
+       ========================= */
+
+    async function shareBillImage() {
+        if (billItems.length === 0) {
+            alert("कृपया बिल में कम से कम एक सेवा जोड़ें!");
+            return;
+        }
+
+        if (typeof html2canvas === "undefined") {
+            alert(
+                "Bill image बनाने वाली library load नहीं हुई। Internet connection check करके page reload करें।"
+            );
+            return;
+        }
+
+        const invoice = document.getElementById("invoice");
+        const shareButton = document.querySelector(".btn-share");
+
+        const billNo =
+            document.getElementById("billNo").innerText;
+
+        const oldButtonText = shareButton.innerHTML;
+
+        try {
+            /* Step 1: पहले Google Sheet में Save */
+            shareButton.disabled = true;
+            shareButton.innerHTML = "⏳ Bill save हो रहा है...";
+
+            const saved = await saveBillToGoogleSheet();
+
+            if (!saved) {
+                return;
+            }
+
+            /* Step 2: फिर Bill PNG photo बनेगी */
+            shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
+
+            invoice.classList.add("capture-mode");
+
+            await new Promise((resolve) => setTimeout(resolve, 250));
+
+            const canvas = await html2canvas(invoice, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: "#ffffff",
+                scrollX: 0,
+                scrollY: -window.scrollY,
+                windowWidth: invoice.scrollWidth,
+                windowHeight: invoice.scrollHeight
+            });
+
+            invoice.classList.remove("capture-mode");
+
+            const imageBlob = await new Promise((resolve) => {
+                canvas.toBlob(resolve, "image/png", 1);
+            });
+
+            if (!imageBlob) {
+                throw new Error("PNG image तैयार नहीं हुई।");
+            }
+
+            const fileName =
+                `${billNo}-DK-Jan-Suvidha-Bill.png`;
+
+            const billImageFile = new File(
+                [imageBlob],
+                fileName,
+                { type: "image/png" }
+            );
+
+            const shareData = {
+                title: `DK Jan Suvidha Kendra - ${billNo}`,
+                text: `DK Jan Suvidha Kendra का बिल (${billNo})`,
+                files: [billImageFile]
+            };
+
+            /*
+              Mobile में Share menu खुलेगा।
+              वहां WhatsApp चुनकर customer को photo भेजें।
+            */
+            if (
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({ files: [billImageFile] })
+            ) {
+                await navigator.share(shareData);
+
+            } else {
+                /*
+                  अगर browser PNG direct share support नहीं करता,
+                  तो image download हो जाएगी।
+                */
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                const link = document.createElement("a");
+
+                link.href = imageUrl;
+                link.download = fileName;
+
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                setTimeout(() => {
+                    URL.revokeObjectURL(imageUrl);
+                }, 1000);
+
+                alert(
+                    "इस browser में direct photo sharing support नहीं है। Bill PNG download हो गई है। अब WhatsApp में photo attach करके भेज दें।"
+                );
+            }
+
+        } catch (error) {
+            console.error(error);
+
+            invoice.classList.remove("capture-mode");
+
+            if (error.name !== "AbortError") {
+                alert(
+                    "Bill की PNG फोटो बनाते समय समस्या आई। QR image path, internet और browser check करके फिर कोशिश करें।"
+                );
+            }
+
+        } finally {
+            invoice.classList.remove("capture-mode");
+
+            shareButton.disabled = false;
+            shareButton.innerHTML = oldButtonText;
+        }
+    }
+</script>
 </body>
 </html>
