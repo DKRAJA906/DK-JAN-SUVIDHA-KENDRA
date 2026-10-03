@@ -112,6 +112,11 @@
             flex-direction: column;
         }
 
+        /* यह class Address वाले input को दोनों column में फैलाती है */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
         .form-group label {
             font-size: 16px;
             font-weight: bold;
@@ -284,7 +289,6 @@
                 padding: 15px 10px;
             }
 
-            /* Receipt और Date छोटे ही रहेंगे */
             .top-info {
                 grid-template-columns: 105px 1fr 105px;
                 gap: 5px;
@@ -334,6 +338,10 @@
                 padding: 12px;
                 gap: 12px;
                 margin-bottom: 20px;
+            }
+
+            .full-width {
+                grid-column: 1;
             }
 
             .form-group label {
@@ -489,7 +497,8 @@
             <div class="heading">
                 <h1>DK JAN SUVIDHA KENDRA</h1>
                 <p>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</p>
-         </div>
+                <div class="csc-id">CSC ID: 533667160012</div>
+            </div>
 
             <div class="date-box">
                 <div class="box-title">दिनांक (Date)</div>
@@ -524,6 +533,17 @@
                     maxlength="10"
                     inputmode="numeric"
                     autocomplete="tel"
+                >
+            </div>
+
+            <!-- नया Address Field -->
+            <div class="form-group full-width">
+                <label>ग्राहक का पता (Customer Address)</label>
+                <input
+                    type="text"
+                    id="custAddress"
+                    placeholder="ग्राहक का पूरा पता दर्ज करें"
+                    autocomplete="street-address"
                 >
             </div>
 
@@ -572,7 +592,6 @@
                 </button>
             </div>
 
-            <!-- Bill Table -->
             <table>
                 <thead>
                     <tr>
@@ -712,9 +731,7 @@
 
                 row.innerHTML = `
                     <td>${index + 1}</td>
-
                     <td>${escapeHtml(item.name)}</td>
-
                     <td>
                         <input
                             class="amount-input"
@@ -724,7 +741,6 @@
                             onchange="updatePrice(${index}, this.value)"
                         >
                     </td>
-
                     <td>
                         <button
                             class="action-btn"
@@ -764,6 +780,9 @@
             const phone =
                 document.getElementById("custPhone").value.trim();
 
+            const address =
+                document.getElementById("custAddress").value.trim();
+
             const total =
                 document.getElementById("grandTotal").innerText;
 
@@ -784,13 +803,19 @@
                 })
                 .join("\n");
 
+            let customerAddressText = "";
+
+            if (address) {
+                customerAddressText = `*ग्राहक का पता:* ${address}\n`;
+            }
+
             const message =
 `*DK JAN SUVIDHA KENDRA*
 ----------------------------
 *रसीद संख्या:* ${billNo}
 *दिनांक:* ${billDate}
 *ग्राहक:* ${name}
-----------------------------
+${customerAddressText}----------------------------
 *सेवाएं:*
 ${servicesText}
 ----------------------------
