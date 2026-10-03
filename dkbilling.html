@@ -747,6 +747,10 @@
 
     <script>
         let billItems = [];
+        /* Google Sheet Billing API */
+const GOOGLE_SHEET_API_URL =
+    "https://script.google.com/macros/s/AKfycbxEM3WrCdS1tRFeuGVvSx5y94wnpS9n6ssRFhKt2lb8wJd6S91aOE4Zn7b5NNHHytr_/exec";
+        const GOOGLE_SHEET_SECRET = "DK_JAN_SUVIDHA_2026_BILL_PRIVATE_dk1995k2002";
 
         document.getElementById("billDate").valueAsDate = new Date();
 
@@ -862,6 +866,68 @@
             div.innerText = text;
             return div.innerHTML;
         }
+        async function saveBillToGoogleSheet() {
+    const billNo = document.getElementById("billNo").innerText.trim();
+    const billDate = document.getElementById("billDate").value;
+
+    const customerName =
+        document.getElementById("custName").value.trim();
+
+    const customerPhone =
+        document.getElementById("custPhone").value.trim();
+
+    const customerAddress =
+        document.getElementById("custAddress").value.trim();
+
+    const totalAmount = billItems.reduce((sum, item) => {
+        return sum + Number(item.price || 0);
+    }, 0);
+
+    const billData = {
+        secret: GOOGLE_SHEET_SECRET,
+        billNo: billNo,
+        billDate: billDate,
+        customerName: customerName,
+        customerPhone: customerPhone,
+        customerAddress: customerAddress,
+        items: billItems.map((item) => {
+            return {
+                name: item.name,
+                price: Number(item.price || 0)
+            };
+        }),
+        totalAmount: totalAmount
+    };
+
+    try {
+        /*
+          mode: "no-cors" जरूरी है क्योंकि website GitHub Pages/
+          दूसरे domain पर है और Apps Script अलग domain पर।
+          
+          इस mode में response पढ़ा नहीं जा सकता, लेकिन POST data
+          Google Apps Script तक पहुंच जाएगा।
+        */
+        await fetch(GOOGLE_SHEET_API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(billData)
+        });
+
+        return true;
+
+    } catch (error) {
+        console.error("Google Sheet save error:", error);
+
+        alert(
+            "Bill Google Sheet में save नहीं हो पाया। Internet connection और Web App URL check करें।"
+        );
+
+        return false;
+    }
+}
 
         async function shareBillImage() {
             if (billItems.length === 0) {
@@ -882,10 +948,18 @@
             const oldButtonText = shareButton.innerHTML;
 
             try {
-                shareButton.disabled = true;
-                shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
+    shareButton.disabled = true;
+    shareButton.innerHTML = "⏳ Bill save हो रहा है...";
 
-                invoice.classList.add("capture-mode");
+    const saved = await saveBillToGoogleSheet();
+
+    if (!saved) {
+        return;
+    }
+
+    shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
+
+    invoice.classList.add("capture-mode");
 
                 await new Promise((resolve) => setTimeout(resolve, 250));
 
