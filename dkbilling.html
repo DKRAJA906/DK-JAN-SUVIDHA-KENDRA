@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DK Jan Suvidha Kendra - Billing System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        .invoice-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            border: 1px solid #e1e8ed;
+        }
+
+        /* Branding Header */
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #1a56db;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .header .csc-tag {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: #1a56db;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Customer Info Form */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #1a56db;
+        }
+
+        /* Service Selection Table */
+        .service-section {
+            margin-bottom: 25px;
+        }
+
+        .service-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        select {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #059669;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .action-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Total Section */
+        .total-box {
+            text-align: right;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .total-box h3 {
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .total-box span {
+            color: #1a56db;
+        }
+
+        /* Footer / Shop Address */
+        .footer {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer strong {
+            color: #1e293b;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-action {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-print {
+            background-color: #1a56db;
+            color: white;
+        }
+
+        .btn-share {
+            background-color: #25d366;
+            color: white;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .invoice-card {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .service-controls, .actions, .action-btn {
+                display: none !important;
+            }
+
+            .info-grid {
+                background: transparent;
+                border: 1px solid #ccc;
+            }
+
+            th {
+                background-color: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invoice-card" id="invoice">
+        <!-- Top Branding -->
+        <div class="header">
+            <h1>DK Jan Suvidha Kendra</h1>
+            <p>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</p>
+            <div class="csc-tag">CSC ID: 533667160012</div>
+        </div>
+
+        <!-- Customer & Invoice Info -->
+        <div class="info-grid">
+            <div class="form-group">
+                <label>ग्राहक का नाम (Customer Name)</label>
+                <input type="text" id="custName" placeholder="नाम दर्ज करें">
+            </div>
+            <div class="form-group">
+                <label>मोबाइल नंबर (Mobile No.)</label>
+                <input type="tel" id="custPhone" placeholder="मोबाइल नंबर">
+            </div>
+            <div class="form-group">
+                <label>दिनांक (Date)</label>
+                <input type="date" id="billDate">
+            </div>
+            <div class="form-group">
+                <label>बिल संख्या (Receipt No.)</label>
+                <input type="text" id="billNo" readonly>
+            </div>
+        </div>
+
+        <!-- Service Selection -->
+        <div class="service-section">
+            <div class="service-controls">
+                <select id="serviceSelect">
+                    <option value="" disabled selected>--- सेवा चुनें (Select Service) ---</option>
+                    <option value="PF Withdrawal / Claim" data-price="200">PF Withdrawal / Claim (पीएफ निकासी/क्लेम) - ₹200</option>
+                    <option value="Aadhaar Correction/Print" data-price="50">Aadhaar Services (आधार सेवा) - ₹50</option>
+                    <option value="PAN Card Application" data-price="150">PAN Card (पैन कार्ड) - ₹150</option>
+                    <option value="Income / Caste Certificate" data-price="100">आय / जाति / निवास प्रमाण पत्र - ₹100</option>
+                    <option value="Ayushman Card" data-price="50">Ayushman Card (आयुष्मान कार्ड) - ₹50</option>
+                    <option value="Money Transfer / Banking" data-price="30">Money Transfer (बैंकिंग सेवा) - ₹30</option>
+                    <option value="Custom Service" data-price="0">अन्य सेवा (Custom Service)</option>
+                </select>
+                <button class="btn-add" onclick="addService()">+ जोड़ें (Add)</button>
+            </div>
+
+            <!-- Billing Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>क्रमांक (S.No)</th>
+                        <th>सेवा का विवरण (Service Details)</th>
+                        <th style="width: 120px;">शुल्क (Amount ₹)</th>
+                        </tr>
+                </thead>
+                <tbody id="billTableBody">
+                    <!-- Dynamic rows will appear here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total Calculation -->
+        <div class="total-box">
+            <h3>कुल राशि (Total Amount): ₹<span id="grandTotal">0</span></h3>
+        </div>
+
+        <!-- Shop Footer Details -->
+        <div class="footer">
+            <p><strong>पता (Address):</strong> रानी खेड़ा चौराहा, बछरावां, रायबरेली (उत्तर प्रदेश)</p>
+            <p><strong>संपर्क (Contact):</strong> +91 8318736819 | <strong>ईमेल:</strong> contact@dkjansuvidha.in</p>
+            <p style="margin-top: 5px; font-style: italic;">हमारे यहाँ आने के लिए धन्यवाद! (Thank you for visiting!)</p>
+        </div>
+
+        <!-- Action Buttons (Print / Share) -->
+        <div class="actions">
+            <button class="btn-action btn-print" onclick="window.print()">🖨️ प्रिंट करें (Print Bill)</button>
+            <button class="btn-action btn-share" onclick="shareBill()">📱 व्हाट्सएप पर भेजें (Share)</button>
+        </div>
+    </div>
+
+    <script>
+        let billItems = [];
+
+        // Set default date to today
+        document.getElementById('billDate').valueAsDate = new Date();
+        
+        // Auto generate Bill No
+        document.getElementById('billNo').value = 'DK-' + Math.floor(100000 + Math.random() * 900000);
+
+        function addService() {
+            const select = document.getElementById('serviceSelect');
+            const selectedOption = select.options[select.selectedIndex];
+
+            if (!select.value) {
+                alert('कृपया पहले कोई सेवा चुनें!');
+                return;
+            }
+
+            let serviceName = selectedOption.value;
+            let price = parseFloat(selectedOption.getAttribute('data-price'));
+
+            if (serviceName === "Custom Service") {
+                const customName = prompt("सेवा का नाम दर्ज करें (Enter Service Name):");
+                const customPrice = prompt("शुल्क दर्ज करें (Enter Amount in ₹):");
+                if (customName && customPrice) {
+                    serviceName = customName;
+                    price = parseFloat(customPrice) || 0;
+                } else {
+                    return;
+                }
+            }
+
+            billItems.push({ name: serviceName, price: price });
+            renderTable();
+            select.selectedIndex = 0;
+        }
+
+        function removeService(index) {
+            billItems.splice(index, 1);
+            renderTable();
+        }
+
+        function updatePrice(index, newPrice) {
+            billItems[index].price = parseFloat(newPrice) || 0;
+            calculateTotal();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('billTableBody');
+            tbody.innerHTML = '';
+
+            billItems.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>
+                        <input type="number" value="${item.price}" onchange="updatePrice(${index}, this.value)" style="width: 100px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="removeService(${index})">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const total = billItems.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('grandTotal').innerText = total;
+        }
+
+        function shareBill() {
+            const name = document.getElementById('custName').value || 'ग्राहक';
+            const phone = document.getElementById('custPhone').value;
+            const total = document.getElementById('grandTotal').innerText;
+            const billNo = document.getElementById('billNo').value;
+
+            if (billItems.length === 0) {
+                alert('कृपया बिल में कम से कम एक सेवा जोड़ें!');
+                return;
+            }
+
+            let servicesText = billItems.map((item, i) => `${i + 1}. ${item.name}: ₹${item.price}`).join('%0A');
+
+            let message = `*DK JAN SUVIDHA KENDRA*%0A`;
+            message += `----------------------------%0A`;
+            message += `*रसीद संख्या:* ${billNo}%0A`;
+            message += `*ग्राहक:* ${name}%0A`;
+            message += `----------------------------%0A`;
+            message += `*सेवाएं:*%0A${servicesText}%0A`;
+            message += `----------------------------%0A`;
+            message += `*कुल राशि (Total): ₹${total}*%0A`;
+            message += `----------------------------%0A`;
+            message += `पता: रानी खेड़ा चौराहा, बछरावां, रायबरेली%0A`;
+            message += `धन्यवाद!`;
+
+            let whatsappUrl = `https://api.whatsapp.com/send?text=${message}`;
+            if (phone) {
+                whatsappUrl = `https://api.whatsapp.com/send?phone=91${phone}&text=${message}`;
+            }
+
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
