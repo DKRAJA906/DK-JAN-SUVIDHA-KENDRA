@@ -64,6 +64,31 @@
             background-color: #1da851;
         }
 
+        .btn-add {
+            background-color: #28a745;
+            padding: 6px 12px;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
         /* Header Style */
         .header {
             text-align: center;
@@ -156,7 +181,7 @@
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .items-table th, .items-table td {
@@ -174,11 +199,20 @@
             border-bottom: 1px solid #eee;
         }
 
-        .items-table input {
+        .items-table select, .items-table input {
             padding: 6px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            width: 90%;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .items-table select {
+            width: 95%;
+        }
+
+        .items-table input[type="number"] {
+            width: 80%;
         }
 
         /* Total Section */
@@ -208,7 +242,7 @@
             color: #666;
         }
 
-        /* Hide Action Buttons & Borders while Printing */
+        /* Hide Action Buttons & Extra Controls while Printing */
         @media print {
             body {
                 background-color: #fff;
@@ -218,12 +252,14 @@
                 border: none;
                 box-shadow: none;
             }
-            .top-action-bar {
+            .top-action-bar, .btn-add, .btn-delete, .no-print {
                 display: none !important;
             }
-            input {
+            input, select {
                 border: none !important;
                 background: transparent !important;
+                appearance: none;
+                -webkit-appearance: none;
             }
         }
     </style>
@@ -245,6 +281,7 @@
         <div style="font-size: 12px; color: #555;">DK Jan Suvidha Kendra - Billing System</div>
         <h1>DK JAN SUVIDHA KENDRA</h1>
         <h3>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</h3>
+        <div class="csc-id">CSC ID: 533667160012</div>
     </div>
 
     <!-- नीली रेखा के ऊपर बाईं ओर बिल संख्या तथा दाईं ओर दिनांक -->
@@ -255,7 +292,7 @@
         </div>
         <div class="date-top">
             दिनांक (Date): 
-            <input type="text" value="10/03/2026" style="width: 100px; padding: 4px; border: 1px solid #ccc; border-radius: 3px;">
+            <input type="text" id="billDate" style="width: 100px; padding: 4px; border: 1px solid #ccc; border-radius: 3px;">
         </div>
     </div>
 
@@ -280,31 +317,62 @@
     </div>
 
     <!-- सेवाएं एवं शुल्क तालिका -->
-    <table class="items-table">
+    <table class="items-table" id="servicesTable">
         <thead>
             <tr>
-                <th style="width: 15%;">क्रमांक (S.No)</th>
-                <th style="width: 60%;">सेवा का विवरण (Service Details)</th>
+                <th style="width: 10%;">क्रमांक (S.No)</th>
+                <th style="width: 55%;">सेवा का विवरण (Service Details)</th>
                 <th style="width: 25%;">शुल्क (Amount ₹)</th>
+                <th style="width: 10%;" class="no-print">हटाएं</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tableBody">
+            <!-- शुरुआत में 2 पंक्तियां -->
             <tr>
-                <td>1.</td>
-                <td>PF Withdrawal / Claim</td>
-                <td><input type="number" value="200"></td>
+                <td class="sno">1.</td>
+                <td>
+                    <select class="service-select">
+                        <option value="PF Withdrawal / Claim" selected>PF Withdrawal / Claim</option>
+                        <option value="Aadhaar Correction/Print">Aadhaar Correction/Print</option>
+                        <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
+                        <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
+                        <option value="Voter ID Card Service">Voter ID Card Service</option>
+                        <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
+                        <option value="Passport Application">Passport Application</option>
+                        <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
+                        <option value="Other Service">अन्य सेवा (Other Service)</option>
+                    </select>
+                </td>
+                <td><input type="number" class="amount-input" value="200" oninput="calculateTotal()"></td>
+                <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
             </tr>
             <tr>
-                <td>2.</td>
-                <td>Aadhaar Correction/Print</td>
-                <td><input type="number" value="50"></td>
+                <td class="sno">2.</td>
+                <td>
+                    <select class="service-select">
+                        <option value="PF Withdrawal / Claim">PF Withdrawal / Claim</option>
+                        <option value="Aadhaar Correction/Print" selected>Aadhaar Correction/Print</option>
+                        <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
+                        <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
+                        <option value="Voter ID Card Service">Voter ID Card Service</option>
+                        <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
+                        <option value="Passport Application">Passport Application</option>
+                        <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
+                        <option value="Other Service">अन्य सेवा (Other Service)</option>
+                    </select>
+                </td>
+                <td><input type="number" class="amount-input" value="50" oninput="calculateTotal()"></td>
+                <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
             </tr>
         </tbody>
     </table>
 
+    <!-- नई पंक्ति जोड़ने का बटन -->
+    <button class="btn btn-add no-print" onclick="addRow()">+ नई सेवा जोड़ें (Add Service)</button>
+
     <!-- कुल राशि -->
     <div class="total-section">
-        कुल राशि (Total Amount): ₹250
+        कुल राशि (Total Amount): ₹<span id="totalAmount">250</span>
     </div>
 
     <!-- फूटर -->
@@ -317,6 +385,76 @@
 </div>
 
 <script>
+    // आज की तारीख सेट करना
+    window.onload = function() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        document.getElementById('billDate').value = dd + '/' + mm + '/' + yyyy;
+        calculateTotal();
+    };
+
+    // नई पंक्ति जोड़ने का फंक्शन
+    function addRow() {
+        const tbody = document.getElementById('tableBody');
+        const rowCount = tbody.rows.length + 1;
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="sno">${rowCount}.</td>
+            <td>
+                <select class="service-select">
+                    <option value="">-- सेवा चुनें --</option>
+                    <option value="PF Withdrawal / Claim">PF Withdrawal / Claim</option>
+                    <option value="Aadhaar Correction/Print">Aadhaar Correction/Print</option>
+                    <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
+                    <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
+                    <option value="Voter ID Card Service">Voter ID Card Service</option>
+                    <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
+                    <option value="Passport Application">Passport Application</option>
+                    <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
+                    <option value="Online Form Fill Up">Online Form Fill Up</option>
+                    <option value="Photo Copy / Lamination">Photo Copy / Lamination</option>
+                    <option value="Other Service">अन्य सेवा (Other Service)</option>
+                </select>
+            </td>
+            <td><input type="number" class="amount-input" value="0" oninput="calculateTotal()"></td>
+            <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        updateSNo();
+        calculateTotal();
+    }
+
+    // पंक्ति हटाने का फंक्शन
+    function removeRow(btn) {
+        const row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        updateSNo();
+        calculateTotal();
+    }
+
+    // सीरियल नंबर (क्रमांक) अपडेट करना
+    function updateSNo() {
+        const rows = document.querySelectorAll('#tableBody tr');
+        rows.forEach((row, index) => {
+            row.querySelector('.sno').textContent = (index + 1) + '.';
+        });
+    }
+
+    // कुल राशि जोड़ना
+    function calculateTotal() {
+        const amountInputs = document.querySelectorAll('.amount-input');
+        let total = 0;
+        amountInputs.forEach(input => {
+            const val = parseFloat(input.value) || 0;
+            total += val;
+        });
+        document.getElementById('totalAmount').textContent = total;
+    }
+
+    // बिल शेयर करने का फंक्शन
     function shareBill() {
         if (navigator.share) {
             navigator.share({
