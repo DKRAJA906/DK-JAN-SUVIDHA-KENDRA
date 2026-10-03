@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DK Jan Suvidha Kendra - Billing System</title>
 
+    <!-- पूरा Bill PNG Image बनाने के लिए -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -82,12 +85,6 @@
         .heading p {
             color: #555;
             font-size: 16px;
-        }
-
-        .csc-id {
-            color: #2864b5;
-            font-size: 15px;
-            margin-top: 20px;
         }
 
         .blue-line {
@@ -278,6 +275,11 @@
             color: #222;
         }
 
+        .footer a {
+            color: inherit;
+            text-decoration: none;
+        }
+
         /* Print और WhatsApp Buttons */
         .actions {
             display: flex;
@@ -296,6 +298,11 @@
             font-weight: bold;
         }
 
+        .btn-action:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .btn-print {
             background: #2864b5;
         }
@@ -306,6 +313,28 @@
 
         .btn-action:hover {
             opacity: 0.9;
+        }
+
+        /* Bill photo बनाते समय छिपने वाले elements */
+        .capture-mode .service-controls,
+        .capture-mode .actions,
+        .capture-mode th:last-child,
+        .capture-mode td:last-child {
+            display: none !important;
+        }
+
+        .capture-mode .amount-input {
+            border: none !important;
+            background: transparent !important;
+            width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .capture-mode .form-group input,
+        .capture-mode .date-box input {
+            border: none !important;
+            background: transparent !important;
+            padding-left: 0 !important;
         }
 
         /* Mobile View */
@@ -351,11 +380,6 @@
             .heading p {
                 font-size: 9px;
                 line-height: 1.3;
-            }
-
-            .csc-id {
-                font-size: 9px;
-                margin-top: 7px;
             }
 
             .blue-line {
@@ -436,7 +460,6 @@
                 font-size: 17px;
             }
 
-            /* Mobile Payment QR */
             .payment-qr {
                 justify-content: center;
                 margin-bottom: 20px;
@@ -497,7 +520,6 @@
             }
 
             .heading h1,
-            .csc-id,
             .total-box span,
             .payment-qr-text strong {
                 color: #2864b5 !important;
@@ -540,9 +562,7 @@
 
     <div class="invoice-card" id="invoice">
 
-        <!-- Top Header -->
         <div class="top-info">
-
             <div class="receipt-box">
                 <div class="box-title">बिल संख्या (Receipt No.)</div>
                 <div class="box-value" id="billNo"></div>
@@ -559,14 +579,11 @@
                     <input type="date" id="billDate">
                 </div>
             </div>
-
         </div>
 
         <div class="blue-line"></div>
 
-        <!-- Customer Details -->
         <div class="customer-info">
-
             <div class="form-group">
                 <label>ग्राहक का नाम (Customer Name)</label>
                 <input
@@ -598,12 +615,9 @@
                     autocomplete="street-address"
                 >
             </div>
-
         </div>
 
-        <!-- Service Selection -->
         <div class="service-section">
-
             <div class="service-controls">
                 <select id="serviceSelect">
                     <option value="" disabled selected>
@@ -634,12 +648,12 @@
                         Money Transfer / Banking - ₹30
                     </option>
 
-                    <option value="Scholarship Online / Banking" data-price="30">
+                    <option value="Scholarship Online / Banking" data-price="150">
                         Scholarship Online / Banking - ₹150
                     </option>
 
-                    <option value="Udyam registratione / Banking" data-price="30">
-                        Udyam registratione / Banking - ₹200
+                    <option value="Udyam Registration / Banking" data-price="200">
+                        Udyam Registration / Banking - ₹200
                     </option>
 
                     <option value="Custom Service" data-price="0">
@@ -652,7 +666,6 @@
                 </button>
             </div>
 
-            <!-- Bill Table -->
             <table>
                 <thead>
                     <tr>
@@ -665,10 +678,8 @@
 
                 <tbody id="billTableBody"></tbody>
             </table>
-
         </div>
 
-        <!-- Total -->
         <div class="total-box">
             <h2>
                 कुल राशि (Total Amount):
@@ -676,14 +687,12 @@
             </h2>
         </div>
 
-        <!-- Payment QR Code -->
         <div class="payment-qr">
             <div class="payment-qr-text">
                 <strong>Scan & Pay</strong><br>
                 UPI / QR Payment स्वीकार है
             </div>
 
-            <!-- यहां अपनी QR Image का नाम या URL डालें -->
             <img
                 src="qr.png"
                 alt="UPI Payment QR Code"
@@ -691,7 +700,6 @@
             >
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             <p>
                 <strong>पता (Address):</strong>
@@ -702,7 +710,9 @@
                 <strong>संपर्क (Contact):</strong>
                 +91 8318736819 |
                 <strong>ईमेल:</strong>
-                contact@dkjansuvidha.in
+                <a href="mailto:contact@dkjansuvidha.in">
+                    contact@dkjansuvidha.in
+                </a>
             </p>
 
             <p style="margin-top: 8px; font-style: italic;">
@@ -710,7 +720,6 @@
             </p>
         </div>
 
-        <!-- Buttons -->
         <div class="actions">
             <button
                 class="btn-action btn-print"
@@ -723,9 +732,9 @@
             <button
                 class="btn-action btn-share"
                 type="button"
-                onclick="shareBill()"
+                onclick="shareBillImage()"
             >
-                📱 व्हाट्सएप पर भेजें (Share)
+                📱 व्हाट्सएप पर बिल भेजें
             </button>
         </div>
 
@@ -849,72 +858,113 @@
             return div.innerHTML;
         }
 
-        function shareBill() {
-            const name =
-                document.getElementById("custName").value.trim() || "ग्राहक";
-
-            const phone =
-                document.getElementById("custPhone").value.trim();
-
-            const address =
-                document.getElementById("custAddress").value.trim();
-
-            const total =
-                document.getElementById("grandTotal").innerText;
-
-            const billNo =
-                document.getElementById("billNo").innerText;
-
-            const billDate =
-                document.getElementById("billDate").value;
-
+        async function shareBillImage() {
             if (billItems.length === 0) {
                 alert("कृपया बिल में कम से कम एक सेवा जोड़ें!");
                 return;
             }
 
-            const servicesText = billItems
-                .map((item, index) => {
-                    return `${index + 1}. ${item.name}: ₹${item.price}`;
-                })
-                .join("\n");
-
-            let customerAddressText = "";
-
-            if (address) {
-                customerAddressText = `*ग्राहक का पता:* ${address}\n`;
+            if (typeof html2canvas === "undefined") {
+                alert(
+                    "Bill image बनाने वाली library load नहीं हुई। Internet connection check करके page reload करें।"
+                );
+                return;
             }
 
-            const message =
-`*DK JAN SUVIDHA KENDRA*
-----------------------------
-*रसीद संख्या:* ${billNo}
-*दिनांक:* ${billDate}
-*ग्राहक:* ${name}
-${customerAddressText}----------------------------
-*सेवाएं:*
-${servicesText}
-----------------------------
-*कुल राशि: ₹${total}*
-----------------------------
-पता: रानी खेड़ा चौराहा, बछरावां, रायबरेली
-संपर्क: +91 8318736819
+            const invoice = document.getElementById("invoice");
+            const shareButton = document.querySelector(".btn-share");
+            const billNo = document.getElementById("billNo").innerText;
 
-धन्यवाद!`;
+            const oldButtonText = shareButton.innerHTML;
 
-            let whatsappUrl =
-                "https://api.whatsapp.com/send?text=" +
-                encodeURIComponent(message);
+            try {
+                shareButton.disabled = true;
+                shareButton.innerHTML = "⏳ Bill फोटो बन रही है...";
 
-            if (/^[0-9]{10}$/.test(phone)) {
-                whatsappUrl =
-                    "https://api.whatsapp.com/send?phone=91" +
-                    phone +
-                    "&text=" +
-                    encodeURIComponent(message);
+                /*
+                    इस class से photo में:
+                    - Add service section
+                    - Print / Share buttons
+                    - हटाएं column
+                    नहीं आएंगे।
+                */
+                invoice.classList.add("capture-mode");
+
+                await new Promise((resolve) => setTimeout(resolve, 250));
+
+                const canvas = await html2canvas(invoice, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: false,
+                    backgroundColor: "#ffffff",
+                    scrollX: 0,
+                    scrollY: -window.scrollY,
+                    windowWidth: invoice.scrollWidth,
+                    windowHeight: invoice.scrollHeight
+                });
+
+                invoice.classList.remove("capture-mode");
+
+                const imageBlob = await new Promise((resolve) => {
+                    canvas.toBlob(resolve, "image/png", 1);
+                });
+
+                if (!imageBlob) {
+                    throw new Error("PNG image तैयार नहीं हुई।");
+                }
+
+                const fileName = `${billNo}-DK-Jan-Suvidha-Bill.png`;
+
+                const billImageFile = new File(
+                    [imageBlob],
+                    fileName,
+                    { type: "image/png" }
+                );
+
+                const shareData = {
+                    title: `DK Jan Suvidha Kendra - ${billNo}`,
+                    text: `DK Jan Suvidha Kendra का बिल (${billNo})`,
+                    files: [billImageFile]
+                };
+
+                if (
+                    navigator.share &&
+                    navigator.canShare &&
+                    navigator.canShare({ files: [billImageFile] })
+                ) {
+                    await navigator.share(shareData);
+                } else {
+                    const imageUrl = URL.createObjectURL(imageBlob);
+
+                    const link = document.createElement("a");
+                    link.href = imageUrl;
+                    link.download = fileName;
+
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+
+                    setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
+
+                    alert(
+                        "इस browser में direct photo sharing support नहीं है। Bill PNG download हो गई है। अब WhatsApp में photo attach करके भेज दें।"
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+
+                invoice.classList.remove("capture-mode");
+
+                if (error.name !== "AbortError") {
+                    alert(
+                        "Bill की PNG फोटो बनाते समय समस्या आई। कृपया QR image path, internet और browser check करके फिर कोशिश करें।"
+                    );
+                }
+            } finally {
+                invoice.classList.remove("capture-mode");
+                shareButton.disabled = false;
+                shareButton.innerHTML = oldButtonText;
             }
-
-            window.open(whatsappUrl, "_blank");
         }
     </script>
 
