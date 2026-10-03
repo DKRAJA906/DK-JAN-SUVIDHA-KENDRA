@@ -4,151 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DK Jan Suvidha Kendra - Billing System</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: Arial, "Noto Sans Devanagari", sans-serif;
+            background: #eeeeee;
             margin: 0;
             padding: 20px;
+            color: #222;
         }
 
         .bill-container {
+            width: 100%;
             max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 25px;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
+            min-height: 1050px;
+            margin: auto;
+            background: #ffffff;
+            padding: 28px 35px 25px;
+            border: 1px solid #cccccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
         }
 
-        /* Action Buttons Bar */
-        .top-action-bar {
+        /* ऊपर की तारीख और बटन */
+        .top-header-bar {
             display: flex;
-            justify-content: flex-start;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: bold;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn {
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 8px 13px;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             color: white;
-            transition: background 0.2s;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
         }
 
         .btn-print {
-            background-color: #1a428a;
-        }
-
-        .btn-print:hover {
-            background-color: #122d60;
+            background: #1a428a;
         }
 
         .btn-share {
-            background-color: #25D366;
+            background: #25d366;
         }
 
-        .btn-share:hover {
-            background-color: #1da851;
+        .date-top {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .btn-add {
-            background-color: #28a745;
-            padding: 6px 12px;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-
-        .btn-add:hover {
-            background-color: #218838;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 4px 8px;
+        .date-top input {
+            width: 110px;
+            padding: 5px;
+            border: 1px solid #cccccc;
             border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
         }
 
-        .btn-delete:hover {
-            background-color: #c82333;
-        }
-
-        /* Header Style */
+        /* मुख्य हेडर */
         .header {
             text-align: center;
-            position: relative;
+            margin-top: 3px;
+        }
+
+        .header-title-small {
+            color: #555;
+            font-size: 12px;
+            margin-bottom: 2px;
         }
 
         .header h1 {
             color: #1a428a;
-            margin: 5px 0;
             font-size: 28px;
-            text-transform: uppercase;
+            margin: 3px 0;
+            letter-spacing: 0.5px;
         }
 
         .header h3 {
             color: #333;
-            margin: 2px 0 10px 0;
+            font-size: 15px;
             font-weight: normal;
-            font-size: 16px;
+            margin: 3px 0 8px;
         }
 
         .csc-id {
-            background-color: #dce6f2;
             display: inline-block;
-            padding: 3px 10px;
-            font-weight: bold;
             color: #1a428a;
+            background: #dce6f2;
+            padding: 4px 12px;
             border-radius: 3px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 9px;
         }
 
-        /* Blue Line Container with Bill No and Date */
-        .header-line-container {
+        /* नीली लाइन */
+        .blue-line {
+            height: 3px;
+            width: 100%;
+            background: #1a428a;
+            margin-bottom: 15px;
+        }
+
+        /* बिल नंबर */
+        .receipt-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 3px solid #1a428a;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
+            align-items: center;
+            margin-bottom: 13px;
         }
 
-        .receipt-no-top, .date-top {
-            font-weight: bold;
+        .receipt-no {
             font-size: 14px;
-            color: #333;
+            font-weight: bold;
         }
 
-        /* Customer Details Box */
+        .receipt-no input {
+            width: 130px;
+            padding: 5px;
+            margin-left: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        /* ग्राहक विवरण */
         .customer-box {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 25px;
-            background-color: #fafafa;
+            border: 1px solid #cccccc;
+            border-radius: 7px;
+            padding: 13px 15px;
+            background: #fafafa;
+            margin-bottom: 23px;
         }
 
         .customer-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 12px;
+            margin-bottom: 11px;
         }
 
         .customer-row:last-child {
@@ -164,309 +170,384 @@
         .form-group label {
             font-size: 13px;
             font-weight: bold;
-            color: #333;
             margin-bottom: 5px;
+            color: #333;
         }
 
         .form-group input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
             width: 100%;
-            box-sizing: border-box;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            background: white;
         }
 
-        /* Items Table */
+        /* सेवाओं की तालिका */
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        .items-table th, .items-table td {
-            padding: 10px;
-            text-align: left;
+            margin-bottom: 18px;
         }
 
         .items-table th {
-            border-bottom: 2px solid #333;
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 2px solid #333333;
+            font-size: 14px;
             color: #333;
-            font-size: 15px;
         }
 
         .items-table td {
-            border-bottom: 1px solid #eee;
+            padding: 10px 8px;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 14px;
         }
 
-        .items-table select, .items-table input {
-            padding: 6px;
-            border: 1px solid #ccc;
+        .items-table th:first-child,
+        .items-table td:first-child {
+            width: 15%;
+        }
+
+        .items-table th:nth-child(2),
+        .items-table td:nth-child(2) {
+            width: 60%;
+        }
+
+        .items-table th:last-child,
+        .items-table td:last-child {
+            width: 25%;
+        }
+
+        .service-input {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid #cccccc;
             border-radius: 4px;
             font-size: 14px;
-            box-sizing: border-box;
         }
 
-        .items-table select {
-            width: 95%;
+        .amount-input {
+            width: 90px;
+            padding: 7px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
-        .items-table input[type="number"] {
-            width: 80%;
-        }
-
-        /* Total Section */
+        /* कुल राशि */
         .total-section {
             text-align: right;
-            font-size: 20px;
+            margin-top: 22px;
+            margin-bottom: 50px;
+            padding-right: 8px;
+            font-size: 19px;
             font-weight: bold;
-            color: #000;
-            margin: 20px 0;
-            padding-right: 10px;
         }
 
-        /* Footer */
+        .total-amount {
+            color: #1a428a;
+        }
+
+        /* नीचे का फुटर */
         .footer {
+            border-top: 1px solid #dddddd;
+            padding-top: 13px;
             text-align: center;
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-            margin-top: 30px;
-            font-size: 13px;
-            color: #444;
-            line-height: 1.6;
+            color: #444444;
+            font-size: 12px;
+            line-height: 1.7;
         }
 
-        .footer .thank-you {
+        .thank-you {
+            color: #666666;
             font-style: italic;
-            margin-top: 5px;
-            color: #666;
+            margin-top: 4px;
         }
 
-        /* Hide Action Buttons & Extra Controls while Printing */
-        @media print {
+        @media screen and (max-width: 600px) {
             body {
-                background-color: #fff;
+                padding: 5px;
+            }
+
+            .bill-container {
+                padding: 18px 12px;
+            }
+
+            .top-header-bar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .receipt-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .customer-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header h3 {
+                font-size: 13px;
+            }
+
+            .items-table {
+                font-size: 12px;
+            }
+
+            .items-table th,
+            .items-table td {
+                padding: 7px 4px;
+            }
+        }
+
+        /* प्रिंट डिजाइन */
+        @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+
+            body {
+                background: white;
                 padding: 0;
             }
+
             .bill-container {
+                max-width: none;
+                min-height: auto;
                 border: none;
                 box-shadow: none;
+                padding: 0;
             }
-            .top-action-bar, .btn-add, .btn-delete, .no-print {
+
+            .action-buttons {
                 display: none !important;
             }
-            input, select {
+
+            input {
                 border: none !important;
+                outline: none !important;
                 background: transparent !important;
-                appearance: none;
-                -webkit-appearance: none;
+            }
+
+            .date-top input {
+                border: none !important;
+            }
+
+            .customer-box {
+                background: white;
             }
         }
     </style>
 </head>
+
 <body>
 
 <div class="bill-container">
-    
-    <!-- एक्शन बटन (प्रिंट और शेयर) -->
-    <div class="top-action-bar">
+
+    <!-- ऊपर बटन और तारीख -->
+    <div class="top-header-bar">
         <div class="action-buttons">
-            <button class="btn btn-print" onclick="window.print()">🖨️ प्रिंट करें (Print)</button>
-            <button class="btn btn-share" onclick="shareBill()">🔗 शेयर करें (Share)</button>
-        </div>
-    </div>
+            <button class="btn btn-print" onclick="window.print()">
+                🖨️ प्रिंट करें
+            </button>
 
-    <!-- हेडिंग -->
-    <div class="header">
-        <div style="font-size: 12px; color: #555;">DK Jan Suvidha Kendra - Billing System</div>
-        <h1>DK JAN SUVIDHA KENDRA</h1>
-        <h3>डिजिटल एवं जन सुविधा केंद्र (Common Services Center)</h3>
-        <div class="csc-id">CSC ID: 533667160012</div>
-    </div>
-
-    <!-- नीली रेखा के ऊपर बाईं ओर बिल संख्या तथा दाईं ओर दिनांक -->
-    <div class="header-line-container">
-        <div class="receipt-no-top">
-            बिल संख्या (Receipt No.): 
-            <input type="text" value="DK-146227" style="width: 120px; padding: 4px; border: 1px solid #ccc; border-radius: 3px; font-weight: bold;">
+            <button class="btn btn-share" onclick="shareBill()">
+                🔗 शेयर करें
+            </button>
         </div>
+
         <div class="date-top">
-            दिनांक (Date): 
-            <input type="text" id="billDate" style="width: 100px; padding: 4px; border: 1px solid #ccc; border-radius: 3px;">
+            <label>दिनांक:</label>
+            <input type="text" value="10/03/2026">
         </div>
     </div>
 
-    <!-- ग्राहक विवरण बॉक्स (नाम, मोबाइल नंबर, और नया जोड़ा गया पता कॉलम) -->
+    <!-- हेडर -->
+    <div class="header">
+        <div class="header-title-small">
+            DK Jan Suvidha Kendra - Billing System
+        </div>
+
+        <h1>DK JAN SUVIDHA KENDRA</h1>
+
+        <h3>
+            डिजिटल एवं जन सुविधा केंद्र (Common Services Center)
+        </h3>
+
+        <div class="csc-id">
+            CSC ID: 533667160012
+        </div>
+    </div>
+
+    <!-- फोटो के अनुसार नीली लाइन -->
+    <div class="blue-line"></div>
+
+    <!-- बिल नंबर -->
+    <div class="receipt-row">
+        <div class="receipt-no">
+            बिल संख्या (Receipt No.):
+            <input type="text" value="DK-146227">
+        </div>
+    </div>
+
+    <!-- ग्राहक विवरण -->
     <div class="customer-box">
+
         <div class="customer-row">
             <div class="form-group">
                 <label>ग्राहक का नाम (Customer Name)</label>
                 <input type="text" placeholder="नाम दर्ज करें">
             </div>
+
             <div class="form-group">
                 <label>मोबाइल नंबर (Mobile No.)</label>
-                <input type="text" placeholder="मोबाइल नंबर दर्ज करें">
+                <input type="text" placeholder="मोबाइल नंबर">
             </div>
         </div>
+
         <div class="customer-row">
             <div class="form-group">
                 <label>पता (Address)</label>
-                <input type="text" placeholder="ग्राहक का पूरा पता दर्ज करें">
+                <input type="text" placeholder="ग्राहक का पता दर्ज करें">
             </div>
         </div>
+
     </div>
 
-    <!-- सेवाएं एवं शुल्क तालिका -->
-    <table class="items-table" id="servicesTable">
+    <!-- सेवा तालिका -->
+    <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 10%;">क्रमांक (S.No)</th>
-                <th style="width: 55%;">सेवा का विवरण (Service Details)</th>
-                <th style="width: 25%;">शुल्क (Amount ₹)</th>
-                <th style="width: 10%;" class="no-print">हटाएं</th>
+                <th>क्रमांक (S.No)</th>
+                <th>सेवा का विवरण (Service Details)</th>
+                <th>शुल्क (Amount ₹)</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
-            <!-- शुरुआत में 2 पंक्तियां -->
+
+        <tbody id="serviceRows">
             <tr>
-                <td class="sno">1.</td>
+                <td>1.</td>
                 <td>
-                    <select class="service-select">
-                        <option value="PF Withdrawal / Claim" selected>PF Withdrawal / Claim</option>
-                        <option value="Aadhaar Correction/Print">Aadhaar Correction/Print</option>
-                        <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
-                        <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
-                        <option value="Voter ID Card Service">Voter ID Card Service</option>
-                        <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
-                        <option value="Passport Application">Passport Application</option>
-                        <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
-                        <option value="Other Service">अन्य सेवा (Other Service)</option>
-                    </select>
+                    <input
+                        type="text"
+                        class="service-input"
+                        value="PF Withdrawal / Claim">
                 </td>
-                <td><input type="number" class="amount-input" value="200" oninput="calculateTotal()"></td>
-                <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
+                <td>
+                    <input
+                        type="number"
+                        class="amount-input amount"
+                        value="200"
+                        oninput="calculateTotal()">
+                </td>
             </tr>
+
             <tr>
-                <td class="sno">2.</td>
+                <td>2.</td>
                 <td>
-                    <select class="service-select">
-                        <option value="PF Withdrawal / Claim">PF Withdrawal / Claim</option>
-                        <option value="Aadhaar Correction/Print" selected>Aadhaar Correction/Print</option>
-                        <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
-                        <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
-                        <option value="Voter ID Card Service">Voter ID Card Service</option>
-                        <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
-                        <option value="Passport Application">Passport Application</option>
-                        <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
-                        <option value="Other Service">अन्य सेवा (Other Service)</option>
-                    </select>
+                    <input
+                        type="text"
+                        class="service-input"
+                        value="Aadhaar Correction/Print">
                 </td>
-                <td><input type="number" class="amount-input" value="50" oninput="calculateTotal()"></td>
-                <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
+                <td>
+                    <input
+                        type="number"
+                        class="amount-input amount"
+                        value="50"
+                        oninput="calculateTotal()">
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- नई पंक्ति जोड़ने का बटन -->
-    <button class="btn btn-add no-print" onclick="addRow()">+ नई सेवा जोड़ें (Add Service)</button>
-
     <!-- कुल राशि -->
     <div class="total-section">
-        कुल राशि (Total Amount): ₹<span id="totalAmount">250</span>
+        कुल राशि (Total Amount):
+        <span class="total-amount">₹<span id="totalAmount">250</span></span>
     </div>
 
-    <!-- फूटर -->
+    <!-- फुटर -->
     <div class="footer">
-        <div><strong>पता (Address):</strong> रानी खेड़ा चौराहा, बछरावां, रायबरेली (उत्तर प्रदेश)</div>
-        <div><strong>संपर्क (Contact):</strong> +91 8318736819 | <strong>ईमेल:</strong> contact@dkjansuvidha.in</div>
-        <div class="thank-you">हमारे यहाँ आने के लिए धन्यवाद! (Thank you for visiting!)</div>
+        <div>
+            <strong>पता (Address):</strong>
+            रानी खेड़ा चौराहा, बछरावां, रायबरेली (उत्तर प्रदेश)
+        </div>
+
+        <div>
+            <strong>संपर्क (Contact):</strong>
+            +91 8318736819
+            |
+            <strong>ईमेल:</strong>
+            contact@dkjansuvidha.in
+        </div>
+
+        <div class="thank-you">
+            हमारे यहाँ आने के लिए धन्यवाद!
+            (Thank you for visiting!)
+        </div>
     </div>
 
 </div>
 
 <script>
-    // आज की तारीख सेट करना
-    window.onload = function() {
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        document.getElementById('billDate').value = dd + '/' + mm + '/' + yyyy;
-        calculateTotal();
-    };
-
-    // नई पंक्ति जोड़ने का फंक्शन
-    function addRow() {
-        const tbody = document.getElementById('tableBody');
-        const rowCount = tbody.rows.length + 1;
-        
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="sno">${rowCount}.</td>
-            <td>
-                <select class="service-select">
-                    <option value="">-- सेवा चुनें --</option>
-                    <option value="PF Withdrawal / Claim">PF Withdrawal / Claim</option>
-                    <option value="Aadhaar Correction/Print">Aadhaar Correction/Print</option>
-                    <option value="PAN Card Application/Correction">PAN Card Application/Correction</option>
-                    <option value="Income / Caste / Domicile Certificate">Income / Caste / Domicile Certificate</option>
-                    <option value="Voter ID Card Service">Voter ID Card Service</option>
-                    <option value="Ayushman Bharat Card">Ayushman Bharat Card</option>
-                    <option value="Passport Application">Passport Application</option>
-                    <option value="Bank BC / Money Transfer">Bank BC / Money Transfer</option>
-                    <option value="Online Form Fill Up">Online Form Fill Up</option>
-                    <option value="Photo Copy / Lamination">Photo Copy / Lamination</option>
-                    <option value="Other Service">अन्य सेवा (Other Service)</option>
-                </select>
-            </td>
-            <td><input type="number" class="amount-input" value="0" oninput="calculateTotal()"></td>
-            <td class="no-print"><button class="btn-delete" onclick="removeRow(this)">X</button></td>
-        `;
-        tbody.appendChild(tr);
-        updateSNo();
-        calculateTotal();
-    }
-
-    // पंक्ति हटाने का फंक्शन
-    function removeRow(btn) {
-        const row = btn.parentNode.parentNode;
-        row.parentNode.removeChild(row);
-        updateSNo();
-        calculateTotal();
-    }
-
-    // सीरियल नंबर (क्रमांक) अपडेट करना
-    function updateSNo() {
-        const rows = document.querySelectorAll('#tableBody tr');
-        rows.forEach((row, index) => {
-            row.querySelector('.sno').textContent = (index + 1) + '.';
-        });
-    }
-
-    // कुल राशि जोड़ना
     function calculateTotal() {
-        const amountInputs = document.querySelectorAll('.amount-input');
+        const amounts = document.querySelectorAll(".amount");
         let total = 0;
-        amountInputs.forEach(input => {
-            const val = parseFloat(input.value) || 0;
-            total += val;
+
+        amounts.forEach(function(input) {
+            const value = parseFloat(input.value) || 0;
+            total += value;
         });
-        document.getElementById('totalAmount').textContent = total;
+
+        document.getElementById("totalAmount").textContent = total;
     }
 
-    // बिल शेयर करने का फंक्शन
     function shareBill() {
+        const customerName =
+            document.querySelector(
+                'input[placeholder="नाम दर्ज करें"]'
+            ).value || "ग्राहक";
+
+        const total =
+            document.getElementById("totalAmount").textContent;
+
+        const shareText =
+            "DK Jan Suvidha Kendra Bill
+" +
+            "ग्राहक: " + customerName + "
+" +
+            "कुल राशि: ₹" + total;
+
         if (navigator.share) {
             navigator.share({
-                title: 'DK Jan Suvidha Kendra - Bill',
-                text: 'यहाँ से बिल का विवरण देखें।',
-                url: window.location.href
-            }).catch(console.error);
+                title: "DK Jan Suvidha Kendra - Bill",
+                text: shareText
+            }).catch(function(error) {
+                console.log(error);
+            });
         } else {
-            alert("शेयर लिंक कॉपी कर लिया गया है!");
-            navigator.clipboard.writeText(window.location.href);
+            navigator.clipboard.writeText(shareText)
+                .then(function() {
+                    alert("बिल का विवरण कॉपी हो गया है!");
+                })
+                .catch(function() {
+                    alert("बिल का विवरण कॉपी नहीं हो सका।");
+                });
         }
     }
+
+    calculateTotal();
 </script>
 
 </body>
