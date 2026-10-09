@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Background Remover</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f4f6fb;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .box {
+      width: 100%;
+      max-width: 850px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    }
+    h1 { text-align: center; margin: 0 0 20px; color: #222; }
+    .upload {
+      border: 2px dashed #4a6cf7;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      background: #f8faff;
+    }
+    .upload:hover { background: #eef2ff; }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 22px;
+      background: #4a6cf7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:disabled { background: #9aa6c7; cursor: not-allowed; }
+    .preview {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 25px;
+      justify-content: center;
+    }
+    .preview div {
+      flex: 1;
+      min-width: 250px;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background:
+        conic-gradient(#ccc 25%, #fff 0 50%, #ccc 0 75%, #fff 0) 0 0/20px 20px;
+    }
+    .status { text-align: center; margin-top: 15px; color: #555; }
+    .error { color: #d33; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>Image Background Remover</h1>
+
+  <label class="upload" for="imageInput">
+    <strong>Image choose karein</strong><br>
+    JPG, PNG ya WEBP upload karein
+    <input type="file" id="imageInput" accept="image/*" hidden>
+  </label>
+
+  <div style="text-align:center;">
+    <button class="btn" id="removeBtn" disabled>Background Remove Karein</button>
+  </div>
+
+  <p class="status" id="status"></p>
+
+  <div class="preview">
+    <div>
+      <h3>Original Image</h3>
+      <img id="originalImg" style="display:none;">
+    </div>
+    <div>
+      <h3>Background Removed</h3>
+      <img id="resultImg" style="display:none;">
+      <br>
+      <a id="downloadLink" class="btn" style="display:none;" download="no-background.png">
+        PNG Download Karein
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+const imageInput = document.getElementById("imageInput");
+const removeBtn = document.getElementById("removeBtn");
+const status = document.getElementById("status");
+const originalImg = document.getElementById("originalImg");
+const resultImg = document.getElementById("resultImg");
+const downloadLink = document.getElementById("downloadLink");
+
+let selectedFile = null;
+
+imageInput.addEventListener("change", () => {
+  selectedFile = imageInput.files[0];
+
+  if (!selectedFile) return;
+
+  originalImg.src = URL.createObjectURL(selectedFile);
+  originalImg.style.display = "block";
+  resultImg.style.display = "none";
+  downloadLink.style.display = "none";
+  removeBtn.disabled = false;
+  status.textContent = "";
+});
+
+removeBtn.addEventListener("click", async () => {
+  if (!selectedFile) return;
+
+  removeBtn.disabled = true;
+  status.className = "status";
+  status.textContent = "Background remove ho raha hai, please wait...";
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/remove-bg", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error("Server error: " + response.status);
+    }
+
+    const blob = await response.blob();
+    const resultUrl = URL.createObjectURL(blob);
+
+    resultImg.src = resultUrl;
+    resultImg.style.display = "block";
+
+    downloadLink.href = resultUrl;
+    downloadLink.style.display = "inline-block";
+
+    status.textContent = "Background successfully remove ho gaya!";
+  } catch (err) {
+    status.className = "status error";
+    status.textContent = "Error aaya: " + err.message;
+  } finally {
+    removeBtn.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
