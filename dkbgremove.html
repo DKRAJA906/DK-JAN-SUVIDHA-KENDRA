@@ -135,7 +135,7 @@ removeBtn.addEventListener("click", async () => {
   formData.append("file", selectedFile);
 
   try {
-    const response = await fetch("https://dk-bg-remove.onrender.com", {
+    const response = await fetch("https://dk-bg-remove.onrender.com/remove-bg", {
       method: "POST",
       body: formData
     });
