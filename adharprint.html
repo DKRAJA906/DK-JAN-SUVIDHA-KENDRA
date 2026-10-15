@@ -3,281 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aadhaar PDF Crop & Print</title>
+<title>Aadhaar PDF Crop Print</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <style>
-  * { box-sizing: border-box; font-family: Arial, sans-serif; }
-  body { margin:0; background:#f2f5f9; }
-  header {
-    background:#0b5fff; color:#fff; padding:16px;
-    text-align:center; font-weight:bold;
-  }
-  .wrap { max-width:1000px; margin:auto; padding:16px; }
-  .card {
-    background:#fff; padding:16px; border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:16px;
-  }
-  label { display:block; font-weight:bold; margin:10px 0 5px; }
-  input, select {
-    width:100%; padding:10px; border:1px solid #ccc;
-    border-radius:8px; margin-bottom:10px;
-  }
-  button {
-    background:#0b5fff; color:#fff; border:0;
-    padding:12px 18px; border-radius:8px;
-    font-weight:bold; cursor:pointer;
-  }
-  .pdfArea {
-    position:relative; overflow:auto;
-    border:1px solid #ddd; background:#eee;
-    border-radius:8px; margin-top:12px;
-  }
-  canvas { display:block; width:100%; height:auto; }
-  #cropBox {
-    position:absolute; border:2px dashed red;
-    background:rgba(255,0,0,.15); display:none;
-    pointer-events:none;
-  }
-  .hint { color:#555; font-size:14px; }
-  #errorBox {
-    display:none; background:#ffe5e5; color:#a10000;
-    padding:10px; border-radius:8px; margin-top:10px;
-    white-space:pre-wrap;
-  }
-  @media print {
-    body * { visibility:hidden; }
-    #printArea, #printArea * { visibility:visible; }
-    #printArea {
-      position:fixed; top:20mm; left:50%;
-      transform:translateX(-50%);
-    }
-  }
+body{font-family:Arial;margin:0;background:#f2f5f9}
+header{background:#0b5fff;color:#fff;padding:16px;text-align:center;font-weight:bold}
+.wrap{max-width:900px;margin:auto;padding:16px}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+label{display:block;font-weight:bold;margin:10px 0 5px}
+input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px}
+button{background:#0b5fff;color:#fff;border:0;padding:12px 18px;border-radius:8px;font-weight:bold;cursor:pointer}
+.pdfArea{position:relative;overflow:auto;border:1px solid #ddd;background:#eee;border-radius:8px;margin-top:12px}
+canvas{display:block;width:100%;height:auto}
+#cropBox{position:absolute;border:2px dashed red;background:rgba(255,0,0,.15);display:none;pointer-events:none}
+#error{display:none;background:#ffe5e5;color:#a10000;padding:10px;border-radius:8px;margin-top:10px;white-space:pre-wrap}
+.hint{color:#555;font-size:14px}
+#printArea{display:none}
+@media print{
+ body *{visibility:hidden}
+ #printArea,#printArea *{visibility:visible}
+ #printArea{display:block;position:fixed;top:20mm;left:50%;transform:translateX(-50%)}
+}
 </style>
 </head>
 
 <body>
 
-<header>आधार PDF क्रॉप एवं प्रिंट टूल</header>
+<header>आधार PDF क्रॉप एवं प्रिंट</header>
 
 <div class="wrap">
 
-  <div class="card">
-    <h3>1. Aadhaar PDF चुनें</h3>
+<div class="card">
+<h3>1. Aadhaar PDF चुनें</h3>
 
-    <label>Aadhaar PDF</label>
-    <input type="file" id="pdfFile" accept="application/pdf">
+<label>Aadhaar PDF</label>
+<input type="file" id="pdfFile" accept="application/pdf">
 
-    <label>PDF Password</label>
-    <input type="password" id="pdfPass" placeholder="अगर PDF में password है">
+<label>PDF Password</label>
+<input type="password" id="pdfPass" placeholder="अगर password है">
 
-    <button type="button" id="loadBtn">PDF खोलें</button>
+<button id="loadBtn">PDF खोलें</button>
 
-    <div id="errorBox"></div>
+<div id="error"></div>
 
-    <p class="hint">
-      यह tool PDF को सिर्फ browser में खोलता है। Aadhaar PDF कहीं upload नहीं होती।
-    </p>
-  </div>
+<p class="hint">PDF सिर्फ browser में खुलेगी, server पर upload नहीं होगी।</p>
+</div>
 
-  <div class="card" id="cropCard" style="display:none">
-    <h3>2. Aadhaar Card Area चुनें</h3>
+<div class="card" id="cropCard" style="display:none">
+<h3>2. Card Area चुनें</h3>
+<p class="hint">Mouse से Aadhaar card पर box बनाएं, फिर Crop & Print दबाएं।</p>
 
-    <p class="hint">
-      Mouse से Aadhaar card पर box बनाएं, फिर नीचे Crop & Print दबाएं।
-    </p>
+<div class="pdfArea">
+<canvas id="pdfCanvas"></canvas>
+<div id="cropBox"></div>
+</div>
 
-    <div class="pdfArea" id="pdfArea">
-      <canvas id="pdfCanvas"></canvas>
-      <div id="cropBox"></div>
-    </div>
+<label>Card Size</label>
+<select id="cardSize">
+<option value="85.6,53.98">Aadhaar Card — 85.6 × 54 mm</option>
+<option value="90,55">Bada Card — 90 × 55 mm</option>
+<option value="100,60">Bada Card — 100 × 60 mm</option>
+</select>
 
-    <label>Card Size</label>
-    <select id="cardSize">
-      <option value="85.6,53.98">Aadhaar Card — 85.6 × 54 mm</option>
-      <option value="90,55">Bada Card — 90 × 55 mm</option>
-      <option value="100,60">Bada Card — 100 × 60 mm</option>
-    </select>
-
-    <button type="button" id="cropBtn">Crop & Print</button>
-  </div>
+<button id="cropBtn">Crop & Print</button>
+</div>
 
 </div>
 
 <div id="printArea"></div>
 
 <script>
-window.addEventListener("error", function(e) {
-  showError("JavaScript Error: " + e.message);
-});
+const fileInput=document.getElementById("pdfFile");
+const passInput=document.getElementById("pdfPass");
+const loadBtn=document.getElementById("loadBtn");
+const cropBtn=document.getElementById("cropBtn");
+const canvas=document.getElementById("pdfCanvas");
+const cropBox=document.getElementById("cropBox");
+const printArea=document.getElementById("printArea");
+const errorBox=document.getElementById("error");
 
-function showError(msg) {
-  const box = document.getElementById("errorBox");
-  box.style.display = "block";
-  box.innerText = msg;
+let pdfDoc=null,start=null,crop=null,renderedWidth=0;
+
+function showError(msg){
+ errorBox.style.display="block";
+ errorBox.innerText=msg;
 }
 
-if (typeof pdfjsLib === "undefined") {
-  showError("PDF.js library load नहीं हुई। Internet connection जांचें या page को refresh करें।");
-} else {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+if(typeof pdfjsLib==="undefined"){
+ showError("PDF.js load नहीं हुई। Internet on करके page refresh करें।");
+}else{
+ pdfjsLib.GlobalWorkerOptions.workerSrc=
+ "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 }
 
-const fileInput = document.getElementById("pdfFile");
-const passInput = document.getElementById("pdfPass");
-const loadBtn = document.getElementById("loadBtn");
-const cropBtn = document.getElementById("cropBtn");
-const canvas = document.getElementById("pdfCanvas");
-const cropBox = document.getElementById("cropBox");
-const printArea = document.getElementById("printArea");
+loadBtn.onclick=async function(){
+ try{
+  errorBox.style.display="none";
 
-let pdfDoc = null;
-let start = null;
-let crop = null;
-let renderedWidth = 0;
+  const file=fileInput.files[0];
 
-loadBtn.addEventListener("click", async function() {
-  try {
-    document.getElementById("errorBox").style.display = "none";
+  if(!file){
+   showError("पहले Aadhaar PDF चुनें।");
+   return;
+  }
 
-    const file = fileInput.files[0];
+  if(typeof pdfjsLib==="undefined"){
+   showError("PDF.js load नहीं हुई। Page refresh करें।");
+   return;
+  }
 
-    if (!file) {
-      showError("पहले Aadhaar PDF file चुनें।");
-      return;
-    }
+  const data=await file.arrayBuffer();
 
-    if (typeof pdfjsLib === "undefined") {
-      showError("PDF.js load नहीं हुई। Internet on करके page refresh करें।");
-      return;
-    }
+  const task=pdfjsLib.getDocument({
+   data:data,
+   password:passInput.value||undefined
+  });
 
-    const arrayBuffer = await file.arrayBuffer();
+  pdfDoc=await task.promise;
 
-    const loadingTask = pdfjsLib.getDocument({
-      data: arrayBuffer,
-      password: passInput.value || undefined
-    });
+  const page=await pdfDoc.getPage(1);
+  const viewport=page.getViewport({scale:2});
 
-    pdfDoc = await loadingTask.promise;
+  canvas.width=viewport.width;
+  canvas.height=viewport.height;
 
-    const page = await pdfDoc.getPage(1);
+  await page.render({
+   canvasContext:canvas.getContext("2d"),
+   viewport:viewport
+  }).promise;
 
-    const scale = 2;
-    const viewport = page.getViewport({ scale: scale });
+  renderedWidth=viewport.width;
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+  document.getElementById("cropCard").style.display="block";
 
-    const ctx = canvas.getContext("2d");
-
-    await page.render({
-      canvasContext: ctx,
-      viewport: viewport
-    }).promise;
-
-    renderedWidth = viewport.width;
-
-    document.getElementById("cropCard").style.display = "block";
-
-  } catch (err) {
-    let msg = "PDF नहीं खुली।
+ }catch(err){
+  let msg="PDF नहीं खुली।
 
 ";
 
-    if (err && err.name === "PasswordException") {
-      msg += "Password गलत है या password डालना जरूरी है।";
-    } else {
-      msg += err.message || err;
-    }
-
-    showError(msg);
-  }
-});
-
-canvas.addEventListener("mousedown", function(e) {
-  const rect = canvas.getBoundingClientRect();
-  start = {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
-  };
-  cropBox.style.display = "block";
-});
-
-canvas.addEventListener("mousemove", function(e) {
-  if (!start) return;
-
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  cropBox.style.left = Math.min(start.x, x) + "px";
-  cropBox.style.top = Math.min(start.y, y) + "px";
-  cropBox.style.width = Math.abs(x - start.x) + "px";
-  cropBox.style.height = Math.abs(y - start.y) + "px";
-});
-
-canvas.addEventListener("mouseup", function(e) {
-  if (!start) return;
-
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  crop = {
-    x1: Math.min(start.x, x),
-    y1: Math.min(start.y, y),
-    x2: Math.max(start.x, x),
-    y2: Math.max(start.y, y)
-  };
-
-  start = null;
-});
-
-cropBtn.addEventListener("click", function() {
-  if (!crop) {
-    alert("पहले mouse से Aadhaar card area select करें।");
-    return;
+  if(err && err.name==="PasswordException"){
+   msg+="Password गलत है या password डालना जरूरी है।";
+  }else{
+   msg+=err.message||err;
   }
 
-  const rect = canvas.getBoundingClientRect();
-  const ratio = renderedWidth / rect.width;
+  showError(msg);
+ }
+};
 
-  const sx = crop.x1 * ratio;
-  const sy = crop.y1 * ratio;
-  const sw = (crop.x2 - crop.x1) * ratio;
-  const sh = (crop.y2 - crop.y1) * ratio;
+canvas.onmousedown=function(e){
+ const r=canvas.getBoundingClientRect();
+ start={x:e.clientX-r.left,y:e.clientY-r.top};
+ cropBox.style.display="block";
+};
 
-  const out = document.createElement("canvas");
-  out.width = sw;
-  out.height = sh;
+canvas.onmousemove=function(e){
+ if(!start)return;
+ const r=canvas.getBoundingClientRect();
+ const x=e.clientX-r.left,y=e.clientY-r.top;
 
-  out.getContext("2d").drawImage(
-    canvas,
-    sx, sy, sw, sh,
-    0, 0, sw, sh
-  );
+ cropBox.style.left=Math.min(start.x,x)+"px";
+ cropBox.style.top=Math.min(start.y,y)+"px";
+ cropBox.style.width=Math.abs(x-start.x)+"px";
+ cropBox.style.height=Math.abs(y-start.y)+"px";
+};
 
-  const size = document.getElementById("cardSize").value.split(",");
-  const w = size[0] + "mm";
-  const h = size[1] + "mm";
+canvas.onmouseup=function(e){
+ if(!start)return;
+ const r=canvas.getBoundingClientRect();
+ const x=e.clientX-r.left,y=e.clientY-r.top;
 
-  printArea.innerHTML = "";
+ crop={
+  x1:Math.min(start.x,x),
+  y1:Math.min(start.y,y),
+  x2:Math.max(start.x,x),
+  y2:Math.max(start.y,y)
+ };
 
-  const img = document.createElement("img");
-  img.src = out.toDataURL("image/png");
-  img.style.width = w;
-  img.style.height = h;
-  img.style.display = "block";
+ start=null;
+};
 
-  printArea.appendChild(img);
+cropBtn.onclick=function(){
+ if(!crop){
+  alert("पहले Aadhaar card area select करें।");
+  return;
+ }
 
-  setTimeout(function() {
-    window.print();
-  }, 300);
-});
+ const r=canvas.getBoundingClientRect();
+ const ratio=renderedWidth/r.width;
+
+ const sx=crop.x1*ratio;
+ const sy=crop.y1*ratio;
+ const sw=(crop.x2-crop.x1)*ratio;
+ const sh=(crop.y2-crop.y1)*ratio;
+
+ const out=document.createElement("canvas");
+ out.width=sw;
+ out.height=sh;
+
+ out.getContext("2d").drawImage(canvas,sx,sy,sw,sh,0,0,sw,sh);
+
+ const size=document.getElementById("cardSize").value.split(",");
+
+ printArea.innerHTML="";
+ printArea.style.display="block";
+
+ const img=document.createElement("img");
+ img.src=out.toDataURL("image/png");
+ img.style.width=size[0]+"mm";
+ img.style.height=size[1]+"mm";
+ img.style.display="block";
+
+ printArea.appendChild(img);
+
+ setTimeout(function(){window.print();},300);
+};
 </script>
 
 </body>
