@@ -1,1007 +1,1354 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DK Jan Suvidha Kendra - AgriStack Farmer ID Card Portal</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DK Jan Suvidha Kendra - Farmer ID Card</title>
 
-  <style>
-    :root{
-      --green:#0b4622;
-      --green-dark:#062c14;
-      --green-mid:#2e7d32;
-      --blue1:#0f529a;
-      --blue2:#0a396c;
-      --gold:#e2a114;
-      --bg:#eef2f3;
-      --text:#222;
-      --danger:#d9534f;
-      --danger-dark:#c0392b;
-      --card-w:85.6mm;
-      --card-h:53.98mm;
-    }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
-    *{box-sizing:border-box}
-    body{
-      font-family:Arial,sans-serif;
-      background:var(--bg);
-      margin:0;
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      color:var(--text);
-    }
+<style>
+:root{
+  --green:#0b4622;
+  --dark:#062c14;
+  --light:#eaf4eb;
+  --gold:#e2a114;
+  --blue:#0f529a;
+  --bg:#eef2f3;
+  --card-w:85.6mm;
+  --card-h:53.98mm;
+}
 
-    .shop-banner{
-      width:100%;
-      max-width:850px;
-      background:linear-gradient(180deg,var(--blue1) 0%,var(--blue2) 100%);
-      color:#fff;
-      text-align:center;
-      padding:20px 10px 15px;
-      border-radius:12px 12px 0 0;
-      box-shadow:0 4px 15px rgba(0,0,0,.15);
-    }
+*{
+  box-sizing:border-box;
+}
 
-    .shop-name{
-      font-size:clamp(26px,4vw,36px);
-      font-weight:900;
-      letter-spacing:2px;
-      margin:0;
-      text-transform:uppercase;
-      text-shadow:2px 2px 4px rgba(0,0,0,.6);
-    }
+body{
+  margin:0;
+  padding:20px;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:#222;
+}
 
-    .shop-name span{color:#fcc419}
-    .shop-sub{font-size:14px;margin:5px 0 15px;color:#e0e0e0;letter-spacing:1px}
-    .services-strip{
-      background:#061e38;
-      padding:8px 5px;
-      font-size:13px;
-      font-weight:bold;
-      border-top:1px solid rgba(255,255,255,.1);
-      word-spacing:2px;
-    }
+/* SHOP HEADER */
 
-    .container{
-      background:#fff;
-      padding:25px;
-      border-radius:0 0 12px 12px;
-      box-shadow:0 8px 25px rgba(0,0,0,.1);
-      max-width:850px;
-      width:100%;
-      margin-bottom:30px;
-    }
+.shop-banner{
+  max-width:850px;
+  width:100%;
+  margin:auto;
+  background:linear-gradient(180deg,#0f529a,#0a396c);
+  color:white;
+  text-align:center;
+  padding:20px 10px 0;
+  border-radius:12px 12px 0 0;
+}
 
-    h2{
-      text-align:center;
-      color:var(--green);
-      margin-top:10px;
-      font-size:24px;
-      border-bottom:3px solid var(--green);
-      padding-bottom:10px;
-    }
+.shop-name{
+  font-size:clamp(25px,4vw,36px);
+  font-weight:900;
+  letter-spacing:2px;
+  margin:0;
+}
 
-    .notice{
-      background:#fff7e6;
-      color:#7a4b00;
-      border:1px solid #f2d39b;
-      padding:10px 12px;
-      border-radius:8px;
-      margin-bottom:16px;
-      font-size:13px;
-    }
+.shop-name span{
+  color:#fcc419;
+}
 
-    .pdf-upload-box {
-      background: #eef5fc;
-      border: 2px dashed var(--blue1);
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+.shop-sub{
+  font-size:13px;
+  margin:7px 0 15px;
+}
 
-    .form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:15px;
-    }
+.services-strip{
+  background:#061e38;
+  padding:10px 5px;
+  font-size:13px;
+  font-weight:bold;
+}
 
-    .form-group{margin-bottom:5px}
-    .form-group.full-width{grid-column:span 2}
+/* MAIN CONTAINER */
 
-    .form-group label{
-      display:block;
-      margin-bottom:5px;
-      font-weight:bold;
-      color:#333;
-      font-size:13px;
-    }
+.container{
+  max-width:850px;
+  width:100%;
+  margin:0 auto 30px;
+  background:#fff;
+  padding:25px;
+  border-radius:0 0 12px 12px;
+  box-shadow:0 8px 25px #00000015;
+}
 
-    .form-group input{
-      width:100%;
-      padding:9px 12px;
-      border:1px solid #ccc;
-      border-radius:4px;
-    }
+h2{
+  text-align:center;
+  color:var(--green);
+  border-bottom:3px solid var(--green);
+  padding-bottom:10px;
+}
 
-    .form-group input:focus{
-      outline:none;
-      border-color:var(--green);
-      box-shadow:0 0 0 3px rgba(11,70,34,.12);
-    }
+.notice{
+  background:#fff7e6;
+  border:1px solid #f2d39b;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:18px;
+  font-size:13px;
+}
 
-    .land-entry-row{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:8px;
-      background:#f4f9f4;
-      padding:10px;
-      border:1px dashed var(--green);
-      border-radius:6px;
-      margin-bottom:10px;
-    }
+/* PDF UPLOAD */
 
-    .land-entry-row input{
-      width:100%;
-      padding:6px;
-      font-size:12px;
-      border:1px solid #ccc;
-      border-radius:4px;
-    }
+.pdf-upload-box{
+  background:#eef5fc;
+  border:2px dashed var(--blue);
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:20px;
+  text-align:center;
+}
 
-    .action-buttons{
-      display:flex;
-      gap:15px;
-      margin-top:15px;
-      grid-column:span 2;
-      flex-wrap:wrap;
-    }
+/* FORM */
 
-    .btn-submit,.btn-add-land,.btn-secondary,.btn-modal-pay,.cancel-btn{
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      font-weight:bold;
-      transition:.2s ease;
-    }
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
 
-    .btn-submit{
-      background:var(--green);
-      color:#fff;
-      padding:12px 24px;
-      font-size:16px;
-      flex:1;
-      min-width:220px;
-    }
+.form-group{
+  margin-bottom:5px;
+  min-width:0;
+}
 
-    .btn-add-land{
-      background:var(--green-mid);
-      color:#fff;
-      padding:10px 20px;
-      font-size:14px;
-    }
+.form-group.full-width{
+  grid-column:span 2;
+}
 
-    .btn-secondary{
-      background:#e9ecef;
-      color:#333;
-      padding:12px 20px;
-      font-size:14px;
-      min-width:180px;
-    }
+.form-group label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:bold;
+}
 
-    #id-card-print-area{
-      display:flex;
-      justify-content:center;
-      gap:20px;
-      flex-wrap:wrap;
-      margin-top:10px;
-      width:100%;
-    }
+.form-group input{
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+  font-size:14px;
+}
 
-    .id-card{
-      width:var(--card-w);
-      height:var(--card-h);
-      border:.8px solid var(--green);
-      border-radius:3mm;
-      background:#fff;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      box-shadow:0 4px 10px rgba(0,0,0,.15);
-      position:relative;
-      flex:0 0 auto;
-    }
+.form-group input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px #0b462215;
+}
 
-    .card-header {
-      background: var(--green);
-      color: #fff;
-      padding: 1mm 2mm;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: .45mm solid var(--gold);
-      min-height: 10mm;
-      gap: 2mm;
-    }
+/* LAND INPUT */
 
-    .header-title {
-      text-align: center;
-      flex: 1;
-      min-width: 0;
-    }
+.land-entry-row{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+  background:#f4f9f4;
+  padding:10px;
+  border:1px dashed var(--green);
+  border-radius:7px;
+  margin-bottom:10px;
+}
 
-    .header-title h3 {
-      margin: 0;
-      font-size: 3.3mm;
-      font-weight: 700;
-      line-height: 1.05;
-    }
+.land-entry-row input{
+  width:100%;
+  min-width:0;
+  padding:8px 5px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  font-size:12px;
+}
 
-    .header-title p {
-      margin: .35mm 0 0;
-      font-size: 2.1mm;
-      color: #f0f0f0;
-      line-height: 1;
-    }
+/* BUTTONS */
 
-    .header-logo-left, .header-logo-right {
-      width: 7mm;
-      height: 7mm;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      border-radius: 50%;
-      border: .35mm solid var(--gold);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
+.action-buttons{
+  display:flex;
+  gap:12px;
+  grid-column:span 2;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
 
-    .header-logo-left img, .header-logo-right img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+button{
+  border:0;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.2s;
+}
 
-    .card-body-front{
-      padding:1.8mm 2mm 1.5mm;
-      display:flex;
-      gap:2.2mm;
-      align-items:center;
-      flex:1;
-      min-height:0;
-    }
+button:hover{
+  opacity:.9;
+}
 
-    .photo-box{
-      width:16.5mm;
-      height:21mm;
-      border:.45mm solid var(--green);
-      background:#f9f9f9;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:2.2mm;
-      color:#888;
-      border-radius:1mm;
-      overflow:hidden;
-      flex-shrink:0;
-    }
+.btn-submit{
+  flex:1;
+  min-width:200px;
+  background:var(--green);
+  color:white;
+  padding:13px;
+  font-size:16px;
+}
 
-    .photo-box img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+.btn-add-land{
+  background:#2e7d32;
+  color:white;
+  padding:11px 18px;
+}
 
-    .info-box{
-      flex:1;
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-    }
+.btn-secondary{
+  background:#e9ecef;
+  color:#222;
+  padding:13px 20px;
+}
 
-    .farmer-name-en{
-      margin:0 0 0.4mm 0;
-      font-size:3.4mm;
-      font-weight:700;
-      color:var(--green);
-      line-height:1.1;
-      word-break:break-word;
-    }
+/* CARD PREVIEW AREA */
 
-    .farmer-name-hi{
-      margin:0 0 1.2mm 0;
-      font-size:3mm;
-      font-weight:700;
-      line-height:1.1;
-      color:#333;
-      word-break:break-word;
-    }
+#id-card-print-area{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:15px;
+  flex-wrap:wrap;
+  margin:25px auto;
+}
 
-    .info-table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:2.1mm;
-      table-layout:fixed;
-    }
+/* PVC CARD - EXACT SIZE */
 
-    .info-table td{
-      padding:.4mm 0;
-      line-height:1.1;
-      vertical-align:top;
-      word-break:break-word;
-    }
+.id-card{
+  width:var(--card-w);
+  height:var(--card-h);
+  min-width:var(--card-w);
+  flex:0 0 var(--card-w);
 
-    .info-label{
-      width:16.5mm;
-      color:#555;
-      font-weight:700;
-      padding-right:1mm;
-    }
+  box-sizing:border-box;
+  position:relative;
+  overflow:hidden;
 
-    .qr-box{
-      width:14.5mm;
-      height:14.5mm;
-      flex-shrink:0;
-      border:.25mm solid #dfe5df;
-      border-radius:1mm;
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      padding:.3mm;
-    }
+  display:flex;
+  flex-direction:column;
 
-    .qr-box img,.qr-box canvas{
-      width:100%!important;
-      height:100%!important;
-      display:block!important;
-    }
+  background:#fff;
 
-    .farmer-id-ribbon{
-      width:100%;
-      background:var(--green);
-      color:#fff;
-      text-align:center;
-      font-size:2.4mm;
-      font-weight:700;
-      padding:.9mm 1mm;
-      min-height:5.2mm;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      line-height:1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+  /* बॉर्डर सीधे कार्ड का हिस्सा है */
+  border:0.55mm solid var(--green);
+  border-radius:3.2mm;
 
-    .farmer-id-ribbon span{
-      color:#8ce99a;
-      display:inline-block;
-      max-width:68%;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      vertical-align:bottom;
-    }
+  box-shadow:0 4px 12px #00000020;
 
-    .card-footer-text{
-      width:100%;
-      background:#072e16;
-      color:#fff;
-      text-align:center;
-      font-size:1.55mm;
-      padding:.7mm 1mm;
-      flex-shrink:0;
-      min-height:4mm;
-      line-height:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
 
-    .enrollment-header{
-      background:var(--green);
-      color:#fff;
-      text-align:center;
-      padding:1.2mm 1.4mm;
-      font-size:2.3mm;
-      font-weight:700;
-      border-bottom:.4mm solid var(--gold);
-      line-height:1.1;
-    }
+/* FRONT HEADER */
 
-    .enrollment-id{
-      color:#8ce99a;
-      font-size:2.2mm;
-      font-weight:700;
-      word-break:break-all;
-    }
+.card-header{
+  background:var(--green);
+  color:#fff;
+  min-height:10mm;
+  padding:1mm 2mm;
 
-    .back-body{
-      padding:1.8mm 2mm 1.2mm;
-      font-size:2.1mm;
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
-      position:relative;
-      min-height:0;
-    }
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-    .address-text{
-      font-weight:700;
-      margin-bottom:1mm;
-      color:#333;
-      line-height:1.15;
-      font-size:2mm;
-      word-break:break-word;
-    }
+  gap:2mm;
+  border-bottom:.45mm solid var(--gold);
+}
 
-    .land-title{
-      font-weight:700;
-      color:var(--green);
-      margin:.6mm 0 .8mm;
-      font-size:2.2mm;
-    }
+.header-title{
+  flex:1;
+  min-width:0;
+  text-align:center;
+}
 
-    .land-table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:1.5mm;
-      text-align:center;
-      margin-bottom:.6mm;
-      table-layout:fixed;
-    }
+.header-title h3{
+  font-size:3.3mm;
+  margin:0;
+  line-height:1.1;
+}
 
-    .land-table th{
-      background:#f2f2f2;
-      color:var(--green);
-      font-weight:700;
-      border:.15mm solid #ddd;
-      padding:.4mm .2mm;
-      word-break:break-word;
-      line-height:1.05;
-    }
+.header-title p{
+  font-size:2.1mm;
+  margin:.5mm 0 0;
+}
 
-    .land-table td{
-      border:.15mm solid #ddd;
-      padding:.3mm .2mm;
-      height:4.6mm;
-      font-weight:700;
-      word-break:break-word;
-      line-height:1.05;
-    }
+.header-logo-left,
+.header-logo-right{
+  width:7mm;
+  height:7mm;
+  flex-shrink:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+  border:0.3mm solid var(--gold);
+  border-radius:50%;
+  overflow:hidden;
+}
 
-    .disclaimer-text{
-      font-size:1.45mm;
-      color:#666;
-      text-align:justify;
-      line-height:1.1;
-      margin-top:auto;
-      padding-bottom:.3mm;
-    }
+.header-logo-left img,
+.header-logo-right img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
-    .payment-modal{
-      display:none;
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,.6);
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-      backdrop-filter:blur(3px);
-      padding:15px;
-    }
+/* FRONT BODY */
 
-    .payment-box{
-      background:#fff;
-      padding:25px;
-      border-radius:12px;
-      text-align:center;
-      width:100%;
-      max-width:360px;
-      box-shadow:0 10px 30px rgba(0,0,0,.3);
-    }
+.card-body-front{
+  flex:1;
+  min-height:0;
+  padding:1.5mm 2mm;
+  display:flex;
+  align-items:center;
+  gap:2mm;
+}
 
-    .payment-box h3{
-      margin:0 0 10px;
-      color:var(--danger);
-      font-size:18px;
-    }
+.photo-box{
+  width:16.5mm;
+  height:21mm;
+  flex-shrink:0;
+  border:.4mm solid var(--green);
+  border-radius:1mm;
+  overflow:hidden;
+  background:#f5f5f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#888;
+  font-size:2.2mm;
+}
 
-    .qr-code-img{
-      width:200px;
-      height:200px;
-      margin:12px auto;
-      border:1px solid #ddd;
-      padding:5px;
-      border-radius:8px;
-      object-fit:contain;
-      background:#fff;
-      display:block;
-    }
+.photo-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-    .btn-modal-pay{
-      background:var(--green);
-      color:#fff;
-      padding:10px 20px;
-      font-size:15px;
-      width:100%;
-      margin-top:5px;
-    }
+.info-box{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
 
-    .cancel-btn{
-      background:#e74c3c;
-      color:#fff;
-      padding:8px 15px;
-      margin-top:12px;
-      font-size:13px;
-      width:100%;
-    }
+.farmer-name-en{
+  font-size:3.3mm;
+  color:var(--green);
+  font-weight:bold;
+  margin:0 0 .5mm;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
 
-    @media (max-width:768px){
-      .form-grid{grid-template-columns:1fr}
-      .form-group.full-width,.action-buttons{grid-column:span 1}
-      .land-entry-row{grid-template-columns:1fr 1fr}
-      .action-buttons{flex-direction:column}
-      .btn-submit,.btn-secondary{width:100%}
-      #id-card-print-area{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
-    }
+.farmer-name-hi{
+  font-size:2.8mm;
+  font-weight:bold;
+  margin:0 0 1mm;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
 
-    /* प्रिंट के लिए नया और सुरक्षित CSS */
-    @media print{
-      body { padding:0; background:#fff; margin:0; }
-      /* फालतू चीजों को पूरी तरह से हटा दें ताकि सादा पेज न आए */
-      .shop-banner, .container, .payment-modal { display:none !important; }
-      
-      /* सिर्फ कार्ड एरिया दिखेगा */
-      #id-card-print-area {
-        position: absolute;
-        left: 12mm;
-        top: 15mm;
-        width: 180mm;
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 5mm;
-        flex-wrap: nowrap;
-        visibility: visible !important;
-      }
-      
-      .id-card {
-        width: 85.6mm !important;
-        height: 53.98mm !important;
-        box-shadow: none;
-        border: .35mm solid var(--green);
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        page-break-inside: avoid;
-      }
-      @page { size: A4 portrait; margin: 0; }
-    }
-  </style>
+.info-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:2.05mm;
+}
+
+.info-table td{
+  padding:.4mm 0;
+  line-height:1.1;
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+
+.info-label{
+  width:15mm;
+  font-weight:bold;
+  color:#555;
+}
+
+.qr-box{
+  width:14mm;
+  height:14mm;
+  flex-shrink:0;
+  background:#fff;
+  border:.2mm solid #ddd;
+  border-radius:.7mm;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  padding:.3mm;
+}
+
+.qr-box img,
+.qr-box canvas{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+}
+
+/* ID RIBBON */
+
+.farmer-id-ribbon{
+  min-height:5mm;
+  background:var(--green);
+  color:white;
+  font-size:2.4mm;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:1mm;
+  padding:.7mm;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+.farmer-id-ribbon span{
+  color:#8ce99a;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* CARD FOOTER */
+
+.card-footer-text{
+  min-height:4mm;
+  flex-shrink:0;
+  background:var(--dark);
+  color:white;
+  text-align:center;
+  font-size:1.55mm;
+  padding:.7mm 1mm;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  line-height:1;
+}
+
+/* BACK CARD */
+
+.enrollment-header{
+  min-height:10mm;
+  background:var(--green);
+  color:white;
+  text-align:center;
+  padding:1.5mm;
+  font-size:2.4mm;
+  font-weight:bold;
+  line-height:1.2;
+  border-bottom:.45mm solid var(--gold);
+}
+
+.enrollment-id{
+  display:block;
+  color:#8ce99a;
+  font-size:2.2mm;
+  overflow-wrap:anywhere;
+}
+
+.back-body{
+  flex:1;
+  min-height:0;
+  padding:2mm;
+  display:flex;
+  flex-direction:column;
+}
+
+.address-text{
+  font-size:2.1mm;
+  font-weight:bold;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+
+.address-text span{
+  font-weight:normal;
+}
+
+.land-title{
+  color:var(--green);
+  font-size:2.3mm;
+  font-weight:bold;
+  margin:1.5mm 0 1mm;
+}
+
+.land-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  text-align:center;
+  font-size:1.55mm;
+}
+
+.land-table th{
+  background:#eaf3eb;
+  color:var(--green);
+  border:.15mm solid #ccc;
+  padding:.7mm .2mm;
+  overflow-wrap:anywhere;
+}
+
+.land-table td{
+  border:.15mm solid #ccc;
+  padding:.8mm .2mm;
+  height:4.5mm;
+  font-weight:bold;
+  overflow-wrap:anywhere;
+}
+
+.disclaimer-text{
+  margin-top:auto;
+  padding-top:1mm;
+  font-size:1.45mm;
+  color:#555;
+  line-height:1.15;
+  text-align:justify;
+}
+
+/* PAYMENT MODAL */
+
+.payment-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0009;
+  z-index:9999;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+
+.payment-box{
+  width:100%;
+  max-width:360px;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.payment-box h3{
+  color:#c0392b;
+  font-size:18px;
+}
+
+.qr-code-img{
+  width:190px;
+  height:190px;
+  object-fit:contain;
+  border:1px solid #ddd;
+  padding:5px;
+  margin:12px auto;
+  display:block;
+}
+
+.btn-modal-pay{
+  width:100%;
+  padding:12px;
+  background:var(--green);
+  color:white;
+}
+
+.cancel-btn{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  background:#e74c3c;
+  color:white;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+  body{padding:10px}
+  .container{padding:15px}
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full-width,
+  .action-buttons{grid-column:span 1}
+  .land-entry-row{grid-template-columns:1fr 1fr}
+  .action-buttons{flex-direction:column}
+  .btn-submit{width:100%}
+  #id-card-print-area{
+    justify-content:flex-start;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    padding:5px 2px 15px;
+  }
+}
+
+/* PRINT SETTINGS */
+
+@page{
+  size:A4 portrait;
+  margin:0;
+}
+
+@media print{
+
+  html,body{
+    width:210mm;
+    min-height:297mm;
+    margin:0!important;
+    padding:0!important;
+    background:white!important;
+  }
+
+  body{
+    display:block!important;
+  }
+
+  .shop-banner,
+  .container,
+  .payment-modal{
+    display:none!important;
+  }
+
+  #id-card-print-area{
+    position:absolute!important;
+    left:12mm!important;
+    top:15mm!important;
+
+    width:auto!important;
+    height:auto!important;
+
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+
+    gap:5mm!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+
+  .id-card{
+    width:85.6mm!important;
+    min-width:85.6mm!important;
+    height:53.98mm!important;
+    min-height:53.98mm!important;
+    flex:0 0 85.6mm!important;
+
+    box-sizing:border-box!important;
+    margin:0!important;
+
+    border:.55mm solid #0b4622!important;
+    border-radius:3.2mm!important;
+
+    box-shadow:none!important;
+    overflow:hidden!important;
+
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="shop-banner">
-    <div class="shop-name">DK JAN SUVIDHA <span>KENDRA</span></div>
-    <div class="shop-sub">CSC Center • Online Services • Money Transfer</div>
-    <div class="services-strip">
-      आधार कार्ड • पैन कार्ड • आय/जाति प्रमाण पत्र • रेलवे टिकट • सभी ऑनलाइन फॉर्म यहाँ भरे जाते हैं।
-    </div>
+<!-- SHOP HEADER -->
+
+<div class="shop-banner">
+  <h1 class="shop-name">DK JAN SUVIDHA <span>KENDRA</span></h1>
+  <div class="shop-sub">
+    CSC Center • Online Services • Money Transfer
   </div>
-
-  <div class="container">
-    <h2>AgriStack फार्मर आईडी कार्ड पोर्टल (Farmer ID Card Portal)</h2>
-    <div class="notice">
-      डीके जन सुविधा केंद्र आपका स्वागत करता है
-    </div>
-
-    <div class="pdf-upload-box">
-      <label for="pdfInput" style="display:block; font-weight:bold; color:var(--blue1); margin-bottom:8px; font-size:15px;">
-        🚀 पीडीएफ से ऑटो-फिल करें (Upload Farmer Registration/ID PDF):
-      </label>
-      <input type="file" id="pdfInput" accept=".pdf" style="width:100%; max-width:400px; padding:8px; cursor:pointer;" />
-      <p style="margin:5px 0 0; font-size:12px; color:#555;">डिजिटल पीडीएफ फाइल से सारा डाटा अपने आप फॉर्म में आ जाएगा।</p>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="nameEn">Farmer Name (English):</label>
-        <input type="text" id="nameEn" value="Farmer Name" placeholder="Type in English (Auto converts to Hindi)">
-      </div>
-      <div class="form-group">
-        <label for="nameHi">किसान का नाम (Hindi):</label>
-        <input type="text" id="nameHi" value="किसान का नाम">
-      </div>
-      <div class="form-group">
-        <label for="fatherName">Father's Name:</label>
-        <input type="text" id="fatherName" value="Father Name">
-      </div>
-      <div class="form-group">
-        <label for="dob">Date of Birth (DOB):</label>
-        <input type="text" id="dob" value="01/01/2000" placeholder="DD/MM/YYYY">
-      </div>
-      <div class="form-group">
-        <label for="genderAge">Gender / Age:</label>
-        <input type="text" id="genderAge" value="Male / 00">
-      </div>
-      <div class="form-group">
-        <label for="caste">Caste Category:</label>
-        <input type="text" id="caste" value="NA">
-      </div>
-      <div class="form-group">
-        <label for="mobile">Mobile No:</label>
-        <input type="text" id="mobile" value="**********" maxlength="10">
-      </div>
-      <div class="form-group">
-        <label for="aadhar">Aadhar No:</label>
-        <input type="text" id="aadhar" value="**** **** ****" maxlength="14" placeholder="1234 5678 9012">
-      </div>
-      <div class="form-group">
-        <label for="fid">Farmer ID Number:</label>
-        <input type="text" id="fid" value="***********">
-      </div>
-      <div class="form-group">
-        <label for="enrollId">Farmer Enrollment Id:</label>
-        <input type="text" id="enrollId" value="**_***_****_******_******">
-      </div>
-      <div class="form-group">
-        <label for="addr">Full Address:</label>
-        <input type="text" id="addr" value="yadu paran, ward no. **, Village, Block, State-Pin">
-      </div>
-
-      <div class="form-group">
-        <label for="photoInput">Upload Photo (फोटो अपलोड करें):</label>
-        <input type="file" id="photoInput" accept="image/*" style="margin-bottom:10px;">
-        <div style="margin-top:5px;margin-bottom:10px;">
-          <img id="logoPreview" alt="Photo preview" style="max-width:100px;max-height:100px;display:none;border:1px solid #ccc;border-radius:4px;">
-        </div>
-      </div>
-
-      <div class="form-group" style="display:flex;align-items:flex-end;margin-bottom:5px;">
-        <button type="button" class="btn-add-land" id="addLandBtn">Add Land Details ( + )</button>
-      </div>
-
-      <div class="form-group full-width">
-        <label style="color:#0b4622;font-size:14px;margin-top:10px;">Land Details Records (खेती की सूची):</label>
-        <div id="landInputsContainer">
-          <div class="land-entry-row">
-            <input type="text" class="l-state" value="Bihar" placeholder="State">
-            <input type="text" class="l-dist" value="Samastipur" placeholder="District">
-            <input type="text" class="l-sub" value="Kalyanpur" placeholder="Sub-Dist">
-            <input type="text" class="l-vill" value="Yadu Paran" placeholder="Village">
-            <input type="text" class="l-totalgatano" value="112" placeholder="Total-gata">
-            <input type="text" class="l-totalarea" value="0.4500" placeholder="Total-Area">
-          </div>
-        </div>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn-submit" id="printBtn" type="button">Print ID Card (Front & Back)</button>
-        <button class="btn-secondary" id="resetBtn" type="button">Reset Demo Data</button>
-      </div>
-    </div>
+  <div class="services-strip">
+    आधार कार्ड • पैन कार्ड • आय/जाति प्रमाण पत्र • रेलवे टिकट • सभी ऑनलाइन फॉर्म
   </div>
+</div>
 
-  <div class="payment-modal" id="myPaymentModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="payment-box">
-      <h3>प्रिंट करने के लिए फीस ₹20 पे करें</h3>
-      <p style="font-size:13px;color:#555;margin:5px 0;">कृपया किसी भी UPI ऐप से इस QR कोड को स्कैन करें:</p>
-      <img src="qr.png" alt="UPI QR Code" class="qr-code-img" id="paymentQrImg" onerror="this.style.display='none';">
-      <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:8px 0;">* पेमेंट पूरा हो जाने के बाद ही नीचे बटन दबाएं</p>
-      <button class="btn-modal-pay" id="confirmPayBtn" type="button">मैंने पेमेंट कर दिया, प्रिंट करें</button>
-      <button class="cancel-btn" id="cancelModalBtn" type="button">कैंसिल करें</button>
-    </div>
-  </div>
+<!-- FORM -->
 
-  <div id="id-card-print-area">
-    <div class="id-card">
-      <div class="card-header">
-        <div class="header-logo-left">
-          <img src="uplogo.png" alt="Left Logo" onerror="this.parentElement.textContent='🌾'">
-        </div>
-        
-        <div class="header-title">
-          <h3>AgriStack फार्मर आईडी कार्ड</h3>
-          <p>(Farmer ID Card)</p>
-        </div>
+<div class="container">
 
-        <div class="header-logo-right">
-          <img src="flogo.png" alt="Right Logo" onerror="this.parentElement.textContent='🌾'">
-        </div>
-      </div>
+<h2>AgriStack Farmer ID Card Portal</h2>
 
-      <div class="card-body-front">
-        <div class="photo-box" id="picPreview">Photo</div>
+<div class="notice">
+  डीके जन सुविधा केंद्र आपका स्वागत करता है।
+</div>
 
-        <div class="info-box">
-          <p class="farmer-name-en" id="lblNameEn">Farmer Name</p>
-          <p class="farmer-name-hi" id="lblNameHi">किसान का नाम</p>
+<div class="pdf-upload-box">
+  <label for="pdfInput">
+    🚀 PDF से उपलब्ध जानकारी पढ़ें
+  </label>
+  <br><br>
+  <input type="file" id="pdfInput" accept=".pdf">
+  <p style="font-size:12px">
+    PDF से उपलब्ध टेक्स्ट को पढ़ने का प्रयास किया जाएगा।
+  </p>
+</div>
 
-          <table class="info-table">
-            <tr><td class="info-label">Father:</td><td id="lblFatherName">Father Name</td></tr>
-            <tr><td class="info-label">DOB:</td><td id="lblDob">01/01/2000</td></tr>
-            <tr><td class="info-label">Gender/Age:</td><td id="lblGenAge">Male / 00</td></tr>
-            <tr><td class="info-label">Caste:</td><td id="lblCaste">NA</td></tr>
-            <tr><td class="info-label">Mobile:</td><td id="lblMobile">**********</td></tr>
-            <tr><td class="info-label">Aadhaar:</td><td id="lblAadhar">**** **** ****</td></tr>
-          </table>
-        </div>
+<div class="form-grid">
 
-        <div class="qr-box" id="qrcode"></div>
-      </div>
+<div class="form-group">
+<label>Farmer Name (English)</label>
+<input id="nameEn" type="text" placeholder="Farmer Name">
+</div>
 
-      <div class="farmer-id-ribbon">Farmer ID : <span id="lblFid">***********</span></div>
-      <div class="card-footer-text">Department of Agriculture and Farmers Welfare • Government of India</div>
-    </div>
+<div class="form-group">
+<label>किसान का नाम (Hindi)</label>
+<input id="nameHi" type="text" placeholder="किसान का नाम">
+</div>
 
-    <div class="id-card">
-      <div class="enrollment-header">
-        Farmer Enrollment Id<br>
-        <span class="enrollment-id" id="lblEnrollId">**_***_****_******_******</span>
-      </div>
+<div class="form-group">
+<label>Father's Name</label>
+<input id="fatherName" type="text" placeholder="Father Name">
+</div>
 
-      <div class="back-body">
-        <div class="address-text">
-          Address: <span id="lblAddr" style="font-weight:normal;">yadu paran, ward no. **, Village, Block, State-Pin</span>
-        </div>
+<div class="form-group">
+<label>Date of Birth</label>
+<input id="dob" type="text" placeholder="DD/MM/YYYY">
+</div>
 
-        <div class="land-title">Land Ownership Details</div>
+<div class="form-group">
+<label>Gender / Age</label>
+<input id="genderAge" type="text" placeholder="Male / 00">
+</div>
 
-        <table class="land-table">
-          <thead>
-            <tr>
-              <th>State</th>
-              <th>District</th>
-              <th>Sub-Dist</th>
-              <th>Village</th>
-              <th>Totalgatano</th>
-              <th>ToatalArea</th>
-            </tr>
-          </thead>
-          <tbody id="landTableBody"></tbody>
-        </table>
+<div class="form-group">
+<label>Caste Category</label>
+<input id="caste" type="text" placeholder="Category">
+</div>
 
-        <div class="disclaimer-text">
-          * This card is for personal facilitation use only. This is not a government-issued identity. Land details shown here are based on user-provided or integrated record data.
-        </div>
-      </div>
+<div class="form-group">
+<label>Mobile Number</label>
+<input id="mobile" type="text" maxlength="10" placeholder="Mobile Number">
+</div>
 
-      <div class="card-footer-text">Digital AgriStack Services • Powered by Land Records Databank</div>
-    </div>
-  </div>
+<div class="form-group">
+<label>Aadhaar Number</label>
+<input id="aadhar" type="text" maxlength="14" placeholder="1234 5678 9012">
+</div>
 
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+<div class="form-group">
+<label>Farmer ID Number</label>
+<input id="fid" type="text" placeholder="Farmer ID">
+</div>
 
-    const MAX_LAND_ROWS = 4;
-    const el = (id) => document.getElementById(id);
-    const fields = {
-      nameEn: el('nameEn'),
-      nameHi: el('nameHi'),
-      fatherName: el('fatherName'),
-      dob: el('dob'),
-      genderAge: el('genderAge'),
-      caste: el('caste'),
-      mobile: el('mobile'),
-      aadhar: el('aadhar'),
-      fid: el('fid'),
-      enrollId: el('enrollId'),
-      addr: el('addr'),
-      photoInput: el('photoInput'),
-      picPreview: el('picPreview'),
-      qrcode: el('qrcode'),
-      landInputsContainer: el('landInputsContainer'),
-      landTableBody: el('landTableBody'),
-      paymentModal: el('myPaymentModal'),
-      pdfInput: el('pdfInput')
-    };
+<div class="form-group">
+<label>Farmer Enrollment ID</label>
+<input id="enrollId" type="text" placeholder="Enrollment ID">
+</div>
 
-    function sanitizeText(value) { return String(value || '').trim(); }
-    function maskAadhar(val) { const raw = String(val||'').replace(/\D/g, '').slice(0, 12); return raw.length === 12 ? raw.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3') : sanitizeText(val) || '-'; }
-    function maskMobile(val) { return String(val||'').replace(/\D/g, '').slice(0, 10) || sanitizeText(val) || '-'; }
+<div class="form-group full-width">
+<label>Full Address</label>
+<input id="addr" type="text" placeholder="Village, Block, District, State, PIN">
+</div>
 
-    function updateCard() {
-      try {
-        el('lblNameEn').textContent = sanitizeText(fields.nameEn.value) || '-';
-        el('lblNameHi').textContent = sanitizeText(fields.nameHi.value) || '-';
-        el('lblFatherName').textContent = sanitizeText(fields.fatherName.value) || '-';
-        el('lblDob').textContent = sanitizeText(fields.dob.value) || '-';
-        el('lblGenAge').textContent = sanitizeText(fields.genderAge.value) || '-';
-        el('lblCaste').textContent = sanitizeText(fields.caste.value) || '-';
-        el('lblMobile').textContent = maskMobile(fields.mobile.value);
-        el('lblAadhar').textContent = maskAadhar(fields.aadhar.value);
-        el('lblFid').textContent = sanitizeText(fields.fid.value) || '-';
-        el('lblEnrollId').textContent = sanitizeText(fields.enrollId.value) || '-';
-        el('lblAddr').textContent = sanitizeText(fields.addr.value) || '-';
-        
-        if(typeof QRCode !== 'undefined') {
-          fields.qrcode.innerHTML = '';
-          new QRCode(fields.qrcode, { text: 'AgriStackFarmer:' + (fields.fid.value || ''), width: 52, height: 52 });
-        }
+<div class="form-group">
+<label>Upload Farmer Photo</label>
+<input type="file" id="photoInput" accept="image/*">
+<img id="logoPreview" style="display:none;max-width:100px;margin-top:10px">
+</div>
 
-        const tbody = fields.landTableBody;
-        tbody.innerHTML = '';
-        const rows = fields.landInputsContainer.querySelectorAll('.land-entry-row');
-        
-        rows.forEach(row => {
-          const state = row.querySelector('.l-state').value;
-          const dist = row.querySelector('.l-dist').value;
-          const sub = row.querySelector('.l-sub').value;
-          const vill = row.querySelector('.l-vill').value;
-          const toatalgatano = row.querySelector('.l-toatalgatano').value;
-          const toatalarea = row.querySelector('.l-toatalarea').value;
+<div class="form-group" style="display:flex;align-items:flex-end">
+<button type="button" class="btn-add-land" id="addLandBtn">
++ Add Land Details
+</button>
+</div>
 
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${sanitizeText(state)}</td>
-            <td>${sanitizeText(dist)}</td>
-            <td>${sanitizeText(sub)}</td>
-            <td>${sanitizeText(vill)}</td>
-            <td>${sanitizeText(toatalgatano)}</td>
-            <td>${sanitizeText(toatalarea)}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch(e) {
-        console.error("कार्ड अपडेट में त्रुटि:", e);
-      }
+<div class="form-group full-width">
+<label style="color:var(--green)">
+Land Details Records (खेती की जानकारी)
+</label>
+
+<div id="landInputsContainer">
+
+<div class="land-entry-row">
+<input class="l-state" placeholder="State">
+<input class="l-dist" placeholder="District">
+<input class="l-sub" placeholder="Sub-District">
+<input class="l-vill" placeholder="Village">
+<input class="l-totalgatano" placeholder="Gata No.">
+<input class="l-totalarea" placeholder="Total Area">
+</div>
+
+</div>
+</div>
+
+<div class="action-buttons">
+<button type="button" class="btn-submit" id="printBtn">
+Print Farmer ID Card (Front & Back)
+</button>
+
+<button type="button" class="btn-secondary" id="resetBtn">
+Reset Form
+</button>
+</div>
+
+</div>
+</div>
+
+<!-- PAYMENT MODAL -->
+
+<div class="payment-modal" id="myPaymentModal">
+<div class="payment-box">
+
+<h3>प्रिंट फीस ₹20</h3>
+<p>UPI QR कोड स्कैन करके भुगतान करें।</p>
+
+<img src="qr.png" class="qr-code-img"
+alt="Payment QR"
+onerror="this.style.display='none'">
+
+<p style="font-size:12px;color:#c0392b">
+भुगतान की पुष्टि स्वयं करें। यह पेज UPI भुगतान को स्वतः सत्यापित नहीं करता।
+</p>
+
+<button class="btn-modal-pay" id="confirmPayBtn">
+प्रिंट खोलें
+</button>
+
+<button class="cancel-btn" id="cancelModalBtn">
+Cancel
+</button>
+
+</div>
+</div>
+
+<!-- CARD PREVIEW -->
+
+<div id="id-card-print-area">
+
+<!-- FRONT CARD -->
+
+<div class="id-card">
+
+<div class="card-header">
+
+<div class="header-logo-left">
+<img src="uplogo.png" alt="Logo"
+onerror="this.style.display='none'">
+</div>
+
+<div class="header-title">
+<h3>AgriStack फार्मर आईडी कार्ड</h3>
+<p>(Farmer ID Card)</p>
+</div>
+
+<div class="header-logo-right">
+<img src="flogo.png" alt="Logo"
+onerror="this.style.display='none'">
+</div>
+
+</div>
+
+<div class="card-body-front">
+
+<div class="photo-box" id="picPreview">
+Photo
+</div>
+
+<div class="info-box">
+
+<p class="farmer-name-en" id="lblNameEn">-</p>
+<p class="farmer-name-hi" id="lblNameHi">-</p>
+
+<table class="info-table">
+
+<tr>
+<td class="info-label">Father:</td>
+<td id="lblFatherName">-</td>
+</tr>
+
+<tr>
+<td class="info-label">DOB:</td>
+<td id="lblDob">-</td>
+</tr>
+
+<tr>
+<td class="info-label">Gender/Age:</td>
+<td id="lblGenAge">-</td>
+</tr>
+
+<tr>
+<td class="info-label">Caste:</td>
+<td id="lblCaste">-</td>
+</tr>
+
+<tr>
+<td class="info-label">Mobile:</td>
+<td id="lblMobile">-</td>
+</tr>
+
+<tr>
+<td class="info-label">Aadhaar:</td>
+<td id="lblAadhar">-</td>
+</tr>
+
+</table>
+</div>
+
+<div class="qr-box" id="qrcode"></div>
+
+</div>
+
+<div class="farmer-id-ribbon">
+Farmer ID: <span id="lblFid">-</span>
+</div>
+
+<div class="card-footer-text">
+Department of Agriculture and Farmers Welfare • Government of India
+</div>
+
+</div>
+
+<!-- BACK CARD -->
+
+<div class="id-card">
+
+<div class="enrollment-header">
+Farmer Enrollment ID
+<span class="enrollment-id" id="lblEnrollId">-</span>
+</div>
+
+<div class="back-body">
+
+<div class="address-text">
+Address:
+<span id="lblAddr">-</span>
+</div>
+
+<div class="land-title">
+Land Ownership Details
+</div>
+
+<table class="land-table">
+
+<thead>
+<tr>
+<th>State</th>
+<th>District</th>
+<th>Sub-Dist</th>
+<th>Village</th>
+<th>Gata No.</th>
+<th>Total Area</th>
+</tr>
+</thead>
+
+<tbody id="landTableBody"></tbody>
+
+</table>
+
+<div class="disclaimer-text">
+* This is a privately generated information card for personal facilitation only. It is not a government-issued identity card or proof of land ownership. Please verify all details against official records.
+</div>
+
+</div>
+
+<div class="card-footer-text">
+DK Jan Suvidha Kendra • Digital Services
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* PDF WORKER */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+const el = id => document.getElementById(id);
+
+const MAX_LAND_ROWS = 4;
+
+const fields = [
+'nameEn','nameHi','fatherName','dob','genderAge',
+'caste','mobile','aadhar','fid','enrollId','addr'
+];
+
+/* SAFE TEXT */
+
+function value(id){
+  return el(id).value.trim();
+}
+
+function setText(id,text){
+  el(id).textContent = text || '-';
+}
+
+/* AADHAAR MASK */
+
+function maskAadhar(number){
+  const raw = number.replace(/\D/g,'').slice(0,12);
+
+  if(raw.length === 12){
+    return 'XXXX XXXX ' + raw.slice(8);
+  }
+
+  return '-';
+}
+
+/* UPDATE CARD */
+
+function updateCard(){
+
+  setText('lblNameEn',value('nameEn'));
+  setText('lblNameHi',value('nameHi'));
+  setText('lblFatherName',value('fatherName'));
+  setText('lblDob',value('dob'));
+  setText('lblGenAge',value('genderAge'));
+  setText('lblCaste',value('caste'));
+
+  const mobile = value('mobile');
+  setText('lblMobile',
+    mobile.length === 10 ? 'XXXXXX' + mobile.slice(-4) : '-'
+  );
+
+  setText('lblAadhar',maskAadhar(value('aadhar')));
+  setText('lblFid',value('fid'));
+  setText('lblEnrollId',value('enrollId'));
+  setText('lblAddr',value('addr'));
+
+  updateLandTable();
+  updateQR();
+}
+
+/* QR CODE */
+
+function updateQR(){
+
+  const box = el('qrcode');
+  box.innerHTML = '';
+
+  const fid = value('fid');
+
+  if(!fid || typeof QRCode === 'undefined'){
+    return;
+  }
+
+  new QRCode(box,{
+    text:'Farmer ID: ' + fid,
+    width:100,
+    height:100,
+    correctLevel:QRCode.CorrectLevel.M
+  });
+}
+
+/* LAND DETAILS */
+
+function updateLandTable(){
+
+  const tbody = el('landTableBody');
+  tbody.innerHTML = '';
+
+  const rows = document.querySelectorAll('.land-entry-row');
+
+  rows.forEach(row=>{
+
+    const classes = [
+      'l-state','l-dist','l-sub',
+      'l-vill','l-totalgatano','l-totalarea'
+    ];
+
+    const values = classes.map(cls=>{
+      return row.querySelector('.'+cls)?.value.trim() || '-';
+    });
+
+    if(values.every(v=>v==='-')){
+      return;
     }
 
-    // --- इंग्लिश से हिंदी ऑटो ट्रांसलेशन (Google API) ---
-    let typingTimer;
-    fields.nameEn.addEventListener('input', function() {
-      clearTimeout(typingTimer);
-      const text = this.value;
-      updateCard();
+    const tr = document.createElement('tr');
 
-      if(!text.trim()) {
-        fields.nameHi.value = '';
-        updateCard();
-        return;
-      }
-
-      typingTimer = setTimeout(async () => {
-        try {
-          const response = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
-          const data = await response.json();
-          if(data[0] === 'SUCCESS') {
-            let hindiText = '';
-            data[1].forEach(chunk => {
-                hindiText += chunk[1][0];
-            });
-            fields.nameHi.value = hindiText;
-            updateCard();
-          }
-        } catch (error) {
-          console.error("हिंदी ट्रांसलेशन फेल हुआ:", error);
-        }
-      }, 500); 
+    values.forEach(v=>{
+      const td = document.createElement('td');
+      td.textContent = v;
+      tr.appendChild(td);
     });
 
-    // नया लैंड रिकॉर्ड जोड़ने का बटन
-    el('addLandBtn').addEventListener('click', function() {
-      const container = fields.landInputsContainer;
-      const rowCount = container.querySelectorAll('.land-entry-row').length;
-      
-      if (rowCount >= MAX_LAND_ROWS) {
-        alert('आप अधिकतम ' + MAX_LAND_ROWS + ' लैंड रिकॉर्ड ही जोड़ सकते हैं।');
-        return;
-      }
+    tbody.appendChild(tr);
 
-      const newRow = document.createElement('div');
-      newRow.className = 'land-entry-row';
-      newRow.innerHTML = `
-        <input type="text" class="l-state" value="" placeholder="State">
-        <input type="text" class="l-dist" value="" placeholder="District">
-        <input type="text" class="l-sub" value="" placeholder="Sub-Dist">
-        <input type="text" class="l-vill" value="" placeholder="Village">
-        <input type="text" class="l-toatalgatano" value="" placeholder="Total-Gata">
-        <input type="text" class="l-totalarea" value="" placeholder="Total-Area">
-      `;
-      container.appendChild(newRow);
+  });
+}
 
-      // नए इनपुट्स पर इवेंट लगाना
-      newRow.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateCard);
-      });
-      
-      updateCard();
-    });
+/* INPUT EVENTS */
 
-    // फोटो अपलोड
-    fields.photoInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          fields.picPreview.innerHTML = `<img src="${e.target.result}" alt="Farmer Photo">`;
-          el('logoPreview').src = e.target.result;
-          el('logoPreview').style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+document.addEventListener('input',function(e){
 
-    // प्रिंट और पेमेंट बटन
-    el('printBtn').addEventListener('click', function() {
-      fields.paymentModal.style.display = 'flex';
-    });
-
-    el('confirmPayBtn').addEventListener('click', function() {
-      fields.paymentModal.style.display = 'none';
-      setTimeout(() => { window.print(); }, 300); // मॉडल बंद होने के बाद थोड़ा समय देकर प्रिंट खोलना ताकि ब्लैंक न हो
-    });
-
-    el('cancelModalBtn').addEventListener('click', function() {
-      fields.paymentModal.style.display = 'none';
-    });
-
-    // फॉर्म रीसेट
-    el('resetBtn').addEventListener('click', function() {
-      document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
-      fields.photoInput.value = '';
-      fields.picPreview.innerHTML = 'Photo';
-      el('logoPreview').style.display = 'none';
-      fields.landInputsContainer.innerHTML = `
-        <div class="land-entry-row">
-          <input type="text" class="l-state" value="" placeholder="State">
-          <input type="text" class="l-dist" value="" placeholder="District">
-          <input type="text" class="l-sub" value="" placeholder="Sub-Dist">
-          <input type="text" class="l-vill" value="" placeholder="Village">
-          <input type="text" class="l-totalgatano" value="" placeholder="Toatal-Gata">
-          <input type="text" class="l-totalarea" value="" placeholder="Total-Area">
-        </div>
-      `;
-      fields.landInputsContainer.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCard));
-      updateCard();
-    });
-
-    // PDF ऑटो फिल
-    fields.pdfInput.addEventListener('change', async function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async function(evt) {
-        const typedarray = new Uint8Array(evt.target.result);
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
-        let text = "";
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          text += content.items.map(item => item.str).join(" ") + "\n";
-        }
-        const clean = text.replace(/\s+/g, ' ');
-        
-        const fatherMatch = clean.match(/(?:Father's\sName|Father\sName|पिता\sका\sनाम|पिता का नाम)[\s:-]+([^,.]+)/i);
-        if(fatherMatch) fields.fatherName.value = fatherMatch[1].trim();
-        
-        updateCard();
-      };
-      reader.readAsArrayBuffer(file);
-    });
-
-    // शुरुआती इनपुट्स पर इवेंट सेट करना
-    document.querySelectorAll('input').forEach(i => {
-      if(i.id !== 'nameEn') {
-        i.addEventListener('input', updateCard);
-      }
-    });
-
-    // पहली बार लोड होने पर कार्ड सेट करना
+  if(e.target.matches('input')){
     updateCard();
-  </script>
+  }
+
+});
+
+/* ENGLISH TO HINDI */
+
+let typingTimer;
+
+el('nameEn').addEventListener('input',function(){
+
+  clearTimeout(typingTimer);
+
+  const text = this.value.trim();
+
+  if(!text){
+    el('nameHi').value='';
+    updateCard();
+    return;
+  }
+
+  typingTimer = setTimeout(async()=>{
+
+    try{
+
+      const url =
+      'https://inputtools.google.com/request?text='+
+      encodeURIComponent(text)+
+      '&itc=hi-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test';
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if(data[0]==='SUCCESS'){
+
+        let hindi='';
+
+        data[1].forEach(chunk=>{
+          hindi += chunk[1][0];
+        });
+
+        el('nameHi').value=hindi;
+        updateCard();
+      }
+
+    }catch(error){
+      console.error('Hindi conversion error:',error);
+    }
+
+  },600);
+
+});
+
+/* ADD LAND */
+
+el('addLandBtn').addEventListener('click',function(){
+
+  const container = el('landInputsContainer');
+
+  const count = container.querySelectorAll('.land-entry-row').length;
+
+  if(count>=MAX_LAND_ROWS){
+    alert('अधिकतम 4 Land Records जोड़े जा सकते हैं।');
+    return;
+  }
+
+  const row = document.createElement('div');
+
+  row.className='land-entry-row';
+
+  const placeholders=[
+    'State','District','Sub-District',
+    'Village','Gata No.','Total Area'
+  ];
+
+  const classes=[
+    'l-state','l-dist','l-sub',
+    'l-vill','l-totalgatano','l-totalarea'
+  ];
+
+  classes.forEach((cls,i)=>{
+
+    const input=document.createElement('input');
+    input.className=cls;
+    input.placeholder=placeholders[i];
+
+    row.appendChild(input);
+
+  });
+
+  container.appendChild(row);
+  updateCard();
+
+});
+
+/* PHOTO UPLOAD */
+
+el('photoInput').addEventListener('change',function(e){
+
+  const file=e.target.files[0];
+
+  if(!file) return;
+
+  if(!file.type.startsWith('image/')){
+    alert('कृपया सही फोटो चुनें।');
+    return;
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=function(event){
+
+    const img=document.createElement('img');
+    img.src=event.target.result;
+    img.alt='Farmer Photo';
+
+    el('picPreview').innerHTML='';
+    el('picPreview').appendChild(img);
+
+    el('logoPreview').src=event.target.result;
+    el('logoPreview').style.display='block';
+
+  };
+
+  reader.readAsDataURL(file);
+
+});
+
+/* PDF AUTO READ */
+
+el('pdfInput').addEventListener('change',async function(e){
+
+  const file=e.target.files[0];
+
+  if(!file) return;
+
+  if(file.type!=='application/pdf'){
+    alert('कृपया PDF फाइल चुनें।');
+    return;
+  }
+
+  try{
+
+    const buffer=await file.arrayBuffer();
+
+    const pdf=await pdfjsLib.getDocument({
+      data:new Uint8Array(buffer)
+    }).promise;
+
+    let text='';
+
+    for(let i=1;i<=pdf.numPages;i++){
+
+      const page=await pdf.getPage(i);
+      const content=await page.getTextContent();
+
+      text+=content.items.map(item=>item.str).join(' ')+' ';
+
+    }
+
+    const clean=text.replace(/\s+/g,' ');
+
+    const patterns=[
+      /Father'?s?\s*Name\s*[:\-]?\s*([A-Za-z .]+)/i,
+      /पिता\s*का\s*नाम\s*[:\-]?\s*([^,]+)/i
+    ];
+
+    for(const pattern of patterns){
+
+      const match=clean.match(pattern);
+
+      if(match){
+        el('fatherName').value=match[1].trim();
+        break;
+      }
+
+    }
+
+    updateCard();
+
+    alert('PDF पढ़ ली गई है। उपलब्ध जानकारी जांचकर बाकी फॉर्म भरें।');
+
+  }catch(error){
+
+    console.error(error);
+    alert('PDF पढ़ने में समस्या आई। कृपया दूसरी PDF आजमाएं।');
+
+  }
+
+});
+
+/* PRINT MODAL */
+
+el('printBtn').addEventListener('click',function(){
+
+  updateCard();
+
+  el('myPaymentModal').style.display='flex';
+
+});
+
+el('cancelModalBtn').addEventListener('click',function(){
+
+  el('myPaymentModal').style.display='none';
+
+});
+
+el('confirmPayBtn').addEventListener('click',function(){
+
+  el('myPaymentModal').style.display='none';
+
+  setTimeout(()=>{
+    window.print();
+  },300);
+
+});
+
+/* RESET FORM */
+
+el('resetBtn').addEventListener('click',function(){
+
+  if(!confirm('क्या आप पूरा फॉर्म साफ करना चाहते हैं?')){
+    return;
+  }
+
+  fields.forEach(id=>{
+    el(id).value='';
+  });
+
+  el('photoInput').value='';
+  el('pdfInput').value='';
+
+  el('picPreview').textContent='Photo';
+
+  el('logoPreview').src='';
+  el('logoPreview').style.display='none';
+
+  el('landInputsContainer').innerHTML=`
+    <div class="land-entry-row">
+      <input class="l-state" placeholder="State">
+      <input class="l-dist" placeholder="District">
+      <input class="l-sub" placeholder="Sub-District">
+      <input class="l-vill" placeholder="Village">
+      <input class="l-totalgatano" placeholder="Gata No.">
+      <input class="l-totalarea" placeholder="Total Area">
+    </div>
+  `;
+
+  updateCard();
+
+});
+
+/* INITIALIZE */
+
+updateCard();
+
+</script>
+
 </body>
 </html>
